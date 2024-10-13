@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
+    <title>Enhanced QR Code Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
@@ -11,7 +11,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
         }
@@ -21,8 +21,10 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
         }
-        input {
+        input, select, textarea {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -35,43 +37,128 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin: 5px;
         }
         button:hover {
             background-color: #45a049;
         }
         #qrcode {
+            display: flex;
+            justify-content: center;
             margin-top: 20px;
+        }
+        #jsonFields {
+            text-align: left;
+        }
+        .jsonField {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .jsonField input {
+            width: 45%;
+        }
+        #qrContent {
+            margin-top: 20px;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>QR Code Generator</h1>
-        <input type="text" id="input" placeholder="Enter text or URL">
+        <select id="inputType" onchange="toggleInputType()">
+            <option value="text">Text/URL</option>
+            <option value="json">JSON</option>
+        </select>
+        <div id="textInput">
+            <input type="text" id="input" placeholder="Enter text or URL">
+        </div>
+        <div id="jsonInput" style="display:none;">
+            <div id="jsonFields"></div>
+            <button onclick="addJsonField()">Add Field</button>
+        </div>
         <button onclick="generateQR()">Generate QR Code</button>
         <div id="qrcode"></div>
+        <button id="downloadBtn" style="display:none;" onclick="downloadQR()">Download PNG</button>
+        <div id="qrContent"></div>
     </div>
 
     <script>
+        let qrCodeInstance = null;
+
+        function toggleInputType() {
+            const inputType = document.getElementById('inputType').value;
+            document.getElementById('textInput').style.display = inputType === 'text' ? 'block' : 'none';
+            document.getElementById('jsonInput').style.display = inputType === 'json' ? 'block' : 'none';
+            if (inputType === 'json' && document.getElementById('jsonFields').children.length === 0) {
+                addJsonField();
+            }
+        }
+
+        function addJsonField() {
+            const jsonFields = document.getElementById('jsonFields');
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = 'jsonField';
+            fieldDiv.innerHTML = `
+                <input type="text" placeholder="Field name">
+                <input type="text" placeholder="Value">
+            `;
+            jsonFields.appendChild(fieldDiv);
+        }
+
         function generateQR() {
-            const text = document.getElementById('input').value;
-            if (!text) {
-                alert('Please enter some text or URL');
-                return;
+            let text;
+            const inputType = document.getElementById('inputType').value;
+
+            if (inputType === 'text') {
+                text = document.getElementById('input').value;
+                if (!text) {
+                    alert('Please enter some text or URL');
+                    return;
+                }
+            } else {
+                const jsonObject = {};
+                const fields = document.querySelectorAll('.jsonField');
+                fields.forEach(field => {
+                    const [nameInput, valueInput] = field.querySelectorAll('input');
+                    if (nameInput.value && valueInput.value) {
+                        jsonObject[nameInput.value] = valueInput.value;
+                    }
+                });
+                if (Object.keys(jsonObject).length === 0) {
+                    alert('Please add at least one field-value pair for JSON');
+                    return;
+                }
+                text = JSON.stringify(jsonObject);
             }
 
             const qrcodeContainer = document.getElementById('qrcode');
             qrcodeContainer.innerHTML = ''; // Clear previous QR code
 
-            new QRCode(qrcodeContainer, {
+            qrCodeInstance = new QRCode(qrcodeContainer, {
                 text: text,
                 width: 128,
                 height: 128
             });
 
-            if (isURL(text)) {
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+            document.getElementById('qrContent').innerHTML = `<strong>QR Content:</strong><br>${text}`;
+
+            if (inputType === 'text' && isURL(text)) {
                 window.open(text, '_blank');
             }
+        }
+
+        function downloadQR() {
+            if (!qrCodeInstance) return;
+
+            const canvas = qrCodeInstance._el.querySelector('canvas');
+            const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = image;
+            link.click();
         }
 
         function isURL(str) {
@@ -83,6 +170,9 @@
                 '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
             return pattern.test(str);
         }
+
+        // Initialize with one JSON field
+        addJsonField();
     </script>
 </body>
 </html>
