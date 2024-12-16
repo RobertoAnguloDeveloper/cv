@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Markdown Viewer with Dark Theme</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #24292e;
+            --link-color: #0366d6;
+            --border-color: #e1e4e8;
+            --code-bg: #f6f8fa;
+            --blockquote-color: #6a737d;
+            --button-bg: #0366d6;
+            --button-color: white;
+            --button-hover-bg: #0056b3;
+            --copy-button-bg: #f1f8ff;
+            --copy-button-border: #c8e1ff;
+            --copy-button-hover-bg: #dbedff;
+            --table-alt-bg: #f6f8fa;
+        }
+
+        .dark-theme {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --link-color: #58a6ff;
+            --border-color: #30363d;
+            --code-bg: #161b22;
+            --blockquote-color: #8b949e;
+            --button-bg: #238636;
+            --button-color: #ffffff;
+            --button-hover-bg: #2ea043;
+            --copy-button-bg: #161b22;
+            --copy-button-border: #30363d;
+            --copy-button-hover-bg: #1f2428;
+            --table-alt-bg: #161b22;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #upload-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        #upload-button, #theme-toggle {
+            background-color: var(--button-bg);
+            color: var(--button-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #upload-button:hover, #theme-toggle:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        #content {
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; }
+        h2 { font-size: 1.5em; }
+        h3 { font-size: 1.25em; }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            border-radius: 3px;
+            padding: 16px;
+            overflow: auto;
+            position: relative;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            border-radius: 3px;
+            padding: .2em .4em;
+            font-size: 85%;
+        }
+
+        blockquote {
+            padding: 0 1em;
+            color: var(--blockquote-color);
+            border-left: .25em solid var(--border-color);
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table th, table td {
+            padding: 6px 13px;
+            border: 1px solid var(--border-color);
+        }
+
+        table tr:nth-child(2n) {
+            background-color: var(--table-alt-bg);
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 5px 10px;
+            background-color: var(--copy-button-bg);
+            border: 1px solid var(--copy-button-border);
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background-color: var(--copy-button-hover-bg);
+        }
+    </style>
+</head>
+<body>
+    <div id="upload-container">
+        <input type="file" id="file-input" accept=".md, .markdown" />
+        <button id="upload-button">Upload Markdown File</button>
+        <button id="theme-toggle">Toggle Dark Theme</button>
+    </div>
+    <div id="content"></div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const uploadButton = document.getElementById('upload-button');
+        const themeToggle = document.getElementById('theme-toggle');
+        const content = document.getElementById('content');
+        const body = document.body;
+
+        let currentMarkdown = '';
+        let isDarkTheme = false;
+
+        uploadButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            body.classList.toggle('dark-theme', isDarkTheme);
+        });
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentMarkdown = e.target.result;
+                    renderMarkdown(currentMarkdown);
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function renderMarkdown(markdownContent) {
+            content.innerHTML = marked.parse(markdownContent);
+            setupLinkHandlers();
+            setupCodeCopyButtons();
+        }
+
+        function setupLinkHandlers() {
+            const links = content.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        const targetId = href.slice(1);
+                        const targetElement = document.querySelector(`[id="${targetId}"]`);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+        }
+
+        function setupCodeCopyButtons() {
+            const codeBlocks = content.querySelectorAll('pre');
+            codeBlocks.forEach((block, index) => {
+                const button = document.createElement('button');
+                button.textContent = 'Copy';
+                button.className = 'copy-button';
+                button.addEventListener('click', () => copyCodeToClipboard(block, button));
+                block.style.paddingTop = '30px';
+                block.insertBefore(button, block.firstChild);
+            });
+        }
+
+        function copyCodeToClipboard(block, button) {
+            const code = block.querySelector('code');
+            const range = document.createRange();
+            range.selectNode(code);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+
+            try {
+                document.execCommand('copy');
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+
+            window.getSelection().removeAllRanges();
+        }
+
+        // Default content
+        currentMarkdown = `# Enhanced Markdown Viewer with Dark Theme 📚🌓
+
+Upload your own Markdown file to see it rendered here.
+
+## Features:
+
+- Supports all standard Markdown syntax
+- Preserves emojis 😊🎉🚀
+- Renders tables, code blocks, and more!
+- Internal links work! [Try it](#try-it-now)
+- Code blocks have copy buttons!
+- **New:** Dark theme support! Toggle using the button above.
+
+## Try it now
+
+Click the "Upload Markdown File" button above to see your own content!
+
+### Example Table
+
+| Header 1 | Header 2 |
+|----------|----------|
+| Row 1, Col 1 | Row 1, Col 2 |
+| Row 2, Col 1 | Row 2, Col 2 |
+
+### Example Code Block
+
+\`\`\`javascript
+function greet(name) {
+    console.log(\`Hello, \${name}! 👋\`);
+}
+greet('Markdown Enthusiast');
+\`\`\`
+
+### Complex ID Example
+
+#### Users API
+
+This section demonstrates linking to a complex ID.
+
+[Link to Users API](#users-api)
+
+[Back to top](#enhanced-markdown-viewer-with-dark-theme)`;
+
+        renderMarkdown(currentMarkdown);
+    </script>
+</body>
+</html>
+
