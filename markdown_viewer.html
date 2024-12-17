@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Markdown Viewer with Dark Theme</title>
+    <title>Enhanced Markdown Viewer</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
@@ -19,6 +19,7 @@
             --copy-button-bg: #f1f8ff;
             --copy-button-border: #c8e1ff;
             --copy-button-hover-bg: #dbedff;
+            --copy-button-text: #24292e;
             --table-alt-bg: #f6f8fa;
         }
 
@@ -32,9 +33,10 @@
             --button-bg: #238636;
             --button-color: #ffffff;
             --button-hover-bg: #2ea043;
-            --copy-button-bg: #161b22;
-            --copy-button-border: #30363d;
-            --copy-button-hover-bg: #1f2428;
+            --copy-button-bg: #2f3439;
+            --copy-button-border: #444c56;
+            --copy-button-hover-bg: #444c56;
+            --copy-button-text: #ffffff;
             --table-alt-bg: #161b22;
         }
 
@@ -49,18 +51,25 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        #upload-container {
+        #controls {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-color);
+            padding: 10px 0;
             margin-bottom: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 1000;
         }
 
         #file-input {
             display: none;
         }
 
-        #upload-button, #theme-toggle {
+        button {
             background-color: var(--button-bg);
             color: var(--button-color);
             padding: 10px 20px;
@@ -71,7 +80,7 @@
             transition: background-color 0.3s ease;
         }
 
-        #upload-button:hover, #theme-toggle:hover {
+        button:hover {
             background-color: var(--button-hover-bg);
         }
 
@@ -147,35 +156,48 @@
             right: 5px;
             padding: 5px 10px;
             background-color: var(--copy-button-bg);
+            color: var(--copy-button-text);
             border: 1px solid var(--copy-button-border);
             border-radius: 3px;
             cursor: pointer;
             font-size: 12px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .copy-button:hover {
             background-color: var(--copy-button-hover-bg);
         }
+
+        #loading {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div id="upload-container">
+    <div id="controls">
         <input type="file" id="file-input" accept=".md, .markdown" />
         <button id="upload-button">Upload Markdown File</button>
         <button id="theme-toggle">Toggle Dark Theme</button>
+        <button id="reload-button">Reload Original Content</button>
     </div>
-    <div id="content"></div>
+    <div id="content">
+        <div id="loading">Loading content...</div>
+    </div>
 
     <script>
         const fileInput = document.getElementById('file-input');
         const uploadButton = document.getElementById('upload-button');
         const themeToggle = document.getElementById('theme-toggle');
+        const reloadButton = document.getElementById('reload-button');
         const content = document.getElementById('content');
+        const loading = document.getElementById('loading');
         const body = document.body;
 
         let currentMarkdown = '';
         let isDarkTheme = false;
+        const originalContentUrl = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/api-documentation-gOpJlsCtMXdOVji6O3WtJKbqyc2ktg.md';
 
         uploadButton.addEventListener('click', () => {
             fileInput.click();
@@ -184,6 +206,10 @@
         themeToggle.addEventListener('click', () => {
             isDarkTheme = !isDarkTheme;
             body.classList.toggle('dark-theme', isDarkTheme);
+        });
+
+        reloadButton.addEventListener('click', () => {
+            loadMarkdownContent(originalContentUrl);
         });
 
         fileInput.addEventListener('change', (event) => {
@@ -198,8 +224,32 @@
             }
         });
 
+        function loadMarkdownContent(url) {
+            loading.style.display = 'block';
+            content.innerHTML = '';
+            fetch(url)
+                .then(response => response.text())
+                .then(markdownContent => {
+                    currentMarkdown = markdownContent;
+                    renderMarkdown(currentMarkdown);
+                })
+                .catch(error => {
+                    console.error('Error fetching Markdown:', error);
+                    content.innerHTML = '<p>Error loading Markdown file. Please try again.</p>';
+                })
+                .finally(() => {
+                    loading.style.display = 'none';
+                });
+        }
+
         function renderMarkdown(markdownContent) {
-            content.innerHTML = marked.parse(markdownContent);
+            const renderer = new marked.Renderer();
+            renderer.heading = function(text, level) {
+                const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+                return `<h${level} id="${escapedText}">${text}</h${level}>`;
+            };
+
+            content.innerHTML = marked(markdownContent, { renderer: renderer });
             setupLinkHandlers();
             setupCodeCopyButtons();
         }
@@ -212,7 +262,7 @@
                     if (href.startsWith('#')) {
                         e.preventDefault();
                         const targetId = href.slice(1);
-                        const targetElement = document.querySelector(`[id="${targetId}"]`);
+                        const targetElement = document.getElementById(targetId);
                         if (targetElement) {
                             targetElement.scrollIntoView({ behavior: 'smooth' });
                         }
@@ -248,56 +298,17 @@
                 }, 2000);
             } catch (err) {
                 console.error('Failed to copy text: ', err);
+                button.textContent = 'Failed to copy';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
             }
 
             window.getSelection().removeAllRanges();
         }
 
-        // Default content
-        currentMarkdown = `# Enhanced Markdown Viewer with Dark Theme 📚🌓
-
-Upload your own Markdown file to see it rendered here.
-
-## Features:
-
-- Supports all standard Markdown syntax
-- Preserves emojis 😊🎉🚀
-- Renders tables, code blocks, and more!
-- Internal links work! [Try it](#try-it-now)
-- Code blocks have copy buttons!
-- **New:** Dark theme support! Toggle using the button above.
-
-## Try it now
-
-Click the "Upload Markdown File" button above to see your own content!
-
-### Example Table
-
-| Header 1 | Header 2 |
-|----------|----------|
-| Row 1, Col 1 | Row 1, Col 2 |
-| Row 2, Col 1 | Row 2, Col 2 |
-
-### Example Code Block
-
-\`\`\`javascript
-function greet(name) {
-    console.log(\`Hello, \${name}! 👋\`);
-}
-greet('Markdown Enthusiast');
-\`\`\`
-
-### Complex ID Example
-
-#### Users API
-
-This section demonstrates linking to a complex ID.
-
-[Link to Users API](#users-api)
-
-[Back to top](#enhanced-markdown-viewer-with-dark-theme)`;
-
-        renderMarkdown(currentMarkdown);
+        // Initial load of the Markdown content
+        loadMarkdownContent(originalContentUrl);
     </script>
 </body>
 </html>
