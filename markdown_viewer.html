@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enhanced Markdown Viewer</title>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/marked.min.js"></script>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -156,7 +156,7 @@
             right: 5px;
             padding: 5px 10px;
             background-color: var(--copy-button-bg);
-            color: var(--copy-button-text);
+            color: var(--text-color);
             border: 1px solid var(--copy-button-border);
             border-radius: 3px;
             cursor: pointer;
@@ -168,15 +168,32 @@
             background-color: var(--copy-button-hover-bg);
         }
 
+        .dark-theme .copy-button {
+            color: var(--copy-button-text);
+        }
+
         #loading {
             text-align: center;
             font-size: 1.2em;
             margin-top: 20px;
         }
+        #upload-container {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-color);
+            padding: 10px 0;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
-    <div id="controls">
+    <div id="upload-container">
         <input type="file" id="file-input" accept=".md, .markdown" />
         <button id="upload-button">Upload Markdown File</button>
         <button id="theme-toggle">Toggle Dark Theme</button>
@@ -217,8 +234,22 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    currentMarkdown = e.target.result;
-                    renderMarkdown(currentMarkdown);
+                    try {
+                        currentMarkdown = e.target.result;
+                        renderMarkdown(currentMarkdown);
+                    } catch (error) {
+                        console.error('Error parsing Markdown:', error);
+                        content.innerHTML = `
+                            <div style="padding: 20px; color: var(--text-color); background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px;">
+                                Error parsing Markdown file. Please ensure it's a valid Markdown file and try again.
+                            </div>`;
+                    }
+                };
+                reader.onerror = () => {
+                    content.innerHTML = `
+                        <div style="padding: 20px; color: var(--text-color); background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px;">
+                            Error reading file. Please try again.
+                        </div>`;
                 };
                 reader.readAsText(file);
             }
@@ -226,16 +257,25 @@
 
         function loadMarkdownContent(url) {
             loading.style.display = 'block';
-            content.innerHTML = '';
+            content.innerHTML = '<div id="loading">Loading content...</div>';
+            
             fetch(url)
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
                 .then(markdownContent => {
                     currentMarkdown = markdownContent;
                     renderMarkdown(currentMarkdown);
                 })
                 .catch(error => {
                     console.error('Error fetching Markdown:', error);
-                    content.innerHTML = '<p>Error loading Markdown file. Please try again.</p>';
+                    content.innerHTML = `
+                        <div style="padding: 20px; color: var(--text-color); background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px;">
+                            Error loading Markdown file. Please try again.
+                        </div>`;
                 })
                 .finally(() => {
                     loading.style.display = 'none';
@@ -243,15 +283,35 @@
         }
 
         function renderMarkdown(markdownContent) {
-            const renderer = new marked.Renderer();
-            renderer.heading = function(text, level) {
-                const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-                return `<h${level} id="${escapedText}">${text}</h${level}>`;
-            };
+            try {
+                // Create custom renderer
+                const renderer = new marked.Renderer();
+                renderer.heading = function(text, level) {
+                    const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+                    return `<h${level} id="${escapedText}">${text}</h${level}>`;
+                };
 
-            content.innerHTML = marked(markdownContent, { renderer: renderer });
-            setupLinkHandlers();
-            setupCodeCopyButtons();
+                // Set options and use renderer
+                marked.setOptions({
+                    renderer: renderer,
+                    gfm: true,
+                    breaks: true,
+                    sanitize: false,
+                    smartLists: true,
+                    smartypants: true
+                });
+
+                // Parse markdown using marked
+                content.innerHTML = marked.parse(markdownContent);
+                setupLinkHandlers();
+                setupCodeCopyButtons();
+            } catch (error) {
+                console.error('Error rendering markdown:', error);
+                content.innerHTML = `
+                    <div style="padding: 20px; color: var(--text-color); background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px;">
+                        Error rendering Markdown content. Please try again.
+                    </div>`;
+            }
         }
 
         function setupLinkHandlers() {
