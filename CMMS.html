@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLG CMMS Software</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #50c878;
+            --accent-color: #f39c12;
+            --background-color: #f5f7fa;
+            --text-color: #333333;
+            --header-color: #2c3e50;
+            --card-bg-color: #ffffff;
+        }
+        body {
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+        .logo {
+            max-width: 120px;
+            height: auto;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        h1 {
+            color: white;
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        h2 {
+            color: var(--header-color);
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        h3 {
+            color: var(--header-color);
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        .section {
+            background-color: var(--card-bg-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .architecture {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            position: relative;
+        }
+        .architecture::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            animation: flowLine 3s infinite linear;
+        }
+        @keyframes flowLine {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+        .arch-item {
+            background-color: var(--card-bg-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .arch-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        .arch-item:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        .arch-item:hover::before {
+            opacity: 0.1;
+        }
+        .arch-item img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        .arch-item:hover img {
+            transform: scale(1.1) rotate(-2deg);
+        }
+        .arch-item h3 {
+            color: var(--header-color);
+            margin: 0.5rem 0;
+            font-weight: 600;
+        }
+        .arch-item p {
+            margin: 0;
+            color: var(--text-color);
+        }
+        .arch-description {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg-color);
+            padding: 10px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            width: max-content;
+        }
+        .arch-item:hover .arch-description {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .module-card {
+            background-color: var(--card-bg-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .module-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .module-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .module-content {
+            padding: 1.5rem;
+        }
+        .module-content ul {
+            padding-left: 1.5rem;
+            margin: 0;
+        }
+        .module-content li {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInRight 0.5s ease forwards;
+        }
+        @keyframes fadeInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .module-card:hover .module-content li {
+            animation-play-state: running;
+        }
+        .module-content li:nth-child(1) { animation-delay: 0.1s; }
+        .module-content li:nth-child(2) { animation-delay: 0.2s; }
+        .module-content li:nth-child(3) { animation-delay: 0.3s; }
+        .module-content li:nth-child(4) { animation-delay: 0.4s; }
+        .module-content li:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/PLG_LOGO-removebg-preview-2tnBkorTWpuqiiOEe9FRWoiYRX5AgI.png" alt="PLG Logo" class="logo">
+            <h1>CMMS Software</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section class="section">
+            <h2>Project Overview</h2>
+            <p><strong>PLG CMMS Software</strong> is a cutting-edge, multiplatform Computerized Maintenance Management System (CMMS) solution designed for Android and Web platforms. Our software streamlines maintenance operations, enhances productivity, and optimizes resource management.</p>
+        </section>
+        
+        <section class="section">
+            <h2>System Architecture</h2>
+            <div class="architecture">
+                <div class="arch-item">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-rpUEXbNgNA6GqLRlf4eptmdTSlnQkC.png" alt="AWS EC2">
+                    <h3>Server</h3>
+                    <p><strong>AWS EC2</strong></p>
+                    <div class="arch-description">
+                        Scalable cloud computing capacity providing reliable server infrastructure
+                    </div>
+                </div>
+                <div class="arch-item">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-veZ0TBsIu34M05FUTi7juPb31s5pgr.png" alt="Flask">
+                    <h3>Backend</h3>
+                    <p><strong>API Flask with Python</strong></p>
+                    <div class="arch-description">
+                        Lightweight WSGI web application framework handling API requests and business logic
+                    </div>
+                </div>
+                <div class="arch-item">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JBF9OWd5MNUuaO0tux6hp7pw6UtyzP.png" alt="Dart Flutter">
+                    <h3>Frontend</h3>
+                    <p><strong>Flutter with Dart</strong></p>
+                    <div class="arch-description">
+                        Cross-platform UI toolkit for building natively compiled applications
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>Modules</h2>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-header">Forms Management Module</div>
+                    <div class="module-content">
+                        <ul>
+                            <li><strong>User Management</strong></li>
+                            <li><strong>Form Management</strong></li>
+                            <li><strong>Assign Permissions</strong></li>
+                            <li><strong>Form Submissions</strong></li>
+                            <li><strong>Drafts</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-header">Inventory Module</div>
+                    <div class="module-content">
+                        <p><strong>Efficiently manage your inventory with these powerful features:</strong></p>
+                        <ul>
+                            <li><strong>Item Management</strong></li>
+                            <li><strong>Stock Tracking</strong></li>
+                            <li><strong>Reorder Points</strong></li>
+                            <li><strong>Supplier Management</strong></li>
+                            <li><strong>Inventory Reports</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-header">Planner Module</div>
+                    <div class="module-content">
+                        <p><strong>Optimize your maintenance planning with these essential tools:</strong></p>
+                        <ul>
+                            <li><strong>Task Scheduling</strong></li>
+                            <li><strong>Resource Allocation</strong></li>
+                            <li><strong>Calendar View</strong></li>
+                            <li><strong>Maintenance Forecasting</strong></li>
+                            <li><strong>Work Order Management</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+
