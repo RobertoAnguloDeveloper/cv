@@ -1,314 +1,811 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLG CMMS Software</title>
-    <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #50c878;
-            --accent-color: #f39c12;
-            --background-color: #f5f7fa;
-            --text-color: #333333;
-            --header-color: #2c3e50;
-            --card-bg-color: #ffffff;
-        }
-        body {
-            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-        }
-        .logo {
-            max-width: 120px;
-            height: auto;
-            animation: logoFloat 3s ease-in-out infinite;
-        }
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        h1 {
-            color: white;
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        h2 {
-            color: var(--header-color);
-            font-weight: 700;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            font-size: 2rem;
-        }
-        h3 {
-            color: var(--header-color);
-            font-weight: 600;
-            font-size: 1.5rem;
-        }
-        .section {
-            background-color: var(--card-bg-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        .architecture {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            position: relative;
-        }
-        .architecture::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-            animation: flowLine 3s infinite linear;
-        }
-        @keyframes flowLine {
-            0% { background-position: -200px 0; }
-            100% { background-position: 200px 0; }
-        }
-        .arch-item {
-            background-color: var(--card-bg-color);
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-        .arch-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-        .arch-item:hover {
-            transform: translateY(-10px) rotate(2deg);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-        .arch-item:hover::before {
-            opacity: 0.1;
-        }
-        .arch-item img {
-            max-width: 150px;
-            height: auto;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
-        .arch-item:hover img {
-            transform: scale(1.1) rotate(-2deg);
-        }
-        .arch-item h3 {
-            color: var(--header-color);
-            margin: 0.5rem 0;
-            font-weight: 600;
-        }
-        .arch-item p {
-            margin: 0;
-            color: var(--text-color);
-        }
-        .arch-description {
-            position: absolute;
-            bottom: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--card-bg-color);
-            padding: 10px 20px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-            width: max-content;
-        }
-        .arch-item:hover .arch-description {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-10px);
-        }
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        .module-card {
-            background-color: var(--card-bg-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .module-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        .module-header {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 1rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        .module-content {
-            padding: 1.5rem;
-        }
-        .module-content ul {
-            padding-left: 1.5rem;
-            margin: 0;
-        }
-        .module-content li {
-            margin-bottom: 0.5rem;
-            opacity: 0;
-            transform: translateX(-20px);
-            animation: fadeInRight 0.5s ease forwards;
-        }
-        @keyframes fadeInRight {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        .module-card:hover .module-content li {
-            animation-play-state: running;
-        }
-        .module-content li:nth-child(1) { animation-delay: 0.1s; }
-        .module-content li:nth-child(2) { animation-delay: 0.2s; }
-        .module-content li:nth-child(3) { animation-delay: 0.3s; }
-        .module-content li:nth-child(4) { animation-delay: 0.4s; }
-        .module-content li:nth-child(5) { animation-delay: 0.5s; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PLG CMMS Software</title>
+
+  <!-- Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-RjduFkXgPeB7LZlXe6Yjc4enCLxx9Pw21zCQM+J+KBGez+AHMzxeS76otkxaN4ArPB/5zRkpBnwrKKz6C4e5kw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #50c878;
+      --accent-color: #f39c12;
+      --background-color: #f5f7fa;
+      --text-color: #333333;
+      --header-color: #2c3e50;
+      --card-bg-color: #ffffff;
+
+      /* Dark Mode Variables */
+      --dark-bg-color: #1d1e22;
+      --dark-text-color: #f0f0f0;
+      --dark-card-color: #2a2b2f;
+    }
+
+    /* GLOBAL STYLES */
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    body.dark-mode {
+      background-color: var(--dark-bg-color);
+      color: var(--dark-text-color);
+    }
+
+    /* Because the header is fixed, we need top padding so content doesn't hide behind it */
+    .content-wrapper {
+      padding-top: 90px; /* Adjust if you need more/less space */
+    }
+
+    /* HEADER (Fixed) */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-left img {
+      max-width: 120px;
+      height: auto;
+    }
+    .header-left h1 {
+      color: white;
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* MODE BUTTONS IN HEADER */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-right button {
+      cursor: pointer;
+      background: var(--secondary-color);
+      color: #fff;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background-color 0.3s ease;
+    }
+    .header-right button:hover {
+      filter: brightness(0.9);
+    }
+    .header-right i {
+      font-size: 1rem; /* icon size */
+    }
+
+    /* CONTAINER for main content */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* HEADINGS */
+    h2 {
+      color: var(--header-color);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      position: relative;
+      transition: color 0.4s ease;
+    }
+    body.dark-mode h2 {
+      color: var(--dark-text-color);
+    }
+    h3 {
+      color: var(--header-color);
+      font-weight: 600;
+      font-size: 1.5rem;
+      transition: color 0.4s ease;
+    }
+    body.dark-mode h3 {
+      color: var(--dark-text-color);
+    }
+
+    /*
+      SINGLE PAGE vs. SLIDES MODE
+      We'll apply .slides-mode on the body to treat sections as slides
+    */
+    .section {
+      background-color: var(--card-bg-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
+    }
+    .section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    body.dark-mode .section {
+      background-color: var(--dark-card-color);
+      color: var(--dark-text-color);
+    }
+
+    /* Hide all sections except the active one in slides mode */
+    body.slides-mode .section {
+      display: none;
+    }
+    body.slides-mode .section.active {
+      display: block;
+    }
+
+    /* ROLE-PERMISSION SCROLL ANIMATION */
+    .role-permission-section {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.6s ease;
+    }
+    .role-permission-section.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* TEAM CARDS */
+    .team-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .team-card {
+      background-color: #f4f6f7;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      transition: transform 0.3s ease, background-color 0.4s ease;
+    }
+    .team-card:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+    .team-card h3 {
+      margin-top: 0;
+      color: var(--header-color);
+      margin-bottom: 0.5rem;
+      transition: color 0.4s ease;
+    }
+    body.dark-mode .team-card {
+      background-color: var(--dark-card-color);
+      color: var(--dark-text-color);
+    }
+    body.dark-mode .team-card h3 {
+      color: var(--dark-text-color);
+    }
+
+    /* ROLE CARDS */
+    .role-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .role-card {
+      background-color: var(--card-bg-color);
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    body.dark-mode .role-card {
+      background-color: var(--dark-card-color);
+      color: var(--dark-text-color);
+    }
+
+    /* ARCHITECTURE */
+    .architecture {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      position: relative;
+      transition: background-color 0.4s ease;
+    }
+    .architecture::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+      animation: flowLine 3s infinite linear;
+    }
+    @keyframes flowLine {
+      0% { background-position: -200px 0; }
+      100% { background-position: 200px 0; }
+    }
+    body.dark-mode .architecture {
+      background-color: transparent;
+    }
+    .arch-item {
+      background-color: var(--card-bg-color);
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease, background-color 0.4s ease;
+      position: relative;
+      z-index: 1;
+    }
+    .arch-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    .arch-item:hover {
+      transform: translateY(-10px) rotate(2deg);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    .arch-item:hover::before {
+      opacity: 0.1;
+    }
+    .arch-item img {
+      max-width: 150px;
+      height: auto;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+    .arch-item:hover img {
+      transform: scale(1.1) rotate(-2deg);
+    }
+    .arch-item h3 {
+      color: var(--header-color);
+      margin: 0.5rem 0;
+      font-weight: 600;
+      transition: color 0.4s ease;
+    }
+    .arch-item p {
+      margin: 0;
+      color: var(--text-color);
+      transition: color 0.4s ease;
+    }
+    body.dark-mode .arch-item {
+      background-color: var(--dark-card-color);
+      color: var(--dark-text-color);
+    }
+    body.dark-mode .arch-item h3 {
+      color: var(--dark-text-color);
+    }
+    body.dark-mode .arch-item p {
+      color: var(--dark-text-color);
+    }
+    .arch-description {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--card-bg-color);
+      padding: 10px 20px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.4s ease;
+      pointer-events: none;
+      width: max-content;
+      max-width: 200px;
+      text-align: center;
+      word-wrap: break-word;
+    }
+    .arch-item:hover .arch-description {
+      opacity: 1;
+      transform: translate(-50%, 10px);
+    }
+    body.dark-mode .arch-description {
+      background-color: var(--dark-card-color);
+      color: var(--dark-text-color);
+    }
+
+    /* MODULES */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .module-card {
+      background-color: var(--card-bg-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: all 0.3s ease, background-color 0.4s ease;
+    }
+    .module-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .module-header {
+      background-color: var(--secondary-color);
+      color: #fff;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: background-color 0.4s ease;
+    }
+    .module-content {
+      padding: 1.5rem;
+    }
+    .module-content ul {
+      padding-left: 1.5rem;
+      margin: 0;
+    }
+    .module-content li {
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: all 0.5s ease;
+    }
+    .module-card:hover .module-content li {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    body.dark-mode .module-card {
+      background-color: var(--dark-card-color);
+      color: var(--dark-text-color);
+    }
+
+    /* SLIDE NAVIGATION BUTTONS */
+    .slide-nav {
+      display: none; /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    body.slides-mode .slide-nav {
+      display: flex; /* Show in slides mode */
+    }
+    .slide-nav button {
+      cursor: pointer;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .slide-nav button:hover {
+      background: #337ab7; /* Slightly darker shade */
+    }
+    .slide-nav i {
+      font-size: 1rem;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/PLG_LOGO-removebg-preview-2tnBkorTWpuqiiOEe9FRWoiYRX5AgI.png" alt="PLG Logo" class="logo">
-            <h1>CMMS Software</h1>
-        </div>
-    </header>
-    
-    <div class="container">
-        <section class="section">
-            <h2>Project Overview</h2>
-            <p><strong>PLG CMMS Software</strong> is a cutting-edge, multiplatform Computerized Maintenance Management System (CMMS) solution designed for Android and Web platforms. Our software streamlines maintenance operations, enhances productivity, and optimizes resource management.</p>
-        </section>
-        
-        <section class="section">
-            <h2>System Architecture</h2>
-            <div class="architecture">
-                <div class="arch-item">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-rpUEXbNgNA6GqLRlf4eptmdTSlnQkC.png" alt="AWS EC2">
-                    <h3>Server</h3>
-                    <p><strong>AWS EC2</strong></p>
-                    <div class="arch-description">
-                        Scalable cloud computing capacity providing reliable server infrastructure
-                    </div>
-                </div>
-                <div class="arch-item">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-veZ0TBsIu34M05FUTi7juPb31s5pgr.png" alt="Flask">
-                    <h3>Backend</h3>
-                    <p><strong>API Flask with Python</strong></p>
-                    <div class="arch-description">
-                        Lightweight WSGI web application framework handling API requests and business logic
-                    </div>
-                </div>
-                <div class="arch-item">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JBF9OWd5MNUuaO0tux6hp7pw6UtyzP.png" alt="Dart Flutter">
-                    <h3>Frontend</h3>
-                    <p><strong>Flutter with Dart</strong></p>
-                    <div class="arch-description">
-                        Cross-platform UI toolkit for building natively compiled applications
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section class="section">
-            <h2>Modules</h2>
-            <div class="modules-grid">
-                <div class="module-card">
-                    <div class="module-header">Forms Management Module</div>
-                    <div class="module-content">
-                        <ul>
-                            <li><strong>User Management</strong></li>
-                            <li><strong>Form Management</strong></li>
-                            <li><strong>Assign Permissions</strong></li>
-                            <li><strong>Form Submissions</strong></li>
-                            <li><strong>Drafts</strong></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="module-card">
-                    <div class="module-header">Inventory Module</div>
-                    <div class="module-content">
-                        <p><strong>Efficiently manage your inventory with these powerful features:</strong></p>
-                        <ul>
-                            <li><strong>Item Management</strong></li>
-                            <li><strong>Stock Tracking</strong></li>
-                            <li><strong>Reorder Points</strong></li>
-                            <li><strong>Supplier Management</strong></li>
-                            <li><strong>Inventory Reports</strong></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="module-card">
-                    <div class="module-header">Planner Module</div>
-                    <div class="module-content">
-                        <p><strong>Optimize your maintenance planning with these essential tools:</strong></p>
-                        <ul>
-                            <li><strong>Task Scheduling</strong></li>
-                            <li><strong>Resource Allocation</strong></li>
-                            <li><strong>Calendar View</strong></li>
-                            <li><strong>Maintenance Forecasting</strong></li>
-                            <li><strong>Work Order Management</strong></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <!-- FIXED HEADER with Light Mode & Single Page Mode Buttons -->
+  <header>
+    <div class="header-left">
+      <img
+        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/PLG_LOGO-removebg-preview-2tnBkorTWpuqiiOEe9FRWoiYRX5AgI.png"
+        alt="PLG Logo"
+        class="logo"
+      />
+      <h1>CMMS Software</h1>
     </div>
+
+    <div class="header-right">
+      <!-- Start them as Light Mode / Single Page Mode by default -->
+      <button id="darkBtn">
+        <i class="fas fa-sun"></i>
+        Dark Mode
+      </button>
+      <button id="slidesBtn">
+        <i class="fas fa-file-alt"></i>
+        Single Page Mode
+      </button>
+    </div>
+  </header>
+
+  <!-- We'll wrap all main content in a content-wrapper for spacing from fixed header -->
+  <div class="content-wrapper">
+    <div class="container">
+      <!-- Project Overview -->
+      <section class="section active">
+        <h2>Project Overview</h2>
+        <p>
+          <strong>PLG CMMS Software</strong> is a cutting-edge, multiplatform
+          Computerized Maintenance Management System (CMMS) solution designed for
+          Android and Web platforms. Our software streamlines maintenance
+          operations, enhances productivity, and optimizes resource management.
+        </p>
+        <p>
+          <strong>Role-Permission Based Access:</strong> The system is designed around a robust role
+          and permission model. Each user’s role determines which features and modules
+          they can access, ensuring secure and efficient management across the organization.
+        </p>
+      </section>
+
+      <!-- SOFTWARE LIFE CYCLE ROLES (as cards) -->
+      <section class="section">
+        <h2>Software Life Cycle Roles</h2>
+        <p>
+          To successfully build and maintain PLG CMMS Software, a variety of roles are 
+          required throughout the entire Software Development Life Cycle (SDLC). From 
+          <strong>requirements gathering</strong> and <strong>system design</strong>, 
+          to <strong>development</strong>, <strong>testing</strong>, 
+          <strong>deployment</strong>, and <strong>maintenance</strong>, each role 
+          ensures the project meets quality and performance standards.
+        </p>
+
+        <div class="team-container">
+          <!-- Roberto Angulo Card -->
+          <div class="team-card">
+            <h3>Roberto Angulo</h3>
+            <p>
+              Overseeing multiple responsibilities to align the software with organizational goals.
+            </p>
+            <ul>
+              <li><strong>Project Manager</strong></li>
+              <li><strong>Software Architect</strong></li>
+              <li><strong>Backend Developer</strong></li>
+              <li><strong>QA Specialist</strong></li>
+              <li><strong>DevOps Engineer</strong></li>
+              <li><strong>Database Administrator</strong></li>
+            </ul>
+          </div>
+
+          <!-- Jose Gomez Card -->
+          <div class="team-card">
+            <h3>Jose Gomez</h3>
+            <p>
+              Leading the user interface design and frontend implementation.
+            </p>
+            <ul>
+              <li><strong>UI/UX Designer</strong></li>
+              <li><strong>Frontend Developer</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <p style="margin-top: 1rem;">
+          Working in tandem, these roles cover the entire SDLC:
+          <strong>planning</strong>, <strong>analysis</strong>, <strong>design</strong>, 
+          <strong>implementation</strong>, <strong>testing</strong>, 
+          and <strong>maintenance</strong>. Their collaboration ensures the solution
+          aligns with organizational goals, remains performant, and adapts well to
+          future needs.
+        </p>
+      </section>
+
+      <!-- ROLE-PERMISSION CONCEPTS -->
+      <section class="section role-permission-section" id="roleSection">
+        <h2>Role-Permission Concepts & Examples</h2>
+        <p>
+          In PLG CMMS Software, users are assigned roles according to their job
+          functions. Each role is granted specific permissions that allow individuals
+          to perform only those actions that align with their responsibilities.
+        </p>
+
+        <div class="role-container">
+          <!-- Admin Role -->
+          <div class="role-card">
+            <h3>Admin</h3>
+            <p>
+              The <strong>Admin</strong> has the highest level of access. This role
+              is typically reserved for senior IT or management staff responsible for
+              overall system configuration.
+            </p>
+            <ul>
+              <li>Full access to all modules and settings</li>
+              <li>Can create and manage user accounts</li>
+              <li>Can assign roles and permissions to other users</li>
+              <li>Oversees system-wide operations and configurations</li>
+            </ul>
+          </div>
+
+          <!-- Site Manager Role -->
+          <div class="role-card">
+            <h3>Site Manager</h3>
+            <p>
+              The <strong>Site Manager</strong> focuses on site-specific oversight.
+              This role is suitable for those who manage a single site or location.
+            </p>
+            <ul>
+              <li>Access to site-specific forms and inventory data</li>
+              <li>Can oversee day-to-day maintenance and operations</li>
+              <li>Reviews and approves site-related work orders</li>
+              <li>Manages resource allocation within a specific location</li>
+            </ul>
+          </div>
+
+          <!-- Supervisor Role -->
+          <div class="role-card">
+            <h3>Supervisor</h3>
+            <p>
+              The <strong>Supervisor</strong> role ensures maintenance tasks and
+              workflows are carried out efficiently. Suitable for team leads who
+              coordinate field staff.
+            </p>
+            <ul>
+              <li>Can create, edit, and manage tasks in the Planner Module</li>
+              <li>Approves forms and checks inventory levels</li>
+              <li>Assigns tasks to Technicians and monitors progress</li>
+              <li>Generates basic operational reports</li>
+            </ul>
+          </div>
+
+          <!-- Technician Role -->
+          <div class="role-card">
+            <h3>Technician</h3>
+            <p>
+              The <strong>Technician</strong> handles hands-on maintenance and repair
+              tasks. This role is designed for field workers or onsite maintenance
+              personnel.
+            </p>
+            <ul>
+              <li>Executes assigned tasks and updates work orders</li>
+              <li>Submits or updates forms (e.g., checklists, maintenance records)</li>
+              <li>Reviews relevant inventory items (read-only access)</li>
+              <li>Provides feedback on task completion</li>
+            </ul>
+          </div>
+        </div>
+
+        <p style="margin-top: 1rem;">
+          By assigning these roles appropriately, organizations ensure that each user has 
+          the exact level of access they need—no more, no less. This structure preserves 
+          data integrity, enhances overall security, and supports efficient workflows 
+          within the CMMS.
+        </p>
+      </section>
+
+      <!-- SYSTEM ARCHITECTURE -->
+      <section class="section">
+        <h2>System Architecture</h2>
+        <div class="architecture">
+          <div class="arch-item">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-rpUEXbNgNA6GqLRlf4eptmdTSlnQkC.png"
+              alt="AWS EC2"
+            />
+            <h3>Server</h3>
+            <p><strong>AWS EC2</strong></p>
+            <div class="arch-description">
+              Scalable cloud computing capacity providing reliable server infrastructure
+            </div>
+          </div>
+          <div class="arch-item">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-veZ0TBsIu34M05FUTi7juPb31s5pgr.png"
+              alt="Flask"
+            />
+            <h3>Backend</h3>
+            <p><strong>API Flask with Python</strong></p>
+            <div class="arch-description">
+              Lightweight WSGI (Web Server Gateway Interface) web application framework 
+              handling API requests and business logic
+            </div>
+          </div>
+          <div class="arch-item">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JBF9OWd5MNUuaO0tux6hp7pw6UtyzP.png"
+              alt="Flutter"
+            />
+            <h3>Frontend</h3>
+            <p><strong>Flutter with Dart</strong></p>
+            <div class="arch-description">
+              Cross-platform UI toolkit for building natively compiled applications
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULES -->
+      <section class="section">
+        <h2>Modules</h2>
+        <div class="modules-grid">
+          <div class="module-card">
+            <div class="module-header">Forms Management Module</div>
+            <div class="module-content">
+              <p><strong>Empower your teams with dynamic form creation and a streamlined submission process, all within one centralized environment:</strong></p>
+              <ul>
+                <li><strong>User Management</strong></li>
+                <li><strong>Form Management</strong></li>
+                <li><strong>Assign Permissions</strong></li>
+                <li><strong>Form Submissions</strong></li>
+                <li><strong>Drafts</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="module-card">
+            <div class="module-header">Inventory Module</div>
+            <div class="module-content">
+              <p><strong>Efficiently manage your inventory with these powerful features:</strong></p>
+              <ul>
+                <li><strong>Item Management</strong></li>
+                <li><strong>Stock Tracking</strong></li>
+                <li><strong>Reorder Points</strong></li>
+                <li><strong>Supplier Management</strong></li>
+                <li><strong>Inventory Reports</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="module-card">
+            <div class="module-header">Planner Module</div>
+            <div class="module-content">
+              <p><strong>Optimize your maintenance planning with these essential tools:</strong></p>
+              <ul>
+                <li><strong>Task Scheduling</strong></li>
+                <li><strong>Resource Allocation</strong></li>
+                <li><strong>Calendar View</strong></li>
+                <li><strong>Maintenance Forecasting</strong></li>
+                <li><strong>Work Order Management</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DATABASE ERD -->
+      <section class="section">
+        <h2>Maintenance Executions Database ERD</h2>
+        <p>
+          Below is a view of our entity-relationship diagram (ERD) for the
+          <strong>maintenance_executions_2</strong> database. It illustrates how tables
+          and relationships are organized, ensuring efficient data flow and integrity.
+        </p>
+        <div style="overflow-x:auto; border: 1px solid #ccc; border-radius: 8px;">
+          <iframe 
+            src="https://dbdiagram.io/d/maintenance_executions_2-6747ba7be9daa85acaf32097"
+            width="100%"
+            height="600"
+            frameborder="0"
+            style="display:block;"
+          ></iframe>
+        </div>
+      </section>
+
+      <!-- SLIDE NAVIGATION BUTTONS (only show in slides-mode) -->
+      <div class="slide-nav">
+        <button id="prevBtn">
+          <i class="fas fa-arrow-left"></i>
+          Previous Section
+        </button>
+        <button id="nextBtn">
+          Next Section
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script>
+    /***********************************************
+     * 1) SCROLL ANIMATION FOR ROLE-PERMISSION SECTION
+     ***********************************************/
+    const rolePermissionSection = document.getElementById('roleSection');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    observer.observe(rolePermissionSection);
+
+    /***********************************************
+     * 2) DARK MODE TOGGLE
+     ***********************************************/
+    const darkBtn = document.getElementById('darkBtn');
+    let darkModeEnabled = false; // start as false (Light Mode)
+
+    darkBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      darkModeEnabled = !darkModeEnabled;
+      // Toggle icons & text
+      darkBtn.innerHTML = darkModeEnabled
+        ? '<i class="fas fa-moon"></i> Light Mode'
+        : '<i class="fas fa-sun"></i> Dark Mode';
+    });
+
+    /***********************************************
+     * 3) SLIDES MODE TOGGLE
+     ***********************************************/
+    const slidesBtn = document.getElementById('slidesBtn');
+    let slidesMode = false;
+
+    // All sections
+    const sections = document.querySelectorAll('.section');
+    let currentSlide = 0; // The index for the currently visible section
+
+    // Show a specific slide
+    function showSlide(index) {
+      // Hide all sections
+      sections.forEach(sec => sec.classList.remove('active'));
+
+      // Wrap around if out of bounds
+      if (index >= sections.length) {
+        currentSlide = 0;
+      } else if (index < 0) {
+        currentSlide = sections.length - 1;
+      }
+
+      // Show the current section
+      sections[currentSlide].classList.add('active');
+    }
+
+    // Next / Prev buttons
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+
+    nextBtn.addEventListener('click', () => {
+      currentSlide++;
+      showSlide(currentSlide);
+    });
+    prevBtn.addEventListener('click', () => {
+      currentSlide--;
+      showSlide(currentSlide);
+    });
+
+    slidesBtn.addEventListener('click', () => {
+      slidesMode = !slidesMode;
+      document.body.classList.toggle('slides-mode');
+
+      slidesBtn.innerHTML = slidesMode
+        ? '<i class="fas fa-clone"></i> Slides Mode'
+        : '<i class="fas fa-file-alt"></i> Single Page Mode';
+
+      if (slidesMode) {
+        // Switch to slides mode
+        currentSlide = 0;
+        showSlide(currentSlide);
+      } else {
+        // Switch to single page mode: show all
+        sections.forEach(sec => sec.classList.add('active'));
+      }
+    });
+  </script>
 </body>
 </html>
-
