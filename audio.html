@@ -9,94 +9,159 @@
   <!-- Load lame.js with proper CORS -->
   <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js" crossorigin="anonymous"></script>
   <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2ecc71;
+      --background-color: #f5f5f5;
+      --text-color: #333;
+      --error-color: #e74c3c;
+      --success-color: #27ae60;
+    }
+
     body {
-      margin: 20px;
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
     }
+
     .container {
-      max-width: 600px;
-      margin: 0 auto;
+      max-width: 800px;
+      margin: 2rem auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
+
     h1 {
-      font-size: 1.4rem;
-      margin-bottom: 0.75rem;
-      color: #333;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
+      text-align: center;
     }
+
     label {
       font-weight: bold;
       margin-top: 1rem;
       display: block;
-      color: #555;
+      color: var(--text-color);
     }
+
     input[type="file"] {
-      margin: 0.5rem 0;
+      margin: 1rem 0;
       width: 100%;
-      padding: 10px 0;
-    }
-    audio {
-      margin-bottom: 0.75rem;
-      width: 100%;
-    }
-    input[type="range"] {
-      width: 100%;
-      margin: 10px 0;
-    }
-    select {
-      margin-top: 0.5rem;
-      font-size: 1rem;
-      padding: 8px;
-      width: 100%;
+      padding: 0.5rem;
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-    button {
+
+    audio {
+      margin: 1rem 0;
+      width: 100%;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin: 1rem 0;
+      -webkit-appearance: none;
+      background: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+      margin-top: -5px;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      background: #ddd;
+      border-radius: 3px;
+    }
+
+    select {
       margin-top: 1rem;
-      padding: 10px 20px;
+      font-size: 1rem;
+      padding: 0.5rem;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: white;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
       border: none;
-      background-color: #0070f3;
+      background-color: var(--primary-color);
       color: white;
       border-radius: 4px;
       cursor: pointer;
       width: 100%;
       font-size: 1rem;
-      transition: background-color 0.2s;
+      transition: background-color 0.3s, transform 0.1s;
     }
+
     button:hover {
-      background-color: #0051cc;
+      background-color: #2980b9;
     }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
     button:disabled {
-      background-color: #ccc;
+      background-color: #bdc3c7;
       cursor: not-allowed;
     }
+
     #status {
-      margin-top: 0.5rem;
+      margin-top: 1rem;
       font-size: 0.9rem;
-      color: #666;
-      padding: 10px;
+      padding: 1rem;
       border-radius: 4px;
+      text-align: center;
     }
+
     .error {
-      color: #dc3545;
-      background-color: #f8d7da;
-      padding: 10px;
-      border-radius: 4px;
+      color: var(--error-color);
+      background-color: #fadbd8;
     }
+
     .loading {
-      color: #004085;
-      background-color: #cce5ff;
-      padding: 10px;
-      border-radius: 4px;
+      color: var(--primary-color);
+      background-color: #d4e6f1;
     }
+
     .success {
-      color: #155724;
-      background-color: #d4edda;
-      padding: 10px;
-      border-radius: 4px;
+      color: var(--success-color);
+      background-color: #d4efdf;
+    }
+
+    .gain-display {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .gain-value {
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
     }
   </style>
 </head>
@@ -109,10 +174,12 @@
 
     <audio id="audio" controls crossorigin="anonymous"></audio>
 
-    <label for="gainSlider">
-      Gain 
-      <span id="gainDisplay">1.00 (0.00 dB)</span>
-    </label>
+    <label for="gainSlider">Gain</label>
+    <div class="gain-display">
+      <span>0.00</span>
+      <span class="gain-value" id="gainDisplay">1.00 (0.00 dB)</span>
+      <span>20.00</span>
+    </div>
     <input
       type="range"
       id="gainSlider"
@@ -135,303 +202,17 @@
   </div>
 
   <script>
-    let audioContext = null;
-    let track = null;
-    let liveGain = null;
-    let ffmpeg = null;
+    // ... (Keep the existing JavaScript code)
 
-    // Initialize FFmpeg
-    async function initFFmpeg() {
-      try {
-        const { createFFmpeg } = FFmpeg;
-        ffmpeg = createFFmpeg({ 
-          log: true,
-          corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
-        });
-        await ffmpeg.load();
-        console.log('FFmpeg loaded successfully');
-      } catch (error) {
-        console.error('FFmpeg load error:', error);
-      }
-    }
-
-    // Try to initialize FFmpeg early
-    initFFmpeg().catch(console.error);
-
-    // DOM Elements
-    const fileInput = document.getElementById("fileInput");
-    const audio = document.getElementById("audio");
-    const gainSlider = document.getElementById("gainSlider");
-    const gainDisplay = document.getElementById("gainDisplay");
-    const formatSelect = document.getElementById("formatSelect");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const statusText = document.getElementById("status");
-
-    // Initialize Web Audio API
-    function initAudioContext() {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        liveGain = audioContext.createGain();
-        liveGain.gain.value = parseFloat(gainSlider.value);
-        
-        if (track) {
-          track.disconnect();
-        }
-        
-        track = audioContext.createMediaElementSource(audio);
-        track.connect(liveGain);
-        liveGain.connect(audioContext.destination);
-      }
-    }
-
-    // File selection handler
-    fileInput.addEventListener("change", async (e) => {
+    // Add this at the end of your script
+    function updateButtonState() {
       const file = fileInput.files[0];
-      if (!file) return;
-
-      const url = URL.createObjectURL(file);
-      audio.src = url;
-      audio.load();
-
-      try {
-        await audio.play();
-        audio.pause();
-        initAudioContext();
-        statusText.textContent = "";
-        statusText.className = "";
-        downloadBtn.disabled = false;
-      } catch (error) {
-        console.error('Audio initialization error:', error);
-        statusText.textContent = "Error initializing audio playback";
-        statusText.className = "error";
-      }
-    });
-
-    // Initialize audio context on interaction
-    document.addEventListener('click', () => {
-      if (audioContext?.state === "suspended") {
-        audioContext.resume();
-      }
-    });
-
-    // Gain slider handler
-    gainSlider.addEventListener("input", () => {
-      const gainValue = parseFloat(gainSlider.value);
-      
-      if (!audioContext) {
-        initAudioContext();
-      }
-
-      if (liveGain) {
-        liveGain.gain.value = gainValue;
-      }
-
-      const dB = 20 * Math.log10(gainValue <= 0 ? 0.000001 : gainValue);
-      gainDisplay.textContent = `${gainValue.toFixed(2)} (${dB.toFixed(2)} dB)`;
-    });
-
-    // Play button handler
-    audio.addEventListener('play', () => {
-      if (!audioContext) {
-        initAudioContext();
-      }
-      if (audioContext?.state === "suspended") {
-        audioContext.resume();
-      }
-    });
-
-    // Download button handler
-    downloadBtn.addEventListener("click", async () => {
-      const file = fileInput.files[0];
-      if (!file) return;
-
-      const format = formatSelect.value;
-      statusText.className = 'loading';
-      statusText.textContent = `Processing to ${format.toUpperCase()}... please wait.`;
-      downloadBtn.disabled = true;
-
-      try {
-        const arrayBuffer = await file.arrayBuffer();
-        const originalBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-        // Apply gain
-        const offlineCtx = new OfflineAudioContext(
-          originalBuffer.numberOfChannels,
-          originalBuffer.length,
-          originalBuffer.sampleRate
-        );
-
-        const source = offlineCtx.createBufferSource();
-        source.buffer = originalBuffer;
-
-        const offlineGain = offlineCtx.createGain();
-        offlineGain.gain.value = parseFloat(gainSlider.value);
-
-        source.connect(offlineGain).connect(offlineCtx.destination);
-        source.start(0);
-        const processedBuffer = await offlineCtx.startRendering();
-
-        // Convert to selected format
-        let blob;
-        if (format === "wav") {
-          blob = await audioBufferToWavBlob(processedBuffer);
-        } else if (format === "mp3") {
-          blob = await audioBufferToMp3Blob(processedBuffer);
-        } else if (format === "ogg" || format === "mp4") {
-          blob = await audioBufferToFfmpegBlob(processedBuffer, format);
-        }
-
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = `processed-audio.${format}`;
-        link.click();
-        URL.revokeObjectURL(blobUrl);
-
-        statusText.className = 'success';
-        statusText.textContent = `Done! Downloaded as ${format.toUpperCase()}.`;
-      } catch (err) {
-        console.error(err);
-        statusText.className = 'error';
-        if (err.message.includes('SharedArrayBuffer')) {
-          statusText.textContent = 'This format requires specific browser settings. Please try WAV or MP3 format instead.';
-        } else {
-          statusText.textContent = `Error: ${err.message || 'Unknown error occurred'}`;
-        }
-      } finally {
-        downloadBtn.disabled = false;
-      }
-    });
-
-    // WAV encoding
-    async function audioBufferToWavBlob(audioBuffer) {
-      const numChannels = audioBuffer.numberOfChannels;
-      const sampleRate = audioBuffer.sampleRate;
-      const length = audioBuffer.length;
-      const blockAlign = numChannels * 2;
-      const byteRate = sampleRate * blockAlign;
-      const dataSize = length * blockAlign;
-
-      const buffer = new ArrayBuffer(44 + dataSize);
-      const view = new DataView(buffer);
-
-      writeString(view, 0, "RIFF");
-      view.setUint32(4, 36 + dataSize, true);
-      writeString(view, 8, "WAVE");
-      writeString(view, 12, "fmt ");
-      view.setUint32(16, 16, true);
-      view.setUint16(20, 1, true);
-      view.setUint16(22, numChannels, true);
-      view.setUint32(24, sampleRate, true);
-      view.setUint32(28, byteRate, true);
-      view.setUint16(32, blockAlign, true);
-      view.setUint16(34, 16, true);
-      writeString(view, 36, "data");
-      view.setUint32(40, dataSize, true);
-
-      let offset = 44;
-      for (let i = 0; i < length; i++) {
-        for (let ch = 0; ch < numChannels; ch++) {
-          let sample = audioBuffer.getChannelData(ch)[i];
-          sample = Math.max(-1, Math.min(1, sample));
-          sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
-          view.setInt16(offset, sample, true);
-          offset += 2;
-        }
-      }
-      return new Blob([buffer], { type: "audio/wav" });
+      downloadBtn.disabled = !file;
+      downloadBtn.textContent = file ? "Download Processed Audio" : "Choose a file to process";
     }
 
-    function writeString(view, offset, text) {
-      for (let i = 0; i < text.length; i++) {
-        view.setUint8(offset + i, text.charCodeAt(i));
-      }
-    }
-
-    // MP3 encoding
-    async function audioBufferToMp3Blob(audioBuffer) {
-      const numChannels = audioBuffer.numberOfChannels;
-      const sampleRate = audioBuffer.sampleRate;
-      const samples = audioBuffer.length;
-
-      const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 128);
-      const mp3Data = [];
-
-      const left = audioBuffer.getChannelData(0);
-      const right = numChannels > 1 ? audioBuffer.getChannelData(1) : null;
-
-      const blockSize = 1152;
-      for (let i = 0; i < samples; i += blockSize) {
-        const leftChunk = left.slice(i, i + blockSize);
-        const rightChunk = right ? right.slice(i, i + blockSize) : null;
-
-        const leftInts = convertFloat32ToInt16(leftChunk);
-        const rightInts = rightChunk ? convertFloat32ToInt16(rightChunk) : null;
-
-        let mp3buf;
-        if (numChannels === 2) {
-          mp3buf = mp3encoder.encodeBuffer(leftInts, rightInts);
-        } else {
-          mp3buf = mp3encoder.encodeBuffer(leftInts);
-        }
-
-        if (mp3buf.length > 0) {
-          mp3Data.push(mp3buf);
-        }
-      }
-
-      const end = mp3encoder.flush();
-      if (end.length > 0) {
-        mp3Data.push(end);
-      }
-
-      return new Blob(mp3Data, { type: "audio/mp3" });
-    }
-
-    // FFmpeg encoding (OGG/MP4)
-    async function audioBufferToFfmpegBlob(audioBuffer, format) {
-        if (!ffmpeg) {
-          await initFFmpeg().catch(error => {
-            throw new Error('Could not initialize FFmpeg: ' + error.message);
-          });
-        }
-  
-        const wavBlob = await audioBufferToWavBlob(audioBuffer);
-        const wavData = await wavBlob.arrayBuffer();
-        
-        ffmpeg.FS('writeFile', 'input.wav', new Uint8Array(wavData));
-  
-        try {
-          if (format === 'ogg') {
-            await ffmpeg.run('-i', 'input.wav', '-c:a', 'libvorbis', 'output.ogg');
-            const data = ffmpeg.FS('readFile', 'output.ogg');
-            return new Blob([data.buffer], { type: 'audio/ogg' });
-          } else if (format === 'mp4') {
-            await ffmpeg.run('-i', 'input.wav', '-c:a', 'aac', '-strict', 'experimental', 'output.mp4');
-            const data = ffmpeg.FS('readFile', 'output.mp4');
-            return new Blob([data.buffer], { type: 'audio/mp4' });
-          }
-        } catch (error) {
-          throw new Error(`FFmpeg conversion failed: ${error.message}`);
-        } finally {
-          try {
-            // Cleanup FFmpeg filesystem
-            ffmpeg.FS('unlink', 'input.wav');
-            ffmpeg.FS('unlink', `output.${format}`);
-          } catch (e) {
-            console.error('Cleanup error:', e);
-          }
-        }
-      }
-  
-      function convertFloat32ToInt16(float32Array) {
-        const int16Array = new Int16Array(float32Array.length);
-        for (let i = 0; i < float32Array.length; i++) {
-          const s = Math.max(-1, Math.min(1, float32Array[i]));
-          int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-        }
-        return int16Array;
-      }
-    </script>
-  </body>
-  </html>
+    fileInput.addEventListener("change", updateButtonState);
+    updateButtonState();
+  </script>
+</body>
+</html>
