@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Audio Amplifier (with dB Display) & Downloader</title>
+  <style>
+    body {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 1rem;
+      display: block;
+    }
+    input[type="file"] {
+      margin: 0.5rem 0;
+    }
+    audio {
+      margin-bottom: 0.75rem;
+      width: 100%;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    select {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      border: 1px solid #333;
+      background-color: #fff;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .error {
+      color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Audio Amplifier & Downloader</h1>
+
+    <label for="fileInput">Choose Audio File:</label>
+    <input type="file" id="fileInput" accept="audio/*" />
+
+    <audio id="audio" controls></audio>
+
+    <label for="gainSlider">
+      Gain 
+      <span id="gainDisplay">1.00 (0.00 dB)</span>
+    </label>
+    <input
+      type="range"
+      id="gainSlider"
+      min="0"
+      max="20"
+      step="0.1"
+      value="1"
+    />
+
+    <label for="formatSelect">Output Format:</label>
+    <select id="formatSelect">
+      <option value="wav">WAV</option>
+      <option value="mp3">MP3</option>
+    </select>
+
+    <button id="downloadBtn" disabled>Download Processed Audio</button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    let audioContext = null;
+    let track = null;
+    let liveGain = null;
+
+    // DOM Elements
+    const fileInput = document.getElementById("fileInput");
+    const audio = document.getElementById("audio");
+    const gainSlider = document.getElementById("gainSlider");
+    const gainDisplay = document.getElementById("gainDisplay");
+    const formatSelect = document.getElementById("formatSelect");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const statusText = document.getElementById("status");
+
+    // Initialize Web Audio API when user interacts
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        liveGain = audioContext.createGain();
+        liveGain.gain.value = parseFloat(gainSlider.value);
+        
+        if (track) {
+          track.disconnect();
+        }
+        
+        track = audioContext.createMediaElementSource(audio);
+        track.connect(liveGain);
+        liveGain.connect(audioContext.destination);
+      }
+    }
+
+    // File selection handler
+    fileInput.addEventListener("change", (e) => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const url = URL.createObjectURL(file);
+      audio.src = url;
+      audio.load();
+
+      initAudioContext();
+      statusText.textContent = "";
+      downloadBtn.disabled = false;
+    });
+
+    // Initialize audio context on interaction
+    document.addEventListener('click', () => {
+      initAudioContext();
+    });
+
+    // Gain slider handler
+    gainSlider.addEventListener("input", () => {
+      if (!audioContext) {
+        initAudioContext();
+      }
+
+      if (audioContext.state === "suspended") {
+        audioContext.resume();
+      }
+
+      const gainValue = parseFloat(gainSlider.value);
+      if (liveGain) {
+        liveGain.gain.value = gainValue;
+      }
+
+      const dB = 20 * Math.log10(gainValue <= 0 ? 0.000001 : gainValue);
+      gainDisplay.textContent = `${gainValue.toFixed(2)} (${dB.toFixed(2)} dB)`;
+    });
+
+    // Play button handler
+    audio.addEventListener('play', () => {
+      if (audioContext && audioContext.state === "suspended") {
+        audioContext.resume();
+      }
+    });
+
+    // Download button handler
+    downloadBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const format = formatSelect.value;
+      statusText.textContent = `Processing to ${format.toUpperCase()}... please wait.`;
+      downloadBtn.disabled = true;
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const originalBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+        // Apply gain
+        const offlineCtx = new OfflineAudioContext(
+          originalBuffer.numberOfChannels,
+          originalBuffer.length,
+          originalBuffer.sampleRate
+        );
+
+        const source = offlineCtx.createBufferSource();
+        source.buffer = originalBuffer;
+
+        const offlineGain = offlineCtx.createGain();
+        offlineGain.gain.value = parseFloat(gainSlider.value);
+
+        source.connect(offlineGain).connect(offlineCtx.destination);
+        source.start(0);
+        const processedBuffer = await offlineCtx.startRendering();
+
+        // Convert to selected format
+        let blob;
+        if (format === "wav") {
+          blob = audioBufferToWavBlob(processedBuffer);
+        } else if (format === "mp3") {
+          blob = await audioBufferToMp3Blob(processedBuffer);
+        }
+
+        // Trigger download
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `processed-audio.${format}`;
+        link.click();
+        URL.revokeObjectURL(blobUrl);
+
+        statusText.textContent = `Done! Downloaded as ${format.toUpperCase()}.`;
+      } catch (err) {
+        console.error(err);
+        statusText.textContent = `Error: ${err.message}`;
+        statusText.className = 'error';
+      } finally {
+        downloadBtn.disabled = false;
+      }
+    });
+
+    // WAV encoding
+    function audioBufferToWavBlob(audioBuffer) {
+      const numChannels = audioBuffer.numberOfChannels;
+      const sampleRate = audioBuffer.sampleRate;
+      const length = audioBuffer.length;
+      const blockAlign = numChannels * 2;
+      const byteRate = sampleRate * blockAlign;
+      const dataSize = length * blockAlign;
+
+      const buffer = new ArrayBuffer(44 + dataSize);
+      const view = new DataView(buffer);
+
+      writeString(view, 0, "RIFF");
+      view.setUint32(4, 36 + dataSize, true);
+      writeString(view, 8, "WAVE");
+      writeString(view, 12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, numChannels, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, byteRate, true);
+      view.setUint16(32, blockAlign, true);
+      view.setUint16(34, 16, true);
+      writeString(view, 36, "data");
+      view.setUint32(40, dataSize, true);
+
+      let offset = 44;
+      for (let i = 0; i < length; i++) {
+        for (let ch = 0; ch < numChannels; ch++) {
+          let sample = audioBuffer.getChannelData(ch)[i];
+          sample = Math.max(-1, Math.min(1, sample));
+          sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+          view.setInt16(offset, sample, true);
+          offset += 2;
+        }
+      }
+      return new Blob([buffer], { type: "audio/wav" });
+    }
+
+    function writeString(view, offset, text) {
+      for (let i = 0; i < text.length; i++) {
+        view.setUint8(offset + i, text.charCodeAt(i));
+      }
+    }
+
+    // MP3 encoding
+    async function audioBufferToMp3Blob(audioBuffer) {
+      const numChannels = audioBuffer.numberOfChannels;
+      const sampleRate = audioBuffer.sampleRate;
+      const samples = audioBuffer.length;
+
+      const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 128);
+      const mp3Data = [];
+
+      const left = audioBuffer.getChannelData(0);
+      const right = numChannels > 1 ? audioBuffer.getChannelData(1) : null;
+
+      const blockSize = 1152;
+      for (let i = 0; i < samples; i += blockSize) {
+        const leftChunk = left.slice(i, i + blockSize);
+        const rightChunk = right ? right.slice(i, i + blockSize) : null;
+
+        const leftInts = convertFloat32ToInt16(leftChunk);
+        const rightInts = rightChunk ? convertFloat32ToInt16(rightChunk) : null;
+
+        let mp3buf;
+        if (numChannels === 2) {
+          mp3buf = mp3encoder.encodeBuffer(leftInts, rightInts);
+        } else {
+          mp3buf = mp3encoder.encodeBuffer(leftInts);
+        }
+
+        if (mp3buf.length > 0) {
+          mp3Data.push(mp3buf);
+        }
+      }
+
+      const end = mp3encoder.flush();
+      if (end.length > 0) {
+        mp3Data.push(end);
+      }
+
+      return new Blob(mp3Data, { type: "audio/mp3" });
+    }
+
+    function convertFloat32ToInt16(float32Array) {
+      const int16Array = new Int16Array(float32Array.length);
+      for (let i = 0; i < float32Array.length; i++) {
+        const s = Math.max(-1, Math.min(1, float32Array[i]));
+        int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      }
+      return int16Array;
+    }
+  </script>
+</body>
+</html>
