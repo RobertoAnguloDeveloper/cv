@@ -275,19 +275,37 @@
     const statusText = document.getElementById("status");
 
     // Initialize Web Audio API
-    function initAudioContext() {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        liveGain = audioContext.createGain();
-        liveGain.gain.value = parseFloat(gainSlider.value);
-        
+    async function initAudioContext() {
+      try {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+        }
+
+        // Disconnect old nodes if they exist
         if (track) {
           track.disconnect();
         }
-        
+        if (liveGain) {
+          liveGain.disconnect();
+        }
+
+        // Create new nodes
+        liveGain = audioContext.createGain();
+        liveGain.gain.value = parseFloat(gainSlider.value);
         track = audioContext.createMediaElementSource(audio);
+
+        // Connect nodes
         track.connect(liveGain);
         liveGain.connect(audioContext.destination);
+        
+        console.log('Audio context initialized successfully');
+      } catch (error) {
+        console.error('Audio context initialization error:', error);
+        throw error;
       }
     }
 
@@ -296,17 +314,25 @@
       const file = fileInput.files[0];
       if (!file) return;
 
-      const url = URL.createObjectURL(file);
-      audio.src = url;
-      audio.load();
-
       try {
-        await audio.play();
-        audio.pause();
-        initAudioContext();
+        // Reset previous audio state
+        if (audio.src) {
+          URL.revokeObjectURL(audio.src);
+        }
+
+        const url = URL.createObjectURL(file);
+        audio.src = url;
+        await audio.load();
+
+        // Initialize audio context
+        await initAudioContext();
+        
+        // Enable controls
         statusText.textContent = "";
         statusText.className = "";
         downloadBtn.disabled = false;
+
+        console.log('File loaded successfully');
       } catch (error) {
         console.error('Audio initialization error:', error);
         statusText.textContent = "Error initializing audio playback";
@@ -322,29 +348,47 @@
     });
 
     // Gain slider handler
-    gainSlider.addEventListener("input", () => {
-      const gainValue = parseFloat(gainSlider.value);
-      
-      if (!audioContext) {
-        initAudioContext();
-      }
+    gainSlider.addEventListener("input", async () => {
+      try {
+        const gainValue = parseFloat(gainSlider.value);
+        
+        if (!audioContext || audioContext.state === 'suspended') {
+          await initAudioContext();
+        }
 
-      if (liveGain) {
-        liveGain.gain.value = gainValue;
-      }
+        if (liveGain) {
+          // Use exponential ramp for smoother volume changes
+          const now = audioContext.currentTime;
+          liveGain.gain.setValueAtTime(liveGain.gain.value, now);
+          liveGain.gain.linearRampToValueAtTime(gainValue, now + 0.01);
+        }
 
-      const dB = 20 * Math.log10(gainValue <= 0 ? 0.000001 : gainValue);
-      gainDisplay.textContent = `${gainValue.toFixed(2)} (${dB.toFixed(2)} dB)`;
+        const dB = 20 * Math.log10(gainValue <= 0 ? 0.000001 : gainValue);
+        gainDisplay.textContent = `${gainValue.toFixed(2)} (${dB.toFixed(2)} dB)`;
+      } catch (error) {
+        console.error('Gain update error:', error);
+      }
     });
 
-    // Play button handler
-    audio.addEventListener('play', () => {
-      if (!audioContext) {
-        initAudioContext();
+    // Audio event handlers
+    audio.addEventListener('play', async () => {
+      try {
+        if (!audioContext || audioContext.state === 'suspended') {
+          await initAudioContext();
+        }
+      } catch (error) {
+        console.error('Play error:', error);
       }
-      if (audioContext?.state === "suspended") {
-        audioContext.resume();
-      }
+    });
+
+    audio.addEventListener('ended', () => {
+      console.log('Audio playback ended');
+    });
+
+    audio.addEventListener('error', (e) => {
+      console.error('Audio error:', e);
+      statusText.textContent = "Error playing audio file";
+      statusText.className = "error";
     });
 
     // Download button handler
