@@ -4,206 +4,99 @@
   <meta charset="UTF-8" />
   <title>Audio Amplifier (with dB Display) & Downloader</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Load FFmpeg with proper CORS -->
-  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js" crossorigin="anonymous"></script>
+  <!-- Load FFmpeg -->
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js" crossorigin="anonymous"></script>
   <!-- Load lame.js with proper CORS -->
   <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js" crossorigin="anonymous"></script>
   <style>
-    :root {
-      --bg-color: #1a1a1a;
-      --text-color: #e0e0e0;
-      --primary-color: #3a86ff;
-      --secondary-color: #8338ec;
-      --accent-color: #ff006e;
-      --success-color: #38b000;
-      --error-color: #ff3d00;
-      --container-bg: #2a2a2a;
-    }
-
     body {
-      margin: 0;
-      padding: 20px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      line-height: 1.6;
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
     }
-
     .container {
       max-width: 600px;
       margin: 0 auto;
-      background: var(--container-bg);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 1.5rem;
-      color: var(--primary-color);
-      text-align: center;
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      color: #333;
     }
-
     label {
       font-weight: bold;
-      margin-top: 1.5rem;
+      margin-top: 1rem;
       display: block;
-      color: var(--text-color);
+      color: #555;
     }
-
     input[type="file"] {
-      margin: 1rem 0;
+      margin: 0.5rem 0;
       width: 100%;
-      padding: 10px;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      border: 1px solid var(--primary-color);
-      border-radius: 4px;
-      cursor: pointer;
+      padding: 10px 0;
     }
-
-    input[type="file"]::-webkit-file-upload-button {
-      -webkit-appearance: none;
-      appearance: none;
-      background: var(--primary-color);
-      border: none;
-      padding: 8px 16px;
-      margin-right: 12px;
-      color: var(--text-color);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    input[type="file"]::-webkit-file-upload-button:hover {
-      background: var(--secondary-color);
-    }
-
-    input[type="file"]::file-selector-button {
-      appearance: none;
-      background: var(--primary-color);
-      border: none;
-      padding: 8px 16px;
-      margin-right: 12px;
-      color: var(--text-color);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    input[type="file"]::file-selector-button:hover {
-      background: var(--secondary-color);
-    }
-
     audio {
-      margin: 1rem 0;
+      margin-bottom: 0.75rem;
       width: 100%;
     }
-
     input[type="range"] {
       width: 100%;
-      margin: 1rem 0;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      background: transparent;
+      margin: 10px 0;
     }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 16px;
-      width: 16px;
-      border-radius: 50%;
-      background: var(--primary-color);
-      cursor: pointer;
-      margin-top: -5px;
-    }
-
-    input[type="range"]::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 6px;
-      cursor: pointer;
-      background: var(--secondary-color);
-      border-radius: 3px;
-    }
-
     select {
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       font-size: 1rem;
-      padding: 10px;
+      padding: 8px;
       width: 100%;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      border: 1px solid var(--primary-color);
+      border: 1px solid #ddd;
       border-radius: 4px;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      cursor: pointer;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%233a86ff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-      background-repeat: no-repeat;
-      background-position: right 0.7rem top 50%;
-      background-size: 0.65rem auto;
-      padding-right: 2.5rem;
     }
-
-    select::-ms-expand {
-      display: none;
-    }
-
-    select:focus {
-      outline: none;
-      border-color: var(--secondary-color);
-      box-shadow: 0 0 0 2px rgba(131, 56, 236, 0.2);
-    }
-
     button {
-      margin-top: 1.5rem;
-      padding: 12px 24px;
+      margin-top: 1rem;
+      padding: 10px 20px;
       border: none;
-      background-color: var(--primary-color);
-      color: var(--text-color);
+      background-color: #0070f3;
+      color: white;
       border-radius: 4px;
       cursor: pointer;
       width: 100%;
       font-size: 1rem;
-      transition: background-color 0.3s, transform 0.1s;
+      transition: background-color 0.2s;
     }
-
     button:hover {
-      background-color: var(--secondary-color);
-      transform: translateY(-2px);
+      background-color: #0051cc;
     }
-
     button:disabled {
-      background-color: #555;
+      background-color: #ccc;
       cursor: not-allowed;
-      transform: none;
     }
-
     #status {
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       font-size: 0.9rem;
+      color: #666;
       padding: 10px;
       border-radius: 4px;
-      text-align: center;
     }
-
     .error {
-      color: var(--error-color);
-      background-color: rgba(255, 61, 0, 0.2);
+      color: #dc3545;
+      background-color: #f8d7da;
+      padding: 10px;
+      border-radius: 4px;
     }
-
     .loading {
-      color: var(--primary-color);
-      background-color: rgba(58, 134, 255, 0.2);
+      color: #004085;
+      background-color: #cce5ff;
+      padding: 10px;
+      border-radius: 4px;
     }
-
     .success {
-      color: var(--success-color);
-      background-color: rgba(56, 176, 0, 0.2);
+      color: #155724;
+      background-color: #d4edda;
+      padding: 10px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -275,37 +168,19 @@
     const statusText = document.getElementById("status");
 
     // Initialize Web Audio API
-    async function initAudioContext() {
-      try {
-        if (!audioContext) {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-
-        if (audioContext.state === 'suspended') {
-          await audioContext.resume();
-        }
-
-        // Disconnect old nodes if they exist
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        liveGain = audioContext.createGain();
+        liveGain.gain.value = parseFloat(gainSlider.value);
+        
         if (track) {
           track.disconnect();
         }
-        if (liveGain) {
-          liveGain.disconnect();
-        }
-
-        // Create new nodes
-        liveGain = audioContext.createGain();
-        liveGain.gain.value = parseFloat(gainSlider.value);
+        
         track = audioContext.createMediaElementSource(audio);
-
-        // Connect nodes
         track.connect(liveGain);
         liveGain.connect(audioContext.destination);
-        
-        console.log('Audio context initialized successfully');
-      } catch (error) {
-        console.error('Audio context initialization error:', error);
-        throw error;
       }
     }
 
@@ -314,25 +189,17 @@
       const file = fileInput.files[0];
       if (!file) return;
 
+      const url = URL.createObjectURL(file);
+      audio.src = url;
+      audio.load();
+
       try {
-        // Reset previous audio state
-        if (audio.src) {
-          URL.revokeObjectURL(audio.src);
-        }
-
-        const url = URL.createObjectURL(file);
-        audio.src = url;
-        await audio.load();
-
-        // Initialize audio context
-        await initAudioContext();
-        
-        // Enable controls
+        await audio.play();
+        audio.pause();
+        initAudioContext();
         statusText.textContent = "";
         statusText.className = "";
         downloadBtn.disabled = false;
-
-        console.log('File loaded successfully');
       } catch (error) {
         console.error('Audio initialization error:', error);
         statusText.textContent = "Error initializing audio playback";
@@ -348,47 +215,29 @@
     });
 
     // Gain slider handler
-    gainSlider.addEventListener("input", async () => {
-      try {
-        const gainValue = parseFloat(gainSlider.value);
-        
-        if (!audioContext || audioContext.state === 'suspended') {
-          await initAudioContext();
-        }
-
-        if (liveGain) {
-          // Use exponential ramp for smoother volume changes
-          const now = audioContext.currentTime;
-          liveGain.gain.setValueAtTime(liveGain.gain.value, now);
-          liveGain.gain.linearRampToValueAtTime(gainValue, now + 0.01);
-        }
-
-        const dB = 20 * Math.log10(gainValue <= 0 ? 0.000001 : gainValue);
-        gainDisplay.textContent = `${gainValue.toFixed(2)} (${dB.toFixed(2)} dB)`;
-      } catch (error) {
-        console.error('Gain update error:', error);
+    gainSlider.addEventListener("input", () => {
+      const gainValue = parseFloat(gainSlider.value);
+      
+      if (!audioContext) {
+        initAudioContext();
       }
-    });
 
-    // Audio event handlers
-    audio.addEventListener('play', async () => {
-      try {
-        if (!audioContext || audioContext.state === 'suspended') {
-          await initAudioContext();
-        }
-      } catch (error) {
-        console.error('Play error:', error);
+      if (liveGain) {
+        liveGain.gain.value = gainValue;
       }
+
+      const dB = 20 * Math.log10(gainValue <= 0 ? 0.000001 : gainValue);
+      gainDisplay.textContent = `${gainValue.toFixed(2)} (${dB.toFixed(2)} dB)`;
     });
 
-    audio.addEventListener('ended', () => {
-      console.log('Audio playback ended');
-    });
-
-    audio.addEventListener('error', (e) => {
-      console.error('Audio error:', e);
-      statusText.textContent = "Error playing audio file";
-      statusText.className = "error";
+    // Play button handler
+    audio.addEventListener('play', () => {
+      if (!audioContext) {
+        initAudioContext();
+      }
+      if (audioContext?.state === "suspended") {
+        audioContext.resume();
+      }
     });
 
     // Download button handler
@@ -541,45 +390,48 @@
 
     // FFmpeg encoding (OGG/MP4)
     async function audioBufferToFfmpegBlob(audioBuffer, format) {
-      if (!ffmpeg) {
-        await initFFmpeg().catch(error => {
-          throw new Error('Could not initialize FFmpeg: ' + error.message);
-        });
-      }
-
-      const wavBlob = await audioBufferToWavBlob(audioBuffer);
-      const wavData = await wavBlob.arrayBuffer();
-      
-      ffmpeg.FS('writeFile', 'input.wav', new Uint8Array(wavData));
-
-      try {
-        if (format === 'ogg') {
-          await ffmpeg.run('-i', 'input.wav', '-c:a', 'libvorbis', 'output.ogg');
-          const data = ffmpeg.FS('readFile', 'output.ogg');
-          return new Blob([data.buffer], { type: 'audio/ogg' });
-        } else if (format === 'mp4') {
-          await ffmpeg.run('-i', 'input.wav', '-c:a', 'aac', '-strict', 'experimental', 'output.mp4');
-          const data = ffmpeg.FS('readFile', 'output.mp4');
-          return new Blob([data.buffer], { type: 'audio/mp4' });
+        if (!ffmpeg) {
+          await initFFmpeg().catch(error => {
+            throw new Error('Could not initialize FFmpeg: ' + error.message);
+          });
         }
-      } catch (error) {
-        throw new Error(`FFmpeg conversion failed: ${error.message}`);
-      } finally {
+  
+        const wavBlob = await audioBufferToWavBlob(audioBuffer);
+        const wavData = await wavBlob.arrayBuffer();
+        
+        ffmpeg.FS('writeFile', 'input.wav', new Uint8Array(wavData));
+  
         try {
-          // Cleanup FFmpeg filesystem
-          ffmpeg.FS('unlink', 'input.wav');
-          ffmpeg.FS('unlink', `output.${format}`);
-        } catch (e) {
-          console.error('Cleanup error:', e);
+          if (format === 'ogg') {
+            await ffmpeg.run('-i', 'input.wav', '-c:a', 'libvorbis', 'output.ogg');
+            const data = ffmpeg.FS('readFile', 'output.ogg');
+            return new Blob([data.buffer], { type: 'audio/ogg' });
+          } else if (format === 'mp4') {
+            await ffmpeg.run('-i', 'input.wav', '-c:a', 'aac', '-strict', 'experimental', 'output.mp4');
+            const data = ffmpeg.FS('readFile', 'output.mp4');
+            return new Blob([data.buffer], { type: 'audio/mp4' });
+          }
+        } catch (error) {
+          throw new Error(`FFmpeg conversion failed: ${error.message}`);
+        } finally {
+          try {
+            // Cleanup FFmpeg filesystem
+            ffmpeg.FS('unlink', 'input.wav');
+            ffmpeg.FS('unlink', `output.${format}`);
+          } catch (e) {
+            console.error('Cleanup error:', e);
+          }
         }
       }
-    }
-
-    function convertFloat32ToInt16(float32Array) {
-      const int16Array = new Int16Array(float32Array.length);
-      for (let i = 0; i < float32Array.length; i++) {
-        const s = Math.max(-1, Math.min(1, float32Array[i]));
-        int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  
+      function convertFloat32ToInt16(float32Array) {
+        const int16Array = new Int16Array(float32Array.length);
+        for (let i = 0; i < float32Array.length; i++) {
+          const s = Math.max(-1, Math.min(1, float32Array[i]));
+          int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+        return int16Array;
       }
-      return int16Array;
-    }
+    </script>
+  </body>
+  </html>
