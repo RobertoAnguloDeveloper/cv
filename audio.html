@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <title>Audio Amplifier (with dB Display) & Downloader</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Load FFmpeg -->
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js" crossorigin="anonymous"></script>
+  <!-- Load lame.js with proper CORS -->
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js" crossorigin="anonymous"></script>
   <style>
     body {
       margin: 20px;
@@ -103,7 +107,7 @@
     <label for="fileInput">Choose Audio File:</label>
     <input type="file" id="fileInput" accept="audio/*" />
 
-    <audio id="audio" controls></audio>
+    <audio id="audio" controls crossorigin="anonymous"></audio>
 
     <label for="gainSlider">
       Gain 
@@ -122,6 +126,8 @@
     <select id="formatSelect">
       <option value="wav">WAV</option>
       <option value="mp3">MP3</option>
+      <option value="ogg">OGG</option>
+      <option value="mp4">MP4</option>
     </select>
 
     <button id="downloadBtn" disabled>Download Processed Audio</button>
@@ -132,6 +138,25 @@
     let audioContext = null;
     let track = null;
     let liveGain = null;
+    let ffmpeg = null;
+
+    // Initialize FFmpeg
+    async function initFFmpeg() {
+      try {
+        const { createFFmpeg } = FFmpeg;
+        ffmpeg = createFFmpeg({ 
+          log: true,
+          corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
+        });
+        await ffmpeg.load();
+        console.log('FFmpeg loaded successfully');
+      } catch (error) {
+        console.error('FFmpeg load error:', error);
+      }
+    }
+
+    // Try to initialize FFmpeg early
+    initFFmpeg().catch(console.error);
 
     // DOM Elements
     const fileInput = document.getElementById("fileInput");
@@ -142,7 +167,7 @@
     const downloadBtn = document.getElementById("downloadBtn");
     const statusText = document.getElementById("status");
 
-    // Initialize Web Audio API when user interacts
+    // Initialize Web Audio API
     function initAudioContext() {
       if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -160,7 +185,7 @@
     }
 
     // File selection handler
-    fileInput.addEventListener("change", (e) => {
+    fileInput.addEventListener("change", async (e) => {
       const file = fileInput.files[0];
       if (!file) return;
 
@@ -168,28 +193,35 @@
       audio.src = url;
       audio.load();
 
-      initAudioContext();
-      statusText.textContent = "";
-      statusText.className = "";
-      downloadBtn.disabled = false;
+      try {
+        await audio.play();
+        audio.pause();
+        initAudioContext();
+        statusText.textContent = "";
+        statusText.className = "";
+        downloadBtn.disabled = false;
+      } catch (error) {
+        console.error('Audio initialization error:', error);
+        statusText.textContent = "Error initializing audio playback";
+        statusText.className = "error";
+      }
     });
 
     // Initialize audio context on interaction
     document.addEventListener('click', () => {
-      initAudioContext();
+      if (audioContext?.state === "suspended") {
+        audioContext.resume();
+      }
     });
 
     // Gain slider handler
     gainSlider.addEventListener("input", () => {
+      const gainValue = parseFloat(gainSlider.value);
+      
       if (!audioContext) {
         initAudioContext();
       }
 
-      if (audioContext.state === "suspended") {
-        audioContext.resume();
-      }
-
-      const gainValue = parseFloat(gainSlider.value);
       if (liveGain) {
         liveGain.gain.value = gainValue;
       }
@@ -200,7 +232,10 @@
 
     // Play button handler
     audio.addEventListener('play', () => {
-      if (audioContext && audioContext.state === "suspended") {
+      if (!audioContext) {
+        initAudioContext();
+      }
+      if (audioContext?.state === "suspended") {
         audioContext.resume();
       }
     });
@@ -239,12 +274,13 @@
         // Convert to selected format
         let blob;
         if (format === "wav") {
-          blob = audioBufferToWavBlob(processedBuffer);
+          blob = await audioBufferToWavBlob(processedBuffer);
         } else if (format === "mp3") {
           blob = await audioBufferToMp3Blob(processedBuffer);
+        } else if (format === "ogg" || format === "mp4") {
+          blob = await audioBufferToFfmpegBlob(processedBuffer, format);
         }
 
-        // Trigger download
         const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = blobUrl;
@@ -257,14 +293,18 @@
       } catch (err) {
         console.error(err);
         statusText.className = 'error';
-        statusText.textContent = `Error: ${err.message}`;
+        if (err.message.includes('SharedArrayBuffer')) {
+          statusText.textContent = 'This format requires specific browser settings. Please try WAV or MP3 format instead.';
+        } else {
+          statusText.textContent = `Error: ${err.message || 'Unknown error occurred'}`;
+        }
       } finally {
         downloadBtn.disabled = false;
       }
     });
 
     // WAV encoding
-    function audioBufferToWavBlob(audioBuffer) {
+    async function audioBufferToWavBlob(audioBuffer) {
       const numChannels = audioBuffer.numberOfChannels;
       const sampleRate = audioBuffer.sampleRate;
       const length = audioBuffer.length;
@@ -310,17 +350,6 @@
 
     // MP3 encoding
     async function audioBufferToMp3Blob(audioBuffer) {
-      // Load lamejs dynamically
-      if (typeof lamejs === 'undefined') {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lame/1.2.1/lame.min.js';
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
-
       const numChannels = audioBuffer.numberOfChannels;
       const sampleRate = audioBuffer.sampleRate;
       const samples = audioBuffer.length;
@@ -359,14 +388,50 @@
       return new Blob(mp3Data, { type: "audio/mp3" });
     }
 
-    function convertFloat32ToInt16(float32Array) {
-      const int16Array = new Int16Array(float32Array.length);
-      for (let i = 0; i < float32Array.length; i++) {
-        const s = Math.max(-1, Math.min(1, float32Array[i]));
-        int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+    // FFmpeg encoding (OGG/MP4)
+    async function audioBufferToFfmpegBlob(audioBuffer, format) {
+        if (!ffmpeg) {
+          await initFFmpeg().catch(error => {
+            throw new Error('Could not initialize FFmpeg: ' + error.message);
+          });
+        }
+  
+        const wavBlob = await audioBufferToWavBlob(audioBuffer);
+        const wavData = await wavBlob.arrayBuffer();
+        
+        ffmpeg.FS('writeFile', 'input.wav', new Uint8Array(wavData));
+  
+        try {
+          if (format === 'ogg') {
+            await ffmpeg.run('-i', 'input.wav', '-c:a', 'libvorbis', 'output.ogg');
+            const data = ffmpeg.FS('readFile', 'output.ogg');
+            return new Blob([data.buffer], { type: 'audio/ogg' });
+          } else if (format === 'mp4') {
+            await ffmpeg.run('-i', 'input.wav', '-c:a', 'aac', '-strict', 'experimental', 'output.mp4');
+            const data = ffmpeg.FS('readFile', 'output.mp4');
+            return new Blob([data.buffer], { type: 'audio/mp4' });
+          }
+        } catch (error) {
+          throw new Error(`FFmpeg conversion failed: ${error.message}`);
+        } finally {
+          try {
+            // Cleanup FFmpeg filesystem
+            ffmpeg.FS('unlink', 'input.wav');
+            ffmpeg.FS('unlink', `output.${format}`);
+          } catch (e) {
+            console.error('Cleanup error:', e);
+          }
+        }
       }
-      return int16Array;
-    }
-  </script>
-</body>
-</html>
+  
+      function convertFloat32ToInt16(float32Array) {
+        const int16Array = new Int16Array(float32Array.length);
+        for (let i = 0; i < float32Array.length; i++) {
+          const s = Math.max(-1, Math.min(1, float32Array[i]));
+          int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+        return int16Array;
+      }
+    </script>
+  </body>
+  </html>
