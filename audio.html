@@ -3,26 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <title>Audio Amplifier (with dB Display) & Downloader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 20px;
       font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
     }
     .container {
       max-width: 600px;
       margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     h1 {
       font-size: 1.4rem;
       margin-bottom: 0.75rem;
+      color: #333;
     }
     label {
       font-weight: bold;
       margin-top: 1rem;
       display: block;
+      color: #555;
     }
     input[type="file"] {
       margin: 0.5rem 0;
+      width: 100%;
+      padding: 10px 0;
     }
     audio {
       margin-bottom: 0.75rem;
@@ -30,25 +40,59 @@
     }
     input[type="range"] {
       width: 100%;
+      margin: 10px 0;
     }
     select {
       margin-top: 0.5rem;
       font-size: 1rem;
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
     }
     button {
       margin-top: 1rem;
-      padding: 0.6rem 1rem;
-      border: 1px solid #333;
-      background-color: #fff;
+      padding: 10px 20px;
+      border: none;
+      background-color: #0070f3;
+      color: white;
+      border-radius: 4px;
       cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #0051cc;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
     #status {
       margin-top: 0.5rem;
       font-size: 0.9rem;
       color: #666;
+      padding: 10px;
+      border-radius: 4px;
     }
     .error {
-      color: #ff0000;
+      color: #dc3545;
+      background-color: #f8d7da;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .loading {
+      color: #004085;
+      background-color: #cce5ff;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .success {
+      color: #155724;
+      background-color: #d4edda;
+      padding: 10px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -126,6 +170,7 @@
 
       initAudioContext();
       statusText.textContent = "";
+      statusText.className = "";
       downloadBtn.disabled = false;
     });
 
@@ -166,6 +211,7 @@
       if (!file) return;
 
       const format = formatSelect.value;
+      statusText.className = 'loading';
       statusText.textContent = `Processing to ${format.toUpperCase()}... please wait.`;
       downloadBtn.disabled = true;
 
@@ -206,11 +252,12 @@
         link.click();
         URL.revokeObjectURL(blobUrl);
 
+        statusText.className = 'success';
         statusText.textContent = `Done! Downloaded as ${format.toUpperCase()}.`;
       } catch (err) {
         console.error(err);
-        statusText.textContent = `Error: ${err.message}`;
         statusText.className = 'error';
+        statusText.textContent = `Error: ${err.message}`;
       } finally {
         downloadBtn.disabled = false;
       }
@@ -263,6 +310,17 @@
 
     // MP3 encoding
     async function audioBufferToMp3Blob(audioBuffer) {
+      // Load lamejs dynamically
+      if (typeof lamejs === 'undefined') {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lame/1.2.1/lame.min.js';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+
       const numChannels = audioBuffer.numberOfChannels;
       const sampleRate = audioBuffer.sampleRate;
       const samples = audioBuffer.length;

@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "routes": [
+      {
+        "src": "/(.*)",
+        "headers": {
+          "Cross-Origin-Embedder-Policy": "require-corp",
+          "Cross-Origin-Opener-Policy": "same-origin"
+        },
+        "continue": true
+      }
+    ]
+  }
