@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roberto Carlos Angulo Tinoco - IT/Software Engineer Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.light-mode {
+            background-color: #ffffff;
+            color: #333333;
+        }
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        .header {
+            padding: 20px;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .light-mode .header {
+            background-color: #0077B5;
+            color: white;
+        }
+        .dark-mode .header {
+            background-color: #00507a;
+            color: #f0f0f0;
+        }
+        .content {
+            padding: 20px;
+            transition: background-color 0.3s;
+        }
+        .light-mode .content {
+            background-color: #f9f9f9;
+        }
+        .dark-mode .content {
+            background-color: #2a2a2a;
+        }
+        .footer {
+            padding: 10px 20px;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .light-mode .footer {
+            background-color: #0077B5;
+            color: white;
+        }
+        .dark-mode .footer {
+            background-color: #00507a;
+            color: #f0f0f0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .light-mode .button {
+            background-color: #0077B5;
+            color: white;
+        }
+        .dark-mode .button {
+            background-color: #00507a;
+            color: #f0f0f0;
+        }
+        .toggle-container {
+            text-align: right;
+            padding: 10px;
+        }
+        .toggle-button {
+            background-color: #0077B5;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .dark-mode .toggle-button {
+            background-color: #00507a;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="toggle-container">
+        <button onclick="toggleLanguage()" class="toggle-button">Español / English</button>
+        <button onclick="toggleDarkMode()" class="toggle-button">Dark / Light</button>
+    </div>
+
+    <div id="english-content">
+        <div class="header">
+            <h1>Roberto Carlos Angulo Tinoco</h1>
+            <p>Data Analyst | Software Engineer | Python Developer</p>
+        </div>
+        
+        <div class="content">
+            <p>Dear Hiring Manager,</p>
+
+            <p>I hope this message finds you well. I am excited to express my interest in joining your team as an IT/Software Engineer. With a strong background in data analysis, software development, and cloud technologies, I am confident in my ability to contribute to your organization by delivering innovative and efficient solutions.</p>
+
+            <p>As a Data Analyst and Software Engineer, I specialize in:</p>
+            <ul>
+                <li>Python, Java, and AWS</li>
+                <li>Optimizing ETL processes</li>
+                <li>Developing data visualization tools</li>
+                <li>Implementing automation solutions</li>
+            </ul>
+
+            <p>My experience spans various industries, including mining, where I have:</p>
+            <ul>
+                <li>Reduced ETL processing times by 60%</li>
+                <li>Improved data accessibility through custom API integrations</li>
+                <li>Led a team of data analysts</li>
+                <li>Managed mission-critical systems</li>
+                <li>Developed Python-based solutions to enhance operational efficiency</li>
+            </ul>
+
+            <p>I am passionate about leveraging technology to solve complex problems and thrive in collaborative, remote environments. My technical skills include proficiency in Python, Java, Spring Boot, AWS, Power BI, and SQL, among others. Additionally, I hold multiple AWS certifications and have a strong foundation in modern development practices and methodologies such as SCRUM.</p>
+
+            <p>I invite you to visit my personal website to explore my portfolio and learn more about my projects and achievements:</p>
+            <a href="https://robertoangulodevelopercv.vercel.app/" class="button">View My Portfolio</a>
+
+            <p>I would welcome the opportunity to discuss how my skills and experiences align with your team's needs. Please feel free to contact me to schedule a conversation.</p>
+
+            <p>Thank you for considering my application. I look forward to the possibility of contributing to your organization's success.</p>
+
+            <p>Best regards,<br>Roberto Carlos Angulo Tinoco</p>
+        </div>
+    </div>
+
+    <div id="spanish-content" class="hidden">
+        <div class="header">
+            <h1>Roberto Carlos Angulo Tinoco</h1>
+            <p>Analista de Datos | Ingeniero de Software | Desarrollador Python</p>
+        </div>
+        
+        <div class="content">
+            <p>Estimado/a Gerente de Contratación,</p>
+
+            <p>Espero que este mensaje le encuentre bien. Me entusiasma expresar mi interés en unirme a su equipo como Ingeniero de TI/Software. Con una sólida formación en análisis de datos, desarrollo de software y tecnologías en la nube, confío en mi capacidad para contribuir a su organización ofreciendo soluciones innovadoras y eficientes.</p>
+
+            <p>Como Analista de Datos e Ingeniero de Software, me especializo en:</p>
+            <ul>
+                <li>Python, Java y AWS</li>
+                <li>Optimización de procesos ETL</li>
+                <li>Desarrollo de herramientas de visualización de datos</li>
+                <li>Implementación de soluciones de automatización</li>
+            </ul>
+
+            <p>Mi experiencia abarca varias industrias, incluyendo la minería, donde he:</p>
+            <ul>
+                <li>Reducido los tiempos de procesamiento ETL en un 60%</li>
+                <li>Mejorado la accesibilidad de datos mediante integraciones de API personalizadas</li>
+                <li>Liderado un equipo de analistas de datos</li>
+                <li>Gestionado sistemas críticos</li>
+                <li>Desarrollado soluciones basadas en Python para mejorar la eficiencia operativa</li>
+            </ul>
+
+            <p>Me apasiona aprovechar la tecnología para resolver problemas complejos y prospero en entornos colaborativos y remotos. Mis habilidades técnicas incluyen dominio de Python, Java, Spring Boot, AWS, Power BI y SQL, entre otros. Además, poseo múltiples certificaciones de AWS y una sólida base en prácticas y metodologías de desarrollo modernas como SCRUM.</p>
+
+            <p>Le invito a visitar mi sitio web personal para explorar mi portafolio y conocer más sobre mis proyectos y logros:</p>
+            <a href="https://robertoangulodevelopercv.vercel.app/" class="button">Ver Mi Portafolio</a>
+
+            <p>Agradecería la oportunidad de discutir cómo mis habilidades y experiencias se alinean con las necesidades de su equipo. No dude en contactarme para programar una conversación.</p>
+
+            <p>Gracias por considerar mi solicitud. Espero con interés la posibilidad de contribuir al éxito de su organización.</p>
+
+            <p>Atentamente,<br>Roberto Carlos Angulo Tinoco</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>+573004755267 | roberto.angulo.developer@gmail.com</p>
+        <p><a href="https://www.linkedin.com/in/your-linkedin-profile" style="color: inherit;">LinkedIn: ROBERTO ANGULO DEV</a></p>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            var englishContent = document.getElementById('english-content');
+            var spanishContent = document.getElementById('spanish-content');
+            if (englishContent.classList.contains('hidden')) {
+                englishContent.classList.remove('hidden');
+                spanishContent.classList.add('hidden');
+            } else {
+                englishContent.classList.add('hidden');
+                spanishContent.classList.remove('hidden');
+            }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('light-mode');
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
+
