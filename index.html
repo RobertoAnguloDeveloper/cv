@@ -384,16 +384,34 @@
         }
 
         function initMap() {
-            const cartagena = [10.42434, -75.53766]; // Latitude and Longitude for Cartagena
-            const map = L.map('map').setView(cartagena, 2);
+            try {
+                const cartagena = [10.42434, -75.53766]; // Latitude and Longitude for Cartagena
+                const map = L.map('map', {
+                    zoomControl: true,
+                    minZoom: 2
+                }).setView(cartagena, 4);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    crossOrigin: true,
+                    subdomains: ['a', 'b', 'c'],
+                    tileSize: 256,
+                    maxZoom: 19
+                }).addTo(map);
 
-            L.marker(cartagena).addTo(map)
-                .bindPopup('Cartagena de Indias, Colombia')
-                .openPopup();
+                const marker = L.marker(cartagena, {
+                    title: 'Cartagena de Indias, Colombia'
+                }).addTo(map);
+                
+                marker.bindPopup('Cartagena de Indias, Colombia').openPopup();
+
+                // Force a map refresh after initialization
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            } catch (error) {
+                console.error('Map initialization error:', error);
+            }
         }
 
         function downloadCV() {
