@@ -457,15 +457,15 @@
         function showMap() {
             const mapDiv = document.getElementById('map');
             if (!mapDiv) return;
-        
+
             mapDiv.style.display = 'block';
             mapDiv.style.height = '300px';
             mapDiv.style.width = '100%';
-            
-            mapDiv.scrollIntoView({ 
+
+            mapDiv.scrollIntoView({
                 behavior: 'smooth'
             });
-        
+
             // Initialize map after container is visible
             setTimeout(() => {
                 if (typeof L !== 'undefined' && L.map) {
@@ -481,36 +481,36 @@
             try {
                 const mapContainer = document.getElementById('map');
                 if (!mapContainer) return;
-        
+
                 // Clear existing content
                 mapContainer.innerHTML = '';
-        
+
                 const cartagena = [10.42434, -75.53766];
-        
+
                 // Create map instance with minimal options
                 const map = L.map('map', {
                     center: cartagena,
                     zoom: 4,
                     zoomControl: true
                 });
-        
+
                 // Add tile layer
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 18,
                     attribution: '© OpenStreetMap contributors'
                 }).addTo(map);
-        
+
                 // Add marker
                 L.marker(cartagena)
                     .addTo(map)
                     .bindPopup('Cartagena de Indias, Colombia')
                     .openPopup();
-        
+
                 // Force a refresh
                 setTimeout(() => {
                     map.invalidateSize();
                 }, 100);
-        
+
             } catch (error) {
                 console.error('Map initialization error:', error);
                 const mapContainer = document.getElementById('map');
@@ -550,31 +550,36 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const sections = document.querySelectorAll('.section');
+        document.addEventListener('DOMContentLoaded', function (event) {
+            try {
+                const sections = document.querySelectorAll('.section');
 
-            // Start animations immediately
-            sections.forEach((section, index) => {
-                section.style.animationPlayState = 'running';
-                if (section.querySelector('.language-progress')) {
-                    section.querySelectorAll('.language-progress').forEach(bar => {
-                        bar.style.width = bar.style.width;
-                    });
-                }
-            });
-
-            // Keep the observer for additional animations on scroll
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animationPlayState = 'running';
+                // Start animations immediately
+                sections.forEach((section, index) => {
+                    section.style.animationPlayState = 'running';
+                    if (section.querySelector('.language-progress')) {
+                        section.querySelectorAll('.language-progress').forEach(bar => {
+                            bar.style.width = bar.style.width;
+                        });
                     }
                 });
-            }, { threshold: 0.1 });
 
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+                // Keep the observer for additional animations on scroll
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animationPlayState = 'running';
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                sections.forEach(section => {
+                    observer.observe(section);
+                });
+            } catch (error) {
+                console.warn('Animation initialization error:', error);
+                // Non-critical error, we can continue without animations
+            }
         });
     </script>
 </body>
