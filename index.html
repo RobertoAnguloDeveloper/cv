@@ -7,7 +7,19 @@
     <title>ROBERTO ANGULO DEV</title>
 
     <script>
-        window.onDocumentLoad = function () { return true; };
+        // Override Chrome's error page handler
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear any existing onDocumentLoad handler
+            if (window.onDocumentLoad) {
+                window.onDocumentLoad = null;
+            }
+            
+            // Prevent future assignments
+            Object.defineProperty(window, 'onDocumentLoad', {
+                set: function() {},
+                get: function() { return null; }
+            });
+        });
     </script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
