@@ -374,43 +374,91 @@
 
         function showMap() {
             const mapDiv = document.getElementById('map');
+            
+            // Reset any error messages
+            mapDiv.innerHTML = '';
+            
+            // Ensure proper display and dimensions
             mapDiv.style.display = 'block';
-            mapDiv.scrollIntoView({ behavior: 'smooth' });
-
-            if (!window.mapInitialized) {
+            mapDiv.style.height = '300px';
+            mapDiv.style.width = '100%';
+            mapDiv.style.visibility = 'visible';
+            
+            // Smooth scroll to map
+            mapDiv.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        
+            // Initialize or reinitialize map
+            setTimeout(() => {
+                if (window.mapInstance) {
+                    window.mapInstance.remove();
+                    window.mapInstance = null;
+                }
                 initMap();
-                window.mapInitialized = true;
-            }
+            }, 100);
         }
 
         function initMap() {
             try {
-                const cartagena = [10.42434, -75.53766]; // Latitude and Longitude for Cartagena
-                const map = L.map('map', {
+                // Clear any existing map instance
+                if (window.mapInstance) {
+                    window.mapInstance.remove();
+                    window.mapInstance = null;
+                }
+                
+                // Ensure container is properly sized
+                const mapContainer = document.getElementById('map');
+                mapContainer.style.height = '300px';
+                mapContainer.style.width = '100%';
+                mapContainer.style.display = 'block';
+        
+                const cartagena = [10.42434, -75.53766];
+                const mapOptions = {
                     zoomControl: true,
-                    minZoom: 2
-                }).setView(cartagena, 4);
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    minZoom: 2,
+                    maxZoom: 18,
+                    attributionControl: true
+                };
+        
+                // Create map instance
+                const map = L.map('map', mapOptions).setView(cartagena, 4);
+                window.mapInstance = map;
+        
+                // Add tile layer with HTTPS
+                const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                     crossOrigin: true,
                     subdomains: ['a', 'b', 'c'],
                     tileSize: 256,
-                    maxZoom: 19
+                    updateWhenIdle: true,
+                    updateWhenZooming: false
                 }).addTo(map);
-
+        
+                // Add marker
                 const marker = L.marker(cartagena, {
-                    title: 'Cartagena de Indias, Colombia'
+                    title: 'Cartagena de Indias, Colombia',
+                    alt: 'Cartagena marker'
                 }).addTo(map);
                 
-                marker.bindPopup('Cartagena de Indias, Colombia').openPopup();
-
-                // Force a map refresh after initialization
+                marker.bindPopup('Cartagena de Indias, Colombia');
+        
+                // Handle visibility and resize issues
                 setTimeout(() => {
-                    map.invalidateSize();
-                }, 100);
+                    map.invalidateSize(true);
+                    marker.openPopup();
+                }, 250);
+        
+                // Add error handling for tiles
+                osmLayer.on('tileerror', function(error) {
+                    console.error('Tile loading error:', error);
+                });
+        
             } catch (error) {
                 console.error('Map initialization error:', error);
+                const mapContainer = document.getElementById('map');
+                mapContainer.innerHTML = 'Error loading map. Please try again later.';
             }
         }
 
