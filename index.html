@@ -522,16 +522,39 @@
 
         function downloadCV() {
             const element = document.getElementById('cv-content');
+            if (!element) {
+                console.error('CV content element not found');
+                return;
+            }
+
+            // Hide map during PDF generation if it's visible
+            const mapDiv = document.getElementById('map');
+            const wasMapVisible = mapDiv && mapDiv.style.display !== 'none';
+            if (wasMapVisible) {
+                mapDiv.style.display = 'none';
+            }
+
             const opt = {
-                margin: 10,
+                margin: [10, 10],
                 filename: 'Roberto_Carlos_Angulo_Tinoco_CV.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: true,
+                    allowTaint: true,
+                    removeContainer: true
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait',
+                    compress: true
+                },
+                pagebreak: { mode: 'avoid-all' }
             };
 
-            // Add pagebreak hints to each section
+            // Add pagebreak hints before PDF generation
             const sections = element.querySelectorAll('.section');
             sections.forEach(section => {
                 section.style.pageBreakInside = 'avoid';
@@ -539,15 +562,36 @@
                 section.style.breakInside = 'avoid';
             });
 
-            // Promise-based usage:
-            html2pdf().set(opt).from(element).save().then(() => {
-                // Remove the pagebreak hints after PDF generation
-                sections.forEach(section => {
-                    section.style.pageBreakInside = '';
-                    section.style.webkitColumnBreakInside = '';
-                    section.style.breakInside = '';
+            // Generate PDF
+            html2pdf()
+                .from(element)
+                .set(opt)
+                .save()
+                .then(() => {
+                    // Cleanup after PDF generation
+                    sections.forEach(section => {
+                        section.style.pageBreakInside = '';
+                        section.style.webkitColumnBreakInside = '';
+                        section.style.breakInside = '';
+                    });
+
+                    // Restore map visibility if it was visible
+                    if (wasMapVisible && mapDiv) {
+                        mapDiv.style.display = 'block';
+                        if (window.map) {
+                            window.map.invalidateSize();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('PDF generation error:', error);
+                    // Restore original styles even if there was an error
+                    sections.forEach(section => {
+                        section.style.pageBreakInside = '';
+                        section.style.webkitColumnBreakInside = '';
+                        section.style.breakInside = '';
+                    });
                 });
-            });
         }
 
         document.addEventListener('DOMContentLoaded', function (event) {
