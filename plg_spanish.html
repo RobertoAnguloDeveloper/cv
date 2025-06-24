@@ -3,461 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prologic Group Inc. | Socios en Soluciones EPC</title>
+    <title>Prologic Group Inc. | Soluciones Integrales de Ingeniería y Energía</title>
     
-    <!-- Chosen Palette: Industrial Precision (Deep Navy, Steel Grays, Industrial Orange) -->
-    <!-- Application Structure Plan: The SPA is designed as a single-page, top-to-bottom narrative journey. This structure was chosen because PLG's core differentiator is its story of evolution from a logistics provider to a full-service EPC powerhouse with deep regional expertise. A linear, scrolling flow allows users to progressively discover the company's history (Timeline), understand its capabilities (EPC cards), visualize its strategic focus (Interactive Map), and recognize its credibility (Partners). This narrative approach is more compelling for B2B decision-makers than a traditional, fragmented website, effectively communicating the company's unique value proposition in a single, cohesive experience. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Company history (1995-Present). Goal: Show evolution. Viz: Interactive vertical timeline. Interaction: Animate-on-scroll. Justification: Transforms a static list of dates into an engaging story of strategic growth. Library: Vanilla JS (Intersection Observer) + CSS.
-        - Report Info: Core EPC services. Goal: Clarify complex services. Viz: Interactive cards. Interaction: Hover effects reveal more detail and highlight the card. Justification: Breaks down the "EPC" acronym into digestible, visually appealing components. Library: CSS Transitions.
-        - Report Info: Geographic focus (LatAm/Caribbean). Goal: Highlight regional expertise. Viz: Interactive map. Interaction: Pulsing hotspots with hover-activated tooltips. Justification: Visually reinforces PLG's key strategic advantage in a dynamic way, solving the NO SVG constraint by using a PNG background with absolutely positioned divs for hotspots. Library: Vanilla JS (Event Listeners) + CSS.
-        - Report Info: Strategic partnerships (NOV, Fluke). Goal: Build credibility. Viz: Logo grid. Interaction: Subtle hover animations. Justification: Lends "borrowed credibility" from major industry players in a clean, professional layout. Library: CSS Transitions.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS for animations and styling -->
     <style>
-        :root {
-            --primary-color: #003448;
-            --secondary-color: #91a6be;
-            --accent-color: #FF6F20;
-            --bg-color: #f0f0f0;
-            --text-color: #1a1a1a;
-            --light-gray: #dee2ef;
-        }
         body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            background-color: #0a101f; /* Dark blue background */
+            color: #e2e8f0; /* Light gray text */
         }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Roboto Condensed', sans-serif;
-            color: var(--primary-color);
-        }
-        .bg-primary { background-color: var(--primary-color); }
-        .bg-accent { background-color: var(--accent-color); }
-        .text-accent { color: var(--accent-color); }
-        .border-accent { border-color: var(--accent-color); }
-
-        .hero-section {
-            background-image: url('https://images.unsplash.com/photo-1549643483-34a175f44b93?q=80&w=2670&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        
+        /* Custom gradient for hero section */
+        .hero-gradient {
+            background: linear-gradient(rgba(10, 16, 31, 0.95) 0%, rgba(10, 16, 31, 0.8) 50%, rgba(10, 16, 31, 1) 100%), url('https://placehold.co/1920x1080/0a1942/ffffff?text=Infraestructura+Energética') no-repeat center center/cover;
         }
 
-        .scroll-reveal {
+        /* Animation for elements fading in on scroll */
+        .fade-in-section {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-        .scroll-reveal.visible {
+
+        .fade-in-section.is-visible {
             opacity: 1;
             transform: translateY(0);
         }
-        .timeline-line {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 100%;
-            background-color: var(--light-gray);
+        
+        /* Custom styling for the navbar */
+        .navbar-scrolled {
+            background-color: rgba(10, 16, 31, 0.8);
+            backdrop-filter: blur(10px);
         }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 20px;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            border: 4px solid var(--bg-color);
-            z-index: 1;
-            transition: background-color 0.3s ease;
+
+        /* Card hover effect */
+        .service-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #1e293b;
+            border: 1px solid #334155;
         }
-        .timeline-item.visible::before {
-             background-color: var(--accent-color);
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2);
         }
-        .map-hotspot {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 0 0 rgba(255, 111, 32, 1);
-            animation: pulse 2s infinite;
+        
+        /* Accent color */
+        .accent-color {
+            color: #f59e0b; /* Amber/Orange */
         }
-        @keyframes pulse {
-            0% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0.7);
-            }
-            70% {
-                transform: scale(1);
-                box-shadow: 0 0 0 10px rgba(255, 111, 32, 0);
-            }
-            100% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0);
-            }
+        .bg-accent-color {
+            background-color: #f59e0b;
         }
-        .map-tooltip {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .map-hotspot:hover .map-tooltip {
-            visibility: visible;
-            opacity: 1;
+        .border-accent-color {
+            border-color: #f59e0b;
         }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="antialiased">
 
-    <header id="header" class="bg-primary/90 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-white">Prologic Group Inc.</h1>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#about" class="text-white hover:text-accent transition-colors">Nosotros</a>
-                <a href="#industries" class="text-white hover:text-accent transition-colors">Industrias</a>
-                <a href="#services" class="text-white hover:text-accent transition-colors">Capacidades</a>
-                <a href="#map" class="text-white hover:text-accent transition-colors">Alcance</a>
-                <a href="#partners" class="text-white hover:text-accent transition-colors">Alianzas</a>
-                <a href="#contact" class="text-white hover:text-accent transition-colors">Contacto</a>
-            </nav>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-white focus:outline-none">
-                    <span class="text-3xl">☰</span>
-                </button>
+    <!-- Header & Navigation -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="#" class="text-2xl font-bold text-white">Prologic<span class="accent-color">Group</span></a>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#servicios" class="text-gray-300 hover:accent-color transition">Servicios</a>
+                    <a href="#industrias" class="text-gray-300 hover:accent-color transition">Industrias</a>
+                    <a href="#porque-prologic" class="text-gray-300 hover:accent-color transition">Beneficios</a>
+                    <a href="#contacto" class="text-gray-300 hover:accent-color transition">Contacto</a>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-primary">
-            <a href="#about" class="block text-white text-center py-2 hover:bg-accent/50">Nosotros</a>
-            <a href="#industries" class="block text-white text-center py-2 hover:bg-accent/50">Industrias</a>
-            <a href="#services" class="block text-white text-center py-2 hover:bg-accent/50">Capacidades</a>
-            <a href="#map" class="block text-white text-center py-2 hover:bg-accent/50">Alcance</a>
-            <a href="#partners" class="block text-white text-center py-2 hover:bg-accent/50">Alianzas</a>
-            <a href="#contact" class="block text-white text-center py-2 hover:bg-accent/50">Contacto</a>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
+            <a href="#servicios" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">Servicios</a>
+            <a href="#industrias" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">Industrias</a>
+            <a href="#porque-prologic" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">Beneficios</a>
+            <a href="#contacto" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">Contacto</a>
         </div>
     </header>
 
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center hero-gradient">
+        <div class="text-center container mx-auto px-6">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">Soluciones Integrales de Ingeniería y Energía para Latinoamérica y el Caribe</h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">Maximizando la eficiencia, garantizando el cumplimiento normativo y protegiendo su rentabilidad con más de 25 años de experiencia.</p>
+            <a href="#contacto" class="bg-accent-color text-gray-900 font-bold py-3 px-8 rounded-lg text-lg hover:bg-amber-600 transition-transform transform hover:scale-105">Solicitar Consulta</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
     <main>
-        <section class="hero-section h-screen flex items-center justify-center text-center text-white relative">
-            <div class="absolute inset-0 bg-black/50"></div>
-            <div class="relative z-10 px-4">
-                <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight">Diseñando el Futuro de la Energía.<br> Socios en el Progreso.</h2>
-                <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8">Su socio EPC integrado para las industrias de Petróleo, Gas y Minería en el Caribe y Sudamérica.</p>
-                <a href="#about" class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-md text-lg transition-transform duration-300 transform hover:scale-105">
-                    Explore Nuestras Soluciones
-                </a>
-            </div>
-        </section>
-
-        <section id="about" class="py-20 md:py-32">
+        <!-- Services Section -->
+        <section id="servicios" class="py-20 md:py-32 bg-gray-900/50">
             <div class="container mx-auto px-6">
-                <div class="text-center max-w-4xl mx-auto scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6">De la Logística a la Solución Integral</h2>
-                    <p class="text-lg text-gray-700 mb-8">
-                        Fundada en 1995, Prologic Group Inc. (PLG) ha evolucionado deliberadamente de ser un especialista en procura y logística a un proveedor integral de servicios de Ingeniería, Procura y Construcción (EPC). Esta transformación estratégica, impulsada por nuestra filosofía de que "El Conocimiento Vende", nos permite ser un socio de soluciones de fuente única para los proyectos industriales más complejos en los sectores del petróleo, el gas y la minería.
-                    </p>
+                <div class="text-center mb-16 fade-in-section">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Nuestra Oferta de Valor <span class="accent-color">"Llave en Mano"</span></h2>
+                    <p class="text-gray-400 mt-4 max-w-2xl mx-auto">Desde la concepción hasta la puesta en marcha, ofrecemos un ecosistema de servicios integrados para resolver los desafíos más complejos de la industria.</p>
                 </div>
-                
-                <div class="relative mt-20">
-                    <div class="timeline-line"></div>
-                    <div class="space-y-16">
-
-                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
-                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
-                                <h3 class="text-2xl font-bold text-accent">1995</h3>
-                                <p class="text-lg font-bold">Fundación Estratégica</p>
-                                <p class="text-gray-600">Fundada en Miramar, FL, como especialista en Adquisiciones y Logística para servir eficientemente al Caribe y Latinoamérica.</p>
-                            </div>
-                            <div class="md:w-1/2 md:pl-8"></div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Card 1: EPC -->
+                    <div class="service-card rounded-lg p-8 fade-in-section">
+                        <div class="bg-blue-500/10 inline-block p-4 rounded-lg mb-4 border border-blue-400/30">
+                           <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                         </div>
-
-                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
-                            <div class="md:w-1/2 md:pr-8 md:order-2 md:pl-8 md:text-left text-center">
-                                <h3 class="text-2xl font-bold text-accent">2000s</h3>
-                                <p class="text-lg font-bold">Expansión de Capacidades</p>
-                                <p class="text-gray-600">Crecimiento a un proveedor de servicios completos para la industria petrolera, añadiendo capacidades de ingeniería y construcción.</p>
-                            </div>
-                             <div class="md:w-1/2 md:pl-8 md:order-1"></div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Ingeniería, Procura y Construcción (EPC)</h3>
+                        <p class="text-gray-400">Gestionamos proyectos de ciclo completo, garantizando control de costos, seguridad, plazos y calidad con un único punto de responsabilidad.</p>
+                    </div>
+                    <!-- Card 2: FMS -->
+                    <div class="service-card rounded-lg p-8 fade-in-section" style="transition-delay: 100ms;">
+                        <div class="bg-green-500/10 inline-block p-4 rounded-lg mb-4 border border-green-400/30">
+                            <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l-3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
                         </div>
-
-                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
-                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
-                                <h3 class="text-2xl font-bold text-accent">2018</h3>
-                                <p class="text-lg font-bold">Diversificación y Crecimiento</p>
-                                <p class="text-gray-600">Expansión a los sectores de Minería y Petróleo Upstream, diversificando estratégicamente el modelo de servicio.</p>
-                            </div>
-                            <div class="md:w-1/2 md:pl-8"></div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Gestión de Combustible (FMS)</h3>
+                        <p class="text-gray-400">Implementamos soluciones Gilbarco Veeder-Root para automatizar el cumplimiento SICOM, eliminar pérdidas (merma) y maximizar la rentabilidad de su operación.</p>
+                    </div>
+                    <!-- Card 3: Environmental -->
+                    <div class="service-card rounded-lg p-8 fade-in-section" style="transition-delay: 200ms;">
+                         <div class="bg-teal-500/10 inline-block p-4 rounded-lg mb-4 border border-teal-400/30">
+                            <svg class="w-8 h-8 text-teal-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c.333 0 .666-.023 1-.065M12 21c-.333 0-.666-.023-1-.065M21 12a9 9 0 00-9-9m9 9a9 9 0 01-9 9m9-9h-9m-9 0a9 9 0 009 9m-9-9a9 9 0 019-9m12.741 9.34a9.01 9.01 0 00-17.482 0" /></svg>
                         </div>
-
-                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
-                            <div class="md:w-1/2 md:pr-8 md:order-2 md:pl-8 md:text-left text-center">
-                                <h3 class="text-2xl font-bold text-accent">2019</h3>
-                                <p class="text-lg font-bold">Alianzas Clave</p>
-                                <p class="text-gray-600">Obtención de acuerdos de distribución con gigantes de la industria como National Oilwell Varco (NOV) y Fluke Industrial.</p>
-                            </div>
-                            <div class="md:w-1/2 md:pl-8 md:order-1"></div>
-                        </div>
-
-                         <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
-                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
-                                <h3 class="text-2xl font-bold text-accent">Hoy</h3>
-                                <p class="text-lg font-bold">Líder Regional EPC</p>
-                                <p class="text-gray-600">Un socio EPC líder con un fuerte enfoque en mercados emergentes como Guyana y Surinam, impulsando el futuro energético de la región.</p>
-                            </div>
-                            <div class="md:w-1/2 md:pl-8"></div>
-                        </div>
-
+                        <h3 class="text-2xl font-bold text-white mb-2">Soluciones Ambientales</h3>
+                        <p class="text-gray-400">Ofrecemos evaluación, remediación y gestión de permisos, mitigando riesgos regulatorios y de reputación para su empresa.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="industries" class="py-20 md:py-32 bg-white">
+        <!-- Industries Section -->
+        <section id="industrias" class="py-20 md:py-32">
             <div class="container mx-auto px-6">
-                <div class="text-center max-w-4xl mx-auto scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Sectores de Especialización</h2>
-                    <p class="text-lg text-gray-700 mb-12">
-                        Nuestra pericia se concentra en los sectores más exigentes, donde la precisión, la seguridad y la fiabilidad no son opcionales. Entendemos los desafíos únicos de cada industria y ofrecemos soluciones EPC a medida que impulsan la eficiencia y el crecimiento.
-                    </p>
+                <div class="text-center mb-16 fade-in-section">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Sectores Estratégicos que Atendemos</h2>
+                    <p class="text-gray-400 mt-4 max-w-2xl mx-auto">Nuestra experiencia se centra en industrias de alta complejidad donde la precisión, seguridad y fiabilidad no son negociables.</p>
                 </div>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
-                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal">
-                        <div class="text-6xl mb-4 text-accent">🛢️</div>
-                        <h3 class="text-xl font-bold mb-3">Petróleo y Gas (Upstream)</h3>
-                        <p class="text-gray-600 text-sm">Apoyamos las operaciones de exploración y producción, proveyendo la infraestructura y los servicios necesarios para la extracción segura y eficiente de recursos.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                    <div class="fade-in-section">
+                        <div class="flex items-center justify-center h-24 w-24 rounded-full bg-slate-700/50 mx-auto mb-4 border border-slate-600">
+                             <img src="https://placehold.co/64x64/f59e0b/ffffff?text=O%26G" alt="Icono de Petróleo y Gas" class="rounded-full">
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Petróleo y Gas</h3>
+                        <p class="text-gray-400 mt-2">Desde terminales y clientes minoristas hasta el sector upstream, optimizamos toda la cadena de valor.</p>
                     </div>
-                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal" style="transition-delay: 0.15s;">
-                        <div class="text-6xl mb-4 text-accent">⛽</div>
-                        <h3 class="text-xl font-bold mb-3">Petróleo y Gas (Downstream)</h3>
-                        <p class="text-gray-600 text-sm">Diseñamos y construimos terminales de almacenamiento, redes de oleoductos y plantas de procesamiento, garantizando la integridad de la cadena de suministro.</p>
+                    <div class="fade-in-section" style="transition-delay: 100ms;">
+                        <div class="flex items-center justify-center h-24 w-24 rounded-full bg-slate-700/50 mx-auto mb-4 border border-slate-600">
+                            <img src="https://placehold.co/64x64/f59e0b/ffffff?text=MIN" alt="Icono de Minería" class="rounded-full">
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Minería</h3>
+                        <p class="text-gray-400 mt-2">Soluciones robustas para el control de combustible y operaciones en entornos exigentes y remotos.</p>
                     </div>
-                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal" style="transition-delay: 0.3s;">
-                        <div class="text-6xl mb-4 text-accent">⛏️</div>
-                        <h3 class="text-xl font-bold mb-3">Minería</h3>
-                        <p class="text-gray-600 text-sm">Ofrecemos soluciones EPC robustas para el sector minero, desde la infraestructura de la planta hasta la gestión y remediación ambiental de las operaciones.</p>
-                    </div>
-                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal" style="transition-delay: 0.45s;">
-                        <div class="text-6xl mb-4 text-accent">🏭</div>
-                        <h3 class="text-xl font-bold mb-3">Industrial</h3>
-                        <p class="text-gray-600 text-sm">Aplicamos nuestra experiencia en gestión de proyectos complejos a una amplia gama de instalaciones industriales, mejorando la eficiencia y la seguridad.</p>
+                    <div class="fade-in-section" style="transition-delay: 200ms;">
+                        <div class="flex items-center justify-center h-24 w-24 rounded-full bg-slate-700/50 mx-auto mb-4 border border-slate-600">
+                           <img src="https://placehold.co/64x64/f59e0b/ffffff?text=IND" alt="Icono Industrial" class="rounded-full">
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Industrial y Flotas</h3>
+                        <p class="text-gray-400 mt-2">Control de activos y reducción de costos operativos para flotas comerciales y operaciones industriales.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="services" class="py-20 md:py-32">
+        <!-- Why Prologic Section -->
+        <section id="porque-prologic" class="py-20 md:py-32 bg-gray-900/50">
             <div class="container mx-auto px-6">
-                <div class="text-center max-w-3xl mx-auto scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">La Potencia EPC Integrada</h2>
-                    <p class="text-lg text-gray-700 mb-12">Nuestro modelo de Ingeniería, Procura y Construcción (EPC) ofrece un único punto de responsabilidad, reduciendo el riesgo y la carga de gestión del cliente. Gestionamos proyectos desde la concepción hasta la finalización, garantizando calidad, seguridad y eficiencia.</p>
-                </div>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal">
-                        <div class="text-5xl mb-4 text-accent">①</div>
-                        <h3 class="text-2xl font-bold mb-3">Ingeniería y Diseño</h3>
-                        <p class="text-gray-600">Desde estudios de viabilidad y evaluaciones de sitio hasta ingeniería de valor detallada, diseñamos soluciones seguras, eficientes y conformes a las normativas más exigentes.</p>
-                    </div>
-                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal" style="transition-delay: 0.2s;">
-                        <div class="text-5xl mb-4 text-accent">②</div>
-                        <h3 class="text-2xl font-bold mb-3">Procura y Logística</h3>
-                        <p class="text-gray-600">Aprovechando nuestra red global y alianzas, obtenemos y entregamos los equipos y materiales adecuados a tiempo y dentro del presupuesto, gestionando toda la cadena de suministro.</p>
-                    </div>
-                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal" style="transition-delay: 0.4s;">
-                        <div class="text-5xl mb-4 text-accent">③</div>
-                        <h3 class="text-2xl font-bold mb-3">Construcción y Gestión</h3>
-                        <p class="text-gray-600">Nuestros equipos expertos gestionan la construcción, controlando costes, plazos y calidad, mientras garantizan los más altos estándares de seguridad en cada fase del proyecto.</p>
-                    </div>
-                </div>
-                 <div class="mt-16 text-center max-w-4xl mx-auto scroll-reveal">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Soluciones Especializadas</h3>
-                    <p class="text-lg text-gray-700 mb-8">Más allá del estándar, ofrecemos servicios críticos que demuestran nuestro compromiso con la responsabilidad y la excelencia técnica.</p>
-                    <div class="grid md:grid-cols-2 gap-8 text-left">
-                        <div class="bg-white p-6 rounded-lg border border-gray-200">
-                             <h4 class="text-xl font-bold mb-2 text-primary">Evaluación y Remediación Ambiental</h4>
-                             <p class="text-gray-600">Posicionándonos como un socio consciente, ofrecemos investigaciones de sitio, soluciones de remediación y gestión de residuos para mitigar el impacto ambiental y garantizar el cumplimiento normativo.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg border border-gray-200">
-                            <h4 class="text-xl font-bold mb-2 text-primary">Venta y Distribución de Productos</h4>
-                            <p class="text-gray-600">Como distribuidores de marcas líderes como Fluke y NOV, no solo proveemos servicios, sino que ofrecemos acceso a tecnología de punta, añadiendo una capa de credibilidad y conocimiento técnico profundo.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="map" class="py-20 md:py-32 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                 <div class="max-w-3xl mx-auto scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Alcance Global, Pericia Local</h2>
-                    <p class="text-lg text-gray-700 mb-12">Nuestra sede en Florida es la puerta de entrada a nuestra área de especialización: el Caribe, Centro y Sudamérica. Poseemos una larga historia de servicio y un profundo conocimiento local, especialmente en mercados energéticos de alto crecimiento.</p>
-                </div>
-                <div class="relative w-full max-w-4xl mx-auto aspect-video rounded-lg overflow-hidden shadow-2xl scroll-reveal">
-                    <img src="https://i.imgur.com/8TfgyJr.png" alt="Mapa de las Américas destacando el enfoque de Prologic Group" class="w-full h-full object-cover">
-                    
-                    <div class="map-hotspot" style="top: 50%; left: 24%;">
-                        <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Florida, EE. UU.</span><br>Sede Central y centro logístico para las Américas.
+                <div class="lg:flex lg:items-center lg:gap-16">
+                    <div class="lg:w-1/2 fade-in-section">
+                        <h2 class="text-3xl md:text-4xl font-bold text-white">La Ventaja <span class="accent-color">Prologic</span></h2>
+                        <p class="text-gray-400 mt-4 text-lg mb-8">No solo entregamos productos, diseñamos soluciones. Nuestro principio <span class="font-semibold text-white">"Knowledge Sells"</span> (El Conocimiento Vende) nos posiciona como su socio estratégico, no como un simple proveedor.</p>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-accent-color/20 flex items-center justify-center border border-accent-color/30">
+                                    <span class="accent-color font-bold">✓</span>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-semibold text-white">ROI Medible</h4>
+                                    <p class="text-gray-400">Nuestras soluciones FMS se pagan a sí mismas eliminando pérdidas y optimizando la gestión de inventario.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                 <div class="flex-shrink-0 h-8 w-8 rounded-full bg-accent-color/20 flex items-center justify-center border border-accent-color/30">
+                                    <span class="accent-color font-bold">✓</span>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-semibold text-white">Cumplimiento Garantizado</h4>
+                                    <p class="text-gray-400">Automatizamos los reportes para el SICOM y aseguramos el cumplimiento de la estricta normativa ambiental colombiana.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                 <div class="flex-shrink-0 h-8 w-8 rounded-full bg-accent-color/20 flex items-center justify-center border border-accent-color/30">
+                                    <span class="accent-color font-bold">✓</span>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-semibold text-white">Experiencia Regional Probada</h4>
+                                    <p class="text-gray-400">Conocimiento local y presencia estratégica en Colombia, Guyana, Surinam y todo el Caribe.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="map-hotspot" style="top: 72%; left: 46%;">
-                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Guyana</span><br>Apoyando uno de los mercados petroleros de más rápido crecimiento en el mundo.
-                        </div>
-                    </div>
-                    <div class="map-hotspot" style="top: 75%; left: 49%;">
-                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Surinam</span><br>Socio establecido en un mercado energético emergente y clave.
-                        </div>
-                    </div>
-                     <div class="map-hotspot" style="top: 65%; left: 33%;">
-                         <div class="map-tooltip absolute top-full mt-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Caribe y Centroamérica</span><br>Extensa red de servicio en toda la región.
-                        </div>
+                    <div class="lg:w-1/2 mt-12 lg:mt-0 fade-in-section" style="transition-delay: 200ms;">
+                        <img src="https://placehold.co/600x500/1e293b/ffffff?text=Equipo+de+Ingenieros" alt="Equipo de Prologic Group trabajando en un proyecto" class="rounded-lg shadow-2xl">
                     </div>
                 </div>
             </div>
         </section>
-
-        <section id="partners" class="py-20 md:py-32">
-            <div class="container mx-auto px-6 text-center">
-                 <div class="max-w-3xl mx-auto scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Alianzas Estratégicas para Construir Credibilidad</h2>
-                    <p class="text-lg text-gray-700 mb-12">Nuestras alianzas con líderes de la industria nos permiten ofrecer tecnología de clase mundial e implementar soluciones certificadas, actuando como multiplicadores de fuerza que nos permiten competir al más alto nivel.</p>
-                </div>
-                <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-8">
-                    <div class="scroll-reveal" style="transition-delay: 0.1s;">
-                        <img src="https://i.imgur.com/KqYrk4a.png" alt="Logo de National Oilwell Varco (NOV)" class="h-16 md:h-20 grayscale hover:grayscale-0 transition-all duration-300">
-                    </div>
-                     <div class="scroll-reveal" style="transition-delay: 0.2s;">
-                        <img src="https://i.imgur.com/gA3d7yW.png" alt="Logo de Fluke Industrial" class="h-16 md:h-20 grayscale hover:grayscale-0 transition-all duration-300">
-                    </div>
-                     <div class="scroll-reveal" style="transition-delay: 0.3s;">
-                         <p class="text-xl font-bold text-gray-400 hover:text-primary transition-colors">Fusecon N.V.</p>
-                    </div>
-                     <div class="scroll-reveal" style="transition-delay: 0.4s;">
-                        <p class="text-xl font-bold text-gray-400 hover:text-primary transition-colors">PLG-Industrial & Mining</p>
-                    </div>
+        
+        <!-- Partners Section -->
+        <section id="partners" class="py-16">
+            <div class="container mx-auto px-6">
+                <h3 class="text-center text-gray-500 font-semibold uppercase tracking-wider mb-8 fade-in-section">Nuestros Socios Estratégicos Globales</h3>
+                <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 fade-in-section">
+                    <img src="https://placehold.co/150x60/ffffff/9ca3af?text=Gilbarco+Veeder-Root" alt="Logo de Gilbarco Veeder-Root" class="h-10 opacity-60 hover:opacity-100 transition">
+                    <img src="https://placehold.co/120x60/ffffff/9ca3af?text=NOV" alt="Logo de NOV" class="h-8 opacity-60 hover:opacity-100 transition">
+                    <img src="https://placehold.co/130x60/ffffff/9ca3af?text=Fluke" alt="Logo de Fluke" class="h-9 opacity-60 hover:opacity-100 transition">
+                    <img src="https://placehold.co/140x60/ffffff/9ca3af?text=Franklin+Fueling" alt="Logo de Franklin Fueling Systems" class="h-12 opacity-60 hover:opacity-100 transition">
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="py-20 md:py-32 bg-primary text-white">
-             <div class="container mx-auto px-6 text-center">
-                <div class="max-w-3xl mx-auto scroll-reveal">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Construyamos el Futuro. Juntos.</h2>
-                    <p class="text-lg text-gray-300 mb-12">Póngase en contacto con nuestro equipo de expertos para discutir cómo podemos ayudarle a alcanzar sus objetivos de proyecto.</p>
+        <!-- Contact Section -->
+        <section id="contacto" class="py-20 md:py-32 bg-gray-900/50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in-section">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Hablemos de su Próximo Proyecto</h2>
+                    <p class="text-gray-400 mt-4 max-w-2xl mx-auto">Contáctenos para una consulta sin compromiso y descubra cómo podemos optimizar su operación.</p>
                 </div>
-                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 text-left">
-                    <div class="scroll-reveal">
-                        <h3 class="text-2xl font-bold mb-4 text-accent">Información de Contacto</h3>
-                        <p class="mb-2"><strong>Dirección:</strong> 11400 Interchange Circle North, Miramar, Florida 33025, EE. UU.</p>
-                        <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:+19544335540" class="hover:text-accent">+1 (954) 433-5540</a></p>
-                        <p class="mb-2"><strong>Email:</strong> <a href="mailto:sales@prologicgroup.com" class="hover:text-accent">sales@prologicgroup.com</a></p>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+                    <div class="fade-in-section">
+                        <form id="contact-form">
+                            <div class="mb-4">
+                                <label for="name" class="block text-gray-300 mb-2">Nombre Completo</label>
+                                <input type="text" id="name" name="name" required class="w-full bg-slate-700 border border-slate-600 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-gray-300 mb-2">Correo Electrónico</label>
+                                <input type="email" id="email" name="email" required class="w-full bg-slate-700 border border-slate-600 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="company" class="block text-gray-300 mb-2">Empresa</label>
+                                <input type="text" id="company" name="company" class="w-full bg-slate-700 border border-slate-600 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+                            <div class="mb-6">
+                                <label for="message" class="block text-gray-300 mb-2">Mensaje</label>
+                                <textarea id="message" name="message" rows="4" required class="w-full bg-slate-700 border border-slate-600 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-accent-color text-gray-900 font-bold py-3 px-8 rounded-lg text-lg hover:bg-amber-600 transition">Enviar Mensaje</button>
+                            <p id="form-status" class="text-center mt-4"></p>
+                        </form>
                     </div>
-                     <form id="contact-form" class="space-y-4 scroll-reveal" style="transition-delay: 0.2s;">
-                        <div>
-                            <label for="name" class="sr-only">Nombre</label>
-                            <input type="text" id="name" name="name" placeholder="Su Nombre" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors">
+                     <div class="fade-in-section" style="transition-delay: 100ms;">
+                        <h4 class="text-lg font-semibold text-white mb-4">Información de Contacto</h4>
+                        <p class="text-gray-400 mb-4">
+                            Nuestra sede central sirve como centro logístico para Latinoamérica y el Caribe.
+                        </p>
+                        <div class="space-y-4 text-gray-300">
+                             <p class="flex items-start">
+                                <svg class="w-6 h-6 mr-3 mt-1 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span><strong>Sede Central:</strong><br>11400 Interchange Circle North, Miramar, Florida 33025, EE. UU.</span>
+                            </p>
+                            <p class="flex items-start">
+                                <svg class="w-6 h-6 mr-3 mt-1 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                               <span><strong>Email:</strong><br>contact@prologicgroup.com</span>
+                            </p>
                         </div>
-                        <div>
-                            <label for="email" class="sr-only">Correo Electrónico</label>
-                            <input type="email" id="email" name="email" placeholder="Su Correo Electrónico" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors">
+                        <div class="mt-8 rounded-lg overflow-hidden shadow-2xl">
+                           <img src="https://placehold.co/600x400/1e293b/ffffff?text=Mapa+de+la+Sede" alt="Mapa de la ubicación de Prologic Group" class="w-full h-auto">
                         </div>
-                         <div>
-                            <label for="message" class="sr-only">Mensaje</label>
-                            <textarea id="message" name="message" rows="4" placeholder="Su Mensaje" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors"></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-md text-lg transition-transform duration-300 transform hover:scale-105">
-                            Enviar Mensaje
-                        </button>
-                        <p id="form-status" class="text-center mt-4 h-6"></p>
-                    </form>
+                    </div>
                 </div>
-             </div>
+            </div>
         </section>
     </main>
 
-    <footer class="bg-gray-800 text-gray-400 py-6">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; <span id="year"></span> Prologic Group Inc. Todos los derechos reservados.</p>
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-500">
+            <p>&copy; 2025 Prologic Group Inc. Todos los derechos reservados.</p>
+            <p class="text-sm mt-2">Construyendo soluciones de energía para un futuro sostenible.</p>
         </div>
     </footer>
 
+    <!-- JavaScript for interactivity -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.getElementById('navbar');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('navbar-scrolled');
+                } else {
+                    navbar.classList.remove('navbar-scrolled');
+                }
+            });
+
+            // Mobile menu toggle
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
             
             // Close mobile menu when a link is clicked
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
-                });
+            mobileMenu.addEventListener('click', (e) => {
+                if(e.target.tagName === 'A') {
+                   mobileMenu.classList.add('hidden');
+                }
             });
 
-            // Scroll animations
-            const observer = new IntersectionObserver((entries) => {
+            // Fade-in sections on scroll
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
                     }
                 });
             }, {
+                rootMargin: '0px',
                 threshold: 0.1
             });
 
-            const elementsToReveal = document.querySelectorAll('.scroll-reveal');
-            elementsToReveal.forEach(el => {
-                observer.observe(el);
+            sections.forEach(section => {
+                observer.observe(section);
             });
             
-            // Sticky Header
-            const header = document.getElementById('header');
-            let lastScrollTop = 0;
-            window.addEventListener('scroll', function() {
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                if (scrollTop > lastScrollTop && scrollTop > 100) {
-                    header.style.top = '-100px';
-                } else {
-                    header.style.top = '0';
-                }
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            }, false);
-
-            // Set current year in footer
-            document.getElementById('year').textContent = new Date().getFullYear();
-            
-            // Contact Form Submission
-            const contactForm = document.getElementById('contact-form');
-            const formStatus = document.getElementById('form-status');
-            contactForm.addEventListener('submit', function(e) {
+            // Contact form submission
+            contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 formStatus.textContent = 'Enviando...';
-                formStatus.style.color = '#91a6be';
-
+                formStatus.classList.remove('text-green-500', 'text-red-500');
+                
+                // Simulate form submission
                 setTimeout(() => {
-                    formStatus.textContent = '¡Mensaje enviado con éxito!';
-                    formStatus.style.color = '#4ade80'; 
+                    const formData = new FormData(contactForm);
+                    const data = Object.fromEntries(formData.entries());
+                    console.log('Form data submitted:', data);
+
+                    formStatus.textContent = '¡Gracias! Su mensaje ha sido enviado con éxito.';
+                    formStatus.classList.add('text-green-500');
                     contactForm.reset();
-                     setTimeout(() => {
-                        formStatus.textContent = '';
-                     }, 3000);
                 }, 1000);
             });
         });
