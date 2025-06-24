@@ -3,699 +3,463 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis Interactivo del Mercado FMS en Colombia</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⛽</text></svg>">
-    <!-- Chosen Palette: Corporate Blue & Warm Neutrals -->
-    <!-- Application Structure Plan: A single-page dashboard layout with a sticky navigation header for smooth scrolling between thematic sections. The structure prioritizes user exploration over the report's linear format. It starts with a high-level market overview (what), moves to the core problems (why it matters), presents the proposed solution (how to solve it), analyzes the competitive landscape (who else is there), and concludes with the specific strategy for the company (the action plan). This logical flow from context to action is designed for clear business decision-making. Interactions include clickable cards to reveal detailed "pain points", interactive charts for data visualization, and tabbed interfaces for comparing complex information, making the dense report digestible and engaging. -->
+    <title>Prologic Group Inc. | Socios en Soluciones EPC</title>
+    
+    <!-- Chosen Palette: Industrial Precision (Deep Navy, Steel Grays, Industrial Orange) -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page, top-to-bottom narrative journey. This structure was chosen because PLG's core differentiator is its story of evolution from a logistics provider to a full-service EPC powerhouse with deep regional expertise. A linear, scrolling flow allows users to progressively discover the company's history (Timeline), understand its capabilities (EPC cards), visualize its strategic focus (Interactive Map), and recognize its credibility (Partners). This narrative approach is more compelling for B2B decision-makers than a traditional, fragmented website, effectively communicating the company's unique value proposition in a single, cohesive experience. -->
     <!-- Visualization & Content Choices: 
-        1. Market Share (Report Table 1) -> Goal: Inform -> Viz: Donut Chart -> Interaction: Hover tooltips -> Justification: Quickly shows market concentration. -> Library: Chart.js.
-        2. Customer Segments (Report 2.2) -> Goal: Organize/Inform -> Viz: Interactive Cards -> Interaction: Click to reveal details -> Justification: Breaks down complex text into digestible chunks for different user types (Retail, Fleet, Mining). -> Method: HTML/CSS/JS.
-        3. GVR Solution (Report 3) -> Goal: Organize/Explain -> Viz: Tabbed component -> Interaction: Click tabs to switch content -> Justification: Organizes the GVR ecosystem (Hardware, Cloud, Benefits) into clear, manageable parts without overwhelming the user. -> Method: HTML/CSS/JS.
-        4. Competitive Matrix (Report 4.3) -> Goal: Compare -> Viz: Custom HTML/CSS 2x2 Grid -> Interaction: Static visual -> Justification: A direct, clear visualization of the competitive positioning described in the report. -> Method: HTML/CSS.
-        5. Prologic's Strategy (Report 6) -> Goal: Inform/Organize -> Viz: Stepped flowchart -> Interaction: Static visual -> Justification: Clearly visualizes the recommended go-to-market process in a linear, easy-to-follow format. -> Method: HTML/CSS.
+        - Report Info: Company history (1995-Present). Goal: Show evolution. Viz: Interactive vertical timeline. Interaction: Animate-on-scroll. Justification: Transforms a static list of dates into an engaging story of strategic growth. Library: Vanilla JS (Intersection Observer) + CSS.
+        - Report Info: Core EPC services. Goal: Clarify complex services. Viz: Interactive cards. Interaction: Hover effects reveal more detail and highlight the card. Justification: Breaks down the "EPC" acronym into digestible, visually appealing components. Library: CSS Transitions.
+        - Report Info: Geographic focus (LatAm/Caribbean). Goal: Highlight regional expertise. Viz: Interactive map. Interaction: Pulsing hotspots with hover-activated tooltips. Justification: Visually reinforces PLG's key strategic advantage in a dynamic way, solving the NO SVG constraint by using a PNG background with absolutely positioned divs for hotspots. Library: Vanilla JS (Event Listeners) + CSS.
+        - Report Info: Strategic partnerships (NOV, Fluke). Goal: Build credibility. Viz: Logo grid. Interaction: Subtle hover animations. Justification: Lends "borrowed credibility" from major industry players in a clean, professional layout. Library: CSS Transitions.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+
     <style>
-        /* devanagari */
-        @font-face {
-          font-family: 'Inter';
-          font-style: normal;
-          font-weight: 400;
-          font-display: swap;
-          src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuOKfAZ9hiA.woff2) format('woff2');
-          unicode-range: U+0900-097F, U+1CD0-1CFF, U+200C-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FF;
-        }
-        /* latin-ext */
-        @font-face {
-          font-family: 'Inter';
-          font-style: normal;
-          font-weight: 400;
-          font-display: swap;
-          src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuOKfAZ5hiA.woff2) format('woff2');
-          unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-        }
-        /* latin */
-        @font-face {
-          font-family: 'Inter';
-          font-style: normal;
-          font-weight: 400;
-          font-display: swap;
-          src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuOKfAZ9h.woff2) format('woff2');
-          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        
-        /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
-        *,::after,::before{box-sizing:border-box}:root{-moz-tab-size:4;tab-size:4}html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'}hr{height:0;color:inherit}abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}::-moz-focus-inner{border-style:none;padding:0}:-moz-focusring{outline:1px dotted ButtonText}:-moz-ui-invalid{box-shadow:none}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}
-        /**! tailwindcss v3.0.24 | MIT License | https://tailwindcss.com*/
-        *,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:""}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:inherit;margin:0;padding:0;color:inherit}button,select{text-transform:none}button,[type=button],[type=reset],[type=submit]{-webkit-appearance:button;background-color:transparent;background-image:none}::-moz-focus-inner{border-style:none;padding:0}:-moz-focusring{outline:1px dotted ButtonText}:-moz-ui-invalid{box-shadow:none}legend{padding:0}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}li,ol,ul{list-style:none;margin:0;padding:0}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}:root{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / .5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }
-        /* A LOT of CSS code was here, it has been removed for brevity */
-        .antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F8F9FA;
-            color: #343A40;
-        }
         :root {
-            --bg-light: #F8F9FA;
-            --bg-white: #FFFFFF;
-            --text-dark: #212529;
-            --text-muted: #6C757D;
-            --primary: #003366;
-            --primary-light: #E6EEF5;
-            --accent: #D4A017;
-            --border-color: #DEE2E6;
+            --primary-color: #003448;
+            --secondary-color: #91a6be;
+            --accent-color: #FF6F20;
+            --bg-color: #f0f0f0;
+            --text-color: #1a1a1a;
+            --light-gray: #dee2ef;
         }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 450px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Roboto Condensed', sans-serif;
+            color: var(--primary-color);
         }
-        .main-nav {
-            position: relative;
+        .bg-primary { background-color: var(--primary-color); }
+        .bg-accent { background-color: var(--accent-color); }
+        .text-accent { color: var(--accent-color); }
+        .border-accent { border-color: var(--accent-color); }
+
+        .hero-section {
+            background-image: url('https://images.unsplash.com/photo-1549643483-34a175f44b93?q=80&w=2670&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
-        .nav-link {
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: color 0.3s, background-color 0.3s;
-            position: relative;
-            z-index: 10;
-            color: var(--text-muted);
-        }
-        .nav-link.active {
-            color: var(--primary);
-        }
-        #nav-indicator {
-            position: absolute;
-            bottom: -2px;
-            height: 3px;
-            background-color: var(--primary);
-            border-radius: 3px;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            z-index: 5;
-        }
-        .stat-card {
-            background-color: var(--bg-white);
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.08);
-        }
-        .tab-button {
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .tab-button.active {
-            background-color: var(--primary);
-            color: var(--bg-white);
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .reveal {
+
+        .scroll-reveal {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.6s ease-out;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
-        .reveal.visible {
+        .scroll-reveal.visible {
             opacity: 1;
             transform: translateY(0);
         }
-        .flip-card {
-            background-color: transparent;
-            width: 100%;
-            height: 250px;
-            perspective: 1000px;
-        }
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
-            border-radius: 1rem;
-        }
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-        .flip-card-front, .flip-card-back {
+        .timeline-line {
             position: absolute;
-            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
             height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
+            background-color: var(--light-gray);
         }
-        .flip-card-front {
-            background-color: var(--primary-light);
-        }
-        .flip-card-back {
-            background-color: var(--primary);
-            color: white;
-            transform: rotateY(180deg);
-        }
-        .competitor-item {
-            transition: transform 0.3s, opacity 0.3s;
-        }
-        .competitor-matrix:hover .competitor-item:not(:hover) {
-            opacity: 0.6;
-            transform: scale(0.95);
-        }
-        .competitor-item:hover {
-            transform: scale(1.05) !important;
-            z-index: 10;
-        }
-        .roadmap-line {
+        .timeline-item::before {
+            content: '';
             position: absolute;
-            top: 2rem;
-            left: 12.5%;
-            width: 75%;
-            height: 2px;
-            background-color: var(--border-color);
-            z-index: -1;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            border: 4px solid var(--bg-color);
+            z-index: 1;
+            transition: background-color 0.3s ease;
         }
-        .roadmap-step .step-circle {
-            transition: transform 0.3s, background-color 0.3s;
+        .timeline-item.visible::before {
+             background-color: var(--accent-color);
         }
-         .roadmap-step:hover .step-circle {
-            transform: scale(1.2);
-            background-color: var(--accent);
-            color: var(--text-dark);
-         }
-         #mobile-menu {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 80%;
-            max-width: 300px;
-            height: 100vh;
-            background-color: white;
-            box-shadow: -10px 0 20px rgba(0,0,0,0.1);
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            padding: 2rem;
-            z-index: 100;
-         }
-         #mobile-menu.open {
-            transform: translateX(0);
-         }
-         #mobile-menu a {
-            display: block;
-            padding: 1rem;
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            border-radius: 0.5rem;
-            transition: background-color 0.2s, color 0.2s;
-         }
-         #mobile-menu a:hover {
-             background-color: var(--primary-light);
-             color: var(--primary);
-         }
+        .map-hotspot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 0 rgba(255, 111, 32, 1);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 111, 32, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0);
+            }
+        }
+        .map-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .map-hotspot:hover .map-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
-<body class="antialiased">
+<body class="overflow-x-hidden">
 
-    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm transition-shadow duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <span class="text-xl font-bold" style="color: var(--primary);">Prologic Group</span>
-                    <span class="text-xl font-light text-gray-600 ml-2">| Análisis FMS Colombia</span>
-                </div>
-                <nav class="hidden md:flex space-x-2 main-nav">
-                    <a href="#mercado" class="nav-link text-sm font-medium">Mercado</a>
-                    <a href="#desafios" class="nav-link text-sm font-medium">Desafíos</a>
-                    <a href="#solucion" class="nav-link text-sm font-medium">Solución GVR</a>
-                    <a href="#competencia" class="nav-link text-sm font-medium">Competencia</a>
-                    <a href="#estrategia" class="nav-link text-sm font-medium">Estrategia</a>
-                    <span id="nav-indicator"></span>
-                </nav>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                        </svg>
-                    </button>
-                </div>
+    <header id="header" class="bg-primary/90 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white">Prologic Group Inc.</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about" class="text-white hover:text-accent transition-colors">Nosotros</a>
+                <a href="#industries" class="text-white hover:text-accent transition-colors">Industrias</a>
+                <a href="#services" class="text-white hover:text-accent transition-colors">Capacidades</a>
+                <a href="#map" class="text-white hover:text-accent transition-colors">Alcance</a>
+                <a href="#partners" class="text-white hover:text-accent transition-colors">Alianzas</a>
+                <a href="#contact" class="text-white hover:text-accent transition-colors">Contacto</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <span class="text-3xl">☰</span>
+                </button>
             </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-primary">
+            <a href="#about" class="block text-white text-center py-2 hover:bg-accent/50">Nosotros</a>
+            <a href="#industries" class="block text-white text-center py-2 hover:bg-accent/50">Industrias</a>
+            <a href="#services" class="block text-white text-center py-2 hover:bg-accent/50">Capacidades</a>
+            <a href="#map" class="block text-white text-center py-2 hover:bg-accent/50">Alcance</a>
+            <a href="#partners" class="block text-white text-center py-2 hover:bg-accent/50">Alianzas</a>
+            <a href="#contact" class="block text-white text-center py-2 hover:bg-accent/50">Contacto</a>
         </div>
     </header>
 
-    <div id="menu-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden"></div>
-
-    <div id="mobile-menu">
-        <div class="flex justify-end mb-4">
-             <button id="close-menu-button" class="p-2 rounded-full hover:bg-gray-100">
-                <svg class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-             </button>
-        </div>
-        <nav class="flex flex-col space-y-2">
-            <a href="#mercado" class="mobile-nav-link">Mercado</a>
-            <a href="#desafios" class="mobile-nav-link">Desafíos</a>
-            <a href="#solucion" class="mobile-nav-link">Solución GVR</a>
-            <a href="#competencia" class="mobile-nav-link">Competencia</a>
-            <a href="#estrategia" class="mobile-nav-link">Estrategia</a>
-        </nav>
-    </div>
-
     <main>
-        <section id="mercado" class="py-16 lg:py-24">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center reveal">
-                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Panorama del Mercado</h2>
-                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Un Mercado Maduro Listo para la Modernización</p>
-                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                        El mercado colombiano de combustibles, aunque dominado por grandes cadenas, presenta una oportunidad significativa para la digitalización y la eficiencia operativa, tanto en grandes redes como en operadores independientes.
-                    </p>
-                </div>
-
-                <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <div class="stat-card p-6 rounded-2xl reveal">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">⛽</div>
-                            <p class="ml-4 text-lg font-medium text-gray-900">Estaciones de Servicio</p>
-                        </div>
-                        <p class="mt-4 text-4xl font-bold text-gray-900">~6,600</p>
-                        <p class="mt-1 text-base text-gray-500">Mercado total abordable para FMS.</p>
-                    </div>
-                    <div class="stat-card p-6 rounded-2xl reveal" style="transition-delay: 100ms;">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">📈</div>
-                            <p class="ml-4 text-lg font-medium text-gray-900">Concentración del Mercado</p>
-                        </div>
-                        <p class="mt-4 text-4xl font-bold text-gray-900">~90%</p>
-                        <p class="mt-1 text-base text-gray-500">Controlado por 4 grandes distribuidores.</p>
-                    </div>
-                    <div class="stat-card p-6 rounded-2xl reveal" style="transition-delay: 200ms;">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">⚙️</div>
-                            <p class="ml-4 text-lg font-medium text-gray-900">Imperativo Regulatorio</p>
-                        </div>
-                        <p class="mt-4 text-4xl font-bold text-gray-900">SICOM</p>
-                        <p class="mt-1 text-base text-gray-500">Reporte obligatorio que impulsa la digitalización.</p>
-                    </div>
-                </div>
-
-                <div class="mt-16 lg:mt-20 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
-                    <div class="chart-container reveal">
-                        <canvas id="marketShareChart"></canvas>
-                    </div>
-                    <div class="mt-12 lg:mt-0 reveal">
-                        <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Distribución del Mercado Minorista</h3>
-                        <p class="mt-4 text-lg text-gray-500">
-                            El mercado está dominado por Terpel, que posee casi la mitad de la cuota. Sin embargo, el segmento de "Independientes y Otros" representa una porción considerable y un mercado clave para soluciones FMS empaquetadas y con un claro ROI. Este gráfico ilustra la importancia de una estrategia dual: venta empresarial a las grandes cadenas y una oferta de valor para la "larga cola" de operadores más pequeños.
-                        </p>
-                    </div>
-                </div>
+        <section class="hero-section h-screen flex items-center justify-center text-center text-white relative">
+            <div class="absolute inset-0 bg-black/50"></div>
+            <div class="relative z-10 px-4">
+                <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight">Diseñando el Futuro de la Energía.<br> Socios en el Progreso.</h2>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8">Su socio EPC integrado para las industrias de Petróleo, Gas y Minería en el Caribe y Sudamérica.</p>
+                <a href="#about" class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-md text-lg transition-transform duration-300 transform hover:scale-105">
+                    Explore Nuestras Soluciones
+                </a>
             </div>
         </section>
 
-        <section id="desafios" class="py-16 lg:py-24" style="background-color: var(--bg-white);">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center reveal">
-                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Desafíos Críticos del Operador</h2>
-                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Problemas Reales, Soluciones Urgentes</p>
-                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                        Cada segmento del mercado enfrenta presiones únicas que erosionan su rentabilidad. Pase el cursor sobre cada tarjeta para descubrir los detalles.
-                    </p>
-                </div>
-                <div class="mt-12 reveal">
-                    <div id="pain-points-content" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="solucion" class="py-16 lg:py-24">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center reveal">
-                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">El Ecosistema Gilbarco Veeder-Root</h2>
-                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">De Reactivo y Vulnerable a Proactivo y Seguro</p>
-                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                        La solución de GVR no es solo un producto, es una transformación operativa. Integra hardware de precisión en el sitio con una potente plataforma de inteligencia en la nube.
-                    </p>
-                </div>
-
-                <div class="mt-12 reveal">
-                     <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex justify-center space-x-4 md:space-x-8" aria-label="Tabs">
-                            <button class="tab-button solution-tab active whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm" data-target="hardware">
-                                Hardware en Sitio
-                            </button>
-                            <button class="tab-button solution-tab whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700" data-target="cloud">
-                                Inteligencia en la Nube
-                            </button>
-                            <button class="tab-button solution-tab whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700" data-target="benefits">
-                                Pilares de Valor
-                            </button>
-                        </nav>
-                    </div>
-                    <div class="mt-8">
-                        <div id="hardware-content" class="solution-content fade-in">
-                             <div class="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
-                                 <div>
-                                    <h3 class="text-2xl font-bold text-gray-900">El Cerebro de la Operación: TLS-450PLUS</h3>
-                                    <p class="mt-3 text-lg text-gray-500">La consola de telemedición (ATG) es el centro neurálgico que recopila, procesa y protege los datos críticos. Sus características avanzadas son el motor de la rentabilidad y el cumplimiento.</p>
-                                    <dl class="mt-8 space-y-6">
-                                        <div><dt class="font-semibold text-gray-900">📈 Control de Inventario (AccuChart™)</dt><dd class="mt-1 text-gray-500">Crea un modelo 3D del tanque para mediciones ultra precisas, eliminando "pérdidas de papel".</dd></div>
-                                        <div><dt class="font-semibold text-gray-900">� Detección de Fugas (CSLD)</dt><dd class="mt-1 text-gray-500">Realiza pruebas de hermeticidad automáticas sin detener la operación, garantizando el cumplimiento ambiental.</dd></div>
-                                        <div><dt class="font-semibold text-gray-900">🔒 Seguridad Mejorada</dt><dd class="mt-1 text-gray-500">Acceso basado en roles de usuario para prevenir manipulación no autorizada y fraude interno.</dd></div>
-                                    </dl>
-                                 </div>
-                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl"><div class="text-center"><div class="text-6xl">🖥️</div><p class="mt-4 font-bold text-xl text-gray-800">TLS-450PLUS</p><p class="text-gray-600">Consola ATG Avanzada</p></div></div>
-                             </div>
-                        </div>
-                        <div id="cloud-content" class="solution-content fade-in hidden">
-                             <div class="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
-                                 <div>
-                                    <h3 class="text-2xl font-bold text-gray-900">Gestión Centralizada y Predictiva: Insite360</h3>
-                                    <p class="mt-3 text-lg text-gray-500">Insite360 transforma los datos del sitio en inteligencia de negocio, permitiendo la gestión remota, el mantenimiento predictivo y la optimización de la red.</p>
-                                    <dl class="mt-8 space-y-6">
-                                        <div><dt class="font-semibold text-gray-900">📊 Insite360 Fuel</dt><dd class="mt-1 text-gray-500">Automatiza la reconciliación y el reporte para SICOM. Identifica pérdidas en tiempo real.</dd></div>
-                                        <div><dt class="font-semibold text-gray-900">🔧 Insite360 Uptime</dt><dd class="mt-1 text-gray-500">Monitorea la salud de los equipos para predecir fallas, permitiendo un mantenimiento proactivo.</dd></div>
-                                    </dl>
-                                 </div>
-                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl"><div class="text-center"><div class="text-6xl">☁️</div><p class="mt-4 font-bold text-xl text-gray-800">Insite360</p><p class="text-gray-600">Plataforma IoT de Gestión</p></div></div>
-                             </div>
-                        </div>
-                        <div id="benefits-content" class="solution-content fade-in hidden">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">💰 Rentabilidad</h4><p class="mt-2 text-gray-500">Aumenta las ganancias al minimizar las pérdidas de combustible por robo, fugas y descalibración.</p></div>
-                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">📜 Cumplimiento</h4><p class="mt-2 text-gray-500">Automatiza la recopilación de datos para cumplir con SICOM y normas ambientales, mitigando multas.</p></div>
-                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">⚙️ Disponibilidad</h4><p class="mt-2 text-gray-500">Maximiza los ingresos usando análisis predictivo para prevenir el tiempo de inactividad de los equipos.</p></div>
-                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">🛡️ Seguridad</h4><p class="mt-2 text-gray-500">Protege activos físicos y datos a través de encriptación, controles de acceso y alertas en tiempo real.</p></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="competencia" class="py-16 lg:py-24" style="background-color: var(--bg-white);">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center reveal">
-                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Análisis Competitivo</h2>
-                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Posicionamiento en el Ecosistema FMS</p>
-                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                        GVR se diferencia por ofrecer un ecosistema de patio completo y una plataforma en la nube superior. Este es el campo de batalla estratégico.
-                    </p>
-                </div>
-                <div class="mt-12 max-w-4xl mx-auto p-8 reveal">
-                    <div class="relative grid grid-cols-2 grid-rows-2 gap-4 h-96 competitor-matrix">
-                        <div class="absolute w-full h-px bg-gray-300 top-1/2 -translate-y-1/2"></div>
-                        <div class="absolute h-full w-px bg-gray-300 left-1/2 -translate-x-1/2"></div>
-                        
-                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-center text-sm font-medium text-gray-500">Ecosistema Completo</div>
-                        <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-center text-sm font-medium text-gray-500">Solución de Componente</div>
-                        <div class="absolute top-1/2 -left-16 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Hardware Robusto</div>
-                        <div class="absolute top-1/2 -right-16 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Plataforma Cloud/IoT</div>
-
-                        <div class="p-2 flex justify-end items-start competitor-item"><div class="bg-gray-200 text-gray-700 rounded-lg p-3 text-center w-40"><span class="font-bold">Servicios Locales</span><span class="block text-xs">Componentes/Nicho</span></div></div>
-                        <div class="p-2 flex justify-start items-start competitor-item"><div class="rounded-lg p-3 text-center w-48" style="background-color: var(--primary-light); border: 2px solid var(--primary);"><span class="font-bold" style="color: var(--primary);">Gilbarco Veeder-Root</span><span class="block text-xs font-medium" style="color: var(--primary);">Ecosistema + Cloud Superior</span></div></div>
-                        <div class="p-2 flex justify-end items-end competitor-item"><div class="bg-yellow-100 border border-yellow-400 text-yellow-800 rounded-lg p-3 text-center w-40"><span class="font-bold">OPW FMS</span><span class="block text-xs">Hardware Robusto</span></div></div>
-                        <div class="p-2 flex justify-start items-end competitor-item"><div class="bg-blue-100 border border-blue-400 text-blue-800 rounded-lg p-3 text-center w-48"><span class="font-bold">Franklin Fueling</span><span class="block text-xs">Hardware + Cloud</span></div></div>
-                    </div>
-                    <p class="mt-10 text-center text-gray-600">
-                        Esta matriz visualiza el posicionamiento de GVR en el cuadrante superior derecho, destacando su fortaleza única: la combinación de un hardware de patio completo (surtidores, bombas, pago) y una plataforma IoT madura (Insite360).
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="estrategia" class="py-16 lg:py-24">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center reveal">
-                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Estrategia para Prologic Group</h2>
-                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">De Vendedor de Equipos a Socio Estratégico</p>
-                     <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                        El éxito no radica en vender productos, sino en entregar soluciones "llave en mano" que resuelvan problemas de negocio. Prologic está posicionado para ejecutar esta estrategia.
+        <section id="about" class="py-20 md:py-32">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-4xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">De la Logística a la Solución Integral</h2>
+                    <p class="text-lg text-gray-700 mb-8">
+                        Fundada en 1995, Prologic Group Inc. (PLG) ha evolucionado deliberadamente de ser un especialista en procura y logística a un proveedor integral de servicios de Ingeniería, Procura y Construcción (EPC). Esta transformación estratégica, impulsada por nuestra filosofía de que "El Conocimiento Vende", nos permite ser un socio de soluciones de fuente única para los proyectos industriales más complejos en los sectores del petróleo, el gas y la minería.
                     </p>
                 </div>
                 
-                <div class="mt-20">
-                    <h3 class="text-2xl font-bold text-gray-900 text-center mb-16 reveal">Ruta hacia el Liderazgo del Mercado</h3>
-                    <div class="relative">
-                        <div class="hidden md:block roadmap-line"></div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-12">
-                            <div class="text-center relative roadmap-step reveal"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">1</span></div><h4 class="mt-4 font-semibold text-gray-900">Formalizar Alianza</h4><p class="mt-1 text-sm text-gray-500">Definir un rol como socio de valor agregado o especialista con GVR LatAm.</p></div>
-                            <div class="text-center relative roadmap-step reveal" style="transition-delay: 150ms;"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">2</span></div><h4 class="mt-4 font-semibold text-gray-900">Empaquetar Solución</h4><p class="mt-1 text-sm text-gray-500">Crear una oferta "llave en mano" combinando FMS y la experiencia de Prologic.</p></div>
-                            <div class="text-center relative roadmap-step reveal" style="transition-delay: 300ms;"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">3</span></div><h4 class="mt-4 font-semibold text-gray-900">Marketing de Valor</h4><p class="mt-1 text-sm text-gray-500">Liderar con "Automatización de SICOM" y "ROI". Crear contenido y participar en gremios.</p></div>
-                            <div class="text-center relative roadmap-step reveal" style="transition-delay: 450ms;"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">4</span></div><h4 class="mt-4 font-semibold text-gray-900">Servicio Premium</h4><p class="mt-1 text-sm text-gray-500">Ejecutar un modelo de servicio de extremo a extremo: Consulta, Diseño, Implementación y Soporte.</p></div>
+                <div class="relative mt-20">
+                    <div class="timeline-line"></div>
+                    <div class="space-y-16">
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                                <h3 class="text-2xl font-bold text-accent">1995</h3>
+                                <p class="text-lg font-bold">Fundación Estratégica</p>
+                                <p class="text-gray-600">Fundada en Miramar, FL, como especialista en Adquisiciones y Logística para servir eficientemente al Caribe y Latinoamérica.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8"></div>
+                        </div>
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 md:order-2 md:pl-8 md:text-left text-center">
+                                <h3 class="text-2xl font-bold text-accent">2000s</h3>
+                                <p class="text-lg font-bold">Expansión de Capacidades</p>
+                                <p class="text-gray-600">Crecimiento a un proveedor de servicios completos para la industria petrolera, añadiendo capacidades de ingeniería y construcción.</p>
+                            </div>
+                             <div class="md:w-1/2 md:pl-8 md:order-1"></div>
+                        </div>
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                                <h3 class="text-2xl font-bold text-accent">2018</h3>
+                                <p class="text-lg font-bold">Diversificación y Crecimiento</p>
+                                <p class="text-gray-600">Expansión a los sectores de Minería y Petróleo Upstream, diversificando estratégicamente el modelo de servicio.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8"></div>
+                        </div>
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 md:order-2 md:pl-8 md:text-left text-center">
+                                <h3 class="text-2xl font-bold text-accent">2019</h3>
+                                <p class="text-lg font-bold">Alianzas Clave</p>
+                                <p class="text-gray-600">Obtención de acuerdos de distribución con gigantes de la industria como National Oilwell Varco (NOV) y Fluke Industrial.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8 md:order-1"></div>
+                        </div>
+
+                         <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                                <h3 class="text-2xl font-bold text-accent">Hoy</h3>
+                                <p class="text-lg font-bold">Líder Regional EPC</p>
+                                <p class="text-gray-600">Un socio EPC líder con un fuerte enfoque en mercados emergentes como Guyana y Surinam, impulsando el futuro energético de la región.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="industries" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-4xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Sectores de Especialización</h2>
+                    <p class="text-lg text-gray-700 mb-12">
+                        Nuestra pericia se concentra en los sectores más exigentes, donde la precisión, la seguridad y la fiabilidad no son opcionales. Entendemos los desafíos únicos de cada industria y ofrecemos soluciones EPC a medida que impulsan la eficiencia y el crecimiento.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal">
+                        <div class="text-6xl mb-4 text-accent">🛢️</div>
+                        <h3 class="text-xl font-bold mb-3">Petróleo y Gas (Upstream)</h3>
+                        <p class="text-gray-600 text-sm">Apoyamos las operaciones de exploración y producción, proveyendo la infraestructura y los servicios necesarios para la extracción segura y eficiente de recursos.</p>
+                    </div>
+                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal" style="transition-delay: 0.15s;">
+                        <div class="text-6xl mb-4 text-accent">⛽</div>
+                        <h3 class="text-xl font-bold mb-3">Petróleo y Gas (Downstream)</h3>
+                        <p class="text-gray-600 text-sm">Diseñamos y construimos terminales de almacenamiento, redes de oleoductos y plantas de procesamiento, garantizando la integridad de la cadena de suministro.</p>
+                    </div>
+                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal" style="transition-delay: 0.3s;">
+                        <div class="text-6xl mb-4 text-accent">⛏️</div>
+                        <h3 class="text-xl font-bold mb-3">Minería</h3>
+                        <p class="text-gray-600 text-sm">Ofrecemos soluciones EPC robustas para el sector minero, desde la infraestructura de la planta hasta la gestión y remediación ambiental de las operaciones.</p>
+                    </div>
+                    <div class="industry-card text-center p-8 bg-gray-50 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 scroll-reveal" style="transition-delay: 0.45s;">
+                        <div class="text-6xl mb-4 text-accent">🏭</div>
+                        <h3 class="text-xl font-bold mb-3">Industrial</h3>
+                        <p class="text-gray-600 text-sm">Aplicamos nuestra experiencia en gestión de proyectos complejos a una amplia gama de instalaciones industriales, mejorando la eficiencia y la seguridad.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-20 md:py-32">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">La Potencia EPC Integrada</h2>
+                    <p class="text-lg text-gray-700 mb-12">Nuestro modelo de Ingeniería, Procura y Construcción (EPC) ofrece un único punto de responsabilidad, reduciendo el riesgo y la carga de gestión del cliente. Gestionamos proyectos desde la concepción hasta la finalización, garantizando calidad, seguridad y eficiencia.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal">
+                        <div class="text-5xl mb-4 text-accent">①</div>
+                        <h3 class="text-2xl font-bold mb-3">Ingeniería y Diseño</h3>
+                        <p class="text-gray-600">Desde estudios de viabilidad y evaluaciones de sitio hasta ingeniería de valor detallada, diseñamos soluciones seguras, eficientes y conformes a las normativas más exigentes.</p>
+                    </div>
+                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal" style="transition-delay: 0.2s;">
+                        <div class="text-5xl mb-4 text-accent">②</div>
+                        <h3 class="text-2xl font-bold mb-3">Procura y Logística</h3>
+                        <p class="text-gray-600">Aprovechando nuestra red global y alianzas, obtenemos y entregamos los equipos y materiales adecuados a tiempo y dentro del presupuesto, gestionando toda la cadena de suministro.</p>
+                    </div>
+                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal" style="transition-delay: 0.4s;">
+                        <div class="text-5xl mb-4 text-accent">③</div>
+                        <h3 class="text-2xl font-bold mb-3">Construcción y Gestión</h3>
+                        <p class="text-gray-600">Nuestros equipos expertos gestionan la construcción, controlando costes, plazos y calidad, mientras garantizan los más altos estándares de seguridad en cada fase del proyecto.</p>
+                    </div>
+                </div>
+                 <div class="mt-16 text-center max-w-4xl mx-auto scroll-reveal">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Soluciones Especializadas</h3>
+                    <p class="text-lg text-gray-700 mb-8">Más allá del estándar, ofrecemos servicios críticos que demuestran nuestro compromiso con la responsabilidad y la excelencia técnica.</p>
+                    <div class="grid md:grid-cols-2 gap-8 text-left">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                             <h4 class="text-xl font-bold mb-2 text-primary">Evaluación y Remediación Ambiental</h4>
+                             <p class="text-gray-600">Posicionándonos como un socio consciente, ofrecemos investigaciones de sitio, soluciones de remediación y gestión de residuos para mitigar el impacto ambiental y garantizar el cumplimiento normativo.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h4 class="text-xl font-bold mb-2 text-primary">Venta y Distribución de Productos</h4>
+                            <p class="text-gray-600">Como distribuidores de marcas líderes como Fluke y NOV, no solo proveemos servicios, sino que ofrecemos acceso a tecnología de punta, añadiendo una capa de credibilidad y conocimiento técnico profundo.</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="mt-20 text-center reveal">
-                    <a href="https://prologicgroup.com/" target="_blank" class="inline-block text-white font-bold py-4 px-10 rounded-lg transition-transform duration-300 hover:scale-105" style="background-color: var(--primary);">
-                        Contactar a Prologic Group
-                    </a>
-                </div>
-
             </div>
+        </section>
+
+        <section id="map" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                 <div class="max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Alcance Global, Pericia Local</h2>
+                    <p class="text-lg text-gray-700 mb-12">Nuestra sede en Florida es la puerta de entrada a nuestra área de especialización: el Caribe, Centro y Sudamérica. Poseemos una larga historia de servicio y un profundo conocimiento local, especialmente en mercados energéticos de alto crecimiento.</p>
+                </div>
+                <div class="relative w-full max-w-4xl mx-auto aspect-video rounded-lg overflow-hidden shadow-2xl scroll-reveal">
+                    <img src="https://i.imgur.com/8TfgyJr.png" alt="Mapa de las Américas destacando el enfoque de Prologic Group" class="w-full h-full object-cover">
+                    
+                    <div class="map-hotspot" style="top: 50%; left: 24%;">
+                        <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Florida, EE. UU.</span><br>Sede Central y centro logístico para las Américas.
+                        </div>
+                    </div>
+                    <div class="map-hotspot" style="top: 72%; left: 46%;">
+                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Guyana</span><br>Apoyando uno de los mercados petroleros de más rápido crecimiento en el mundo.
+                        </div>
+                    </div>
+                    <div class="map-hotspot" style="top: 75%; left: 49%;">
+                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Surinam</span><br>Socio establecido en un mercado energético emergente y clave.
+                        </div>
+                    </div>
+                     <div class="map-hotspot" style="top: 65%; left: 33%;">
+                         <div class="map-tooltip absolute top-full mt-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Caribe y Centroamérica</span><br>Extensa red de servicio en toda la región.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="partners" class="py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                 <div class="max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Alianzas Estratégicas para Construir Credibilidad</h2>
+                    <p class="text-lg text-gray-700 mb-12">Nuestras alianzas con líderes de la industria nos permiten ofrecer tecnología de clase mundial e implementar soluciones certificadas, actuando como multiplicadores de fuerza que nos permiten competir al más alto nivel.</p>
+                </div>
+                <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-8">
+                    <div class="scroll-reveal" style="transition-delay: 0.1s;">
+                        <img src="https://i.imgur.com/KqYrk4a.png" alt="Logo de National Oilwell Varco (NOV)" class="h-16 md:h-20 grayscale hover:grayscale-0 transition-all duration-300">
+                    </div>
+                     <div class="scroll-reveal" style="transition-delay: 0.2s;">
+                        <img src="https://i.imgur.com/gA3d7yW.png" alt="Logo de Fluke Industrial" class="h-16 md:h-20 grayscale hover:grayscale-0 transition-all duration-300">
+                    </div>
+                     <div class="scroll-reveal" style="transition-delay: 0.3s;">
+                         <p class="text-xl font-bold text-gray-400 hover:text-primary transition-colors">Fusecon N.V.</p>
+                    </div>
+                     <div class="scroll-reveal" style="transition-delay: 0.4s;">
+                        <p class="text-xl font-bold text-gray-400 hover:text-primary transition-colors">PLG-Industrial & Mining</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-20 md:py-32 bg-primary text-white">
+             <div class="container mx-auto px-6 text-center">
+                <div class="max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Construyamos el Futuro. Juntos.</h2>
+                    <p class="text-lg text-gray-300 mb-12">Póngase en contacto con nuestro equipo de expertos para discutir cómo podemos ayudarle a alcanzar sus objetivos de proyecto.</p>
+                </div>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 text-left">
+                    <div class="scroll-reveal">
+                        <h3 class="text-2xl font-bold mb-4 text-accent">Información de Contacto</h3>
+                        <p class="mb-2"><strong>Dirección:</strong> 11400 Interchange Circle North, Miramar, Florida 33025, EE. UU.</p>
+                        <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:+19544335540" class="hover:text-accent">+1 (954) 433-5540</a></p>
+                        <p class="mb-2"><strong>Email:</strong> <a href="mailto:sales@prologicgroup.com" class="hover:text-accent">sales@prologicgroup.com</a></p>
+                    </div>
+                     <form id="contact-form" class="space-y-4 scroll-reveal" style="transition-delay: 0.2s;">
+                        <div>
+                            <label for="name" class="sr-only">Nombre</label>
+                            <input type="text" id="name" name="name" placeholder="Su Nombre" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label for="email" class="sr-only">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="Su Correo Electrónico" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors">
+                        </div>
+                         <div>
+                            <label for="message" class="sr-only">Mensaje</label>
+                            <textarea id="message" name="message" rows="4" placeholder="Su Mensaje" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-md text-lg transition-transform duration-300 transform hover:scale-105">
+                            Enviar Mensaje
+                        </button>
+                        <p id="form-status" class="text-center mt-4 h-6"></p>
+                    </form>
+                </div>
+             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-800 text-white">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <p>Este es un análisis interactivo basado en el informe de mercado para Prologic Group Inc.</p>
-            <p class="mt-1 opacity-70">© 2025. Todos los derechos reservados.</p>
+    <footer class="bg-gray-800 text-gray-400 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; <span id="year"></span> Prologic Group Inc. Todos los derechos reservados.</p>
         </div>
     </footer>
+
     <script>
-    /*!
-     * Chart.js v3.7.1
-     * https://www.chartjs.org
-     * (c) 2022 Chart.js Contributors
-     * Released under the MIT License
-     */
-    !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):((t="undefined"!=typeof globalThis?globalThis:t||self).Chart=e())}(this,function(){"use strict";const t={0:"undefined",1:"boolean",2:"number",3:"string",4:"symbol",5:"object"},e={undefined:0,boolean:1,number:2,string:3,symbol:4,object:5};function i(e){return t[typeof e]}const s={C:"#36A2EB",R:"#FF6384"};function n(t){if(t instanceof s)return t;const e="string"==typeof t?t:s[t];return new s(e)}function o(t){return t instanceof CanvasGradient||t instanceof CanvasPattern}function a(e){return o(e)?e:new n(e)}function r(t){return o(t)?t:new n(t).alpha(.5).rgbString()}function l(t,e){return t.ედა||e}function h(t,e,i){return Math.max(Math.min(t,i),e)}function c(t){return h(Math.round(255*t),0,255)}function d(t,e,i,s){return"rgba("+t+","+e+","+i+","+s+")"}const u=/^#([a-fA-F0-9]{3,4})$/,f=/^#([a-fA-F0-9]{6})([a-fA-F0-9]{2})?$/,p=/^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/;function m(t){const e=t.match(p);let i,s;if(!e)return null;const n=+e[1],o=+e[2],a=+e[3];return i=[n,o,a,s=255],void 0!==e[4]&&(s=15*+e[4]),i}function g(t){const e=t.length;let i,s,n;return"#"===t[0]&&(e-1)%3==0&&(i=1),(e-1-i)/3==1?s=[i,i+1,i+2]:s=[i,i+2,i+4],n=[+("0x"+t.slice(s[0],s[0]+1)+t.slice(s[0],s[0]+1)),+("0x"+t.slice(s[1],s[1]+1)+t.slice(s[1],s[1]+1)),+("0x"+t.slice(s[2],s[2]+1)+t.slice(s[2],s[2]+1))],4===e-i&&(n[3]=+("0x"+t.slice(i+3,i+4)+t.slice(i+3,i+4))),n}const v={aqua:[0,255,255],black:[0,0,0],blue:[0,0,255],fuchsia:[255,0,255],gray:[128,128,128],green:[0,128,0],lime:[0,255,0],maroon:[128,0,0],navy:[0,0,128],olive:[128,128,0],purple:[128,0,128],red:[255,0,0],silver:[192,192,192],teal:[0,128,128],white:[255,255,255],yellow:[255,255,0]};function b(t){let e=t.toLowerCase();return v[e]}const _=t=>t.toString(16).padStart(2,"0");function y(t){let e,i;const s=t.match(u);if(s)return e=s[1].slice(0,3),i=g(t),{r:i[0],g:i[1],b:i[2],a:4===e.length?Math.round(i[3]/15*255):255};const n=t.match(f);if(n)return i=n[2],{r:+("0x"+n[1].slice(0,2)),g:+("0x"+n[1].slice(2,4)),b:+("0x"+n[1].slice(4,6)),a:i?+("0x"+i):255};const o=m(t);if(o)return{r:o[0],g:o[1],b:o[2],a:o[3]};const a=b(t);if(a)return{r:a[0],g:a[1],b:a[2],a:255}}function x(t){const e=y(t);if(e)return d(e.r,e.g,e.b,e.a/255)}const w=Math.PI,k=2*w,M=k/360,A=w/180,S=Math.log2,P=t=>null==t,D=()=>0,C=t=>t,O=t=>"function"==typeof t,T=t=>O(t)?t():t,E=t=>t.length,L=Array.isArray;function R(t){if(!L(t))return!1;let e=t.length,i=0;for(;i<e;++i)if(P(t[i]))return!1;return!0}function I(t){if(t.scale)return t.scale.options;if(t.options)return t.options}function z(t){const e={};for(const i of t)if(null!==i)for(const s of Object.keys(i))e[s]=i[s];return e}function F(t){let e=!1;if(E(t)){e=new Array(t.length);for(let i=0;i<t.length;i++)e[i]=F(t[i])}else if("object"==i(t)&&null!==t){e={};for(const i in t)e[i]=F(t[i])}else e=t;return e}function V(t){const e=Object.create(null),i=Object.create(null);return function s(n){i[n]||(e[n]||(i[n]=!0,O(t[n])?e[n]=t[n]:e[n]=s(t[n]),i[n]=!1));return e[n]}}function B(t,e){const i=t[e];if(!i)return;const s=i.split(".");s.length>1&&s.pop();const n=s.join(".");return B(t,n)}const N=Object.freeze({__proto__:null,isNumber:P,valueOrDefault:D,callback:C,finite:O,isArray:L,isObject:t=>"object"==i(t)&&!L(t)&&null!==t,isFinite:isFinite,toFinite:T,isNullOrUndef:P,callback:T,each:R,_elementsEqual:function(t,e){if(!t||!e||t.length!==e.length)return!1;for(let i=0;i<t.length;i++){if(t[i].x!==e[i].x)return!1;if(t[i].y!==e[i].y)return!1;if(t[i].angle!==e[i].angle)return!1}return!0},clone:F,merge:z,merger:function(t,e,i){return z([t,e,i])},_merger:function(t,e,i,s){return z([t,e,i,s])},_mergerIf(t,e,i){const s=z([t,e]);for(const n in i)s.hasOwnProperty(n)||(s[n]=i[n]);return s},_deprecated:function(t,e,i,s){void 0!==e&&console.warn(t+': "'+i+'" is deprecated. Please use "'+s+'" instead')},resolve:B});function j(t,e){const i=I(t);if(i){const s=i[e];if(s)return s}return t[e]}function W(t,e){const i=I(t);if(i){const s=i.animation;if(!1===s)return null;if(O(s))return s({chart:t,numSteps:e.numSteps,currentState:e})}return t.animation}function H(t,e){const i=W(t,e);if(i)return i[e]}function Y(t,e,i,s){const n=W(t,e),o=H(t,i);if(n&&o)return n.duration*s*o.to/o.from;return 0}const U=["x","y","borderWidth","radius","tension"],Z=["color","borderColor","backgroundColor"],q="add";class X{constructor(){this._request=null,this._charts=new Map,this._running=!1,this._lastDate=void 0}request(t){this._request=t;const e=this;e._running||(e._running=!0,requestAnimationFrame((function(){var t,i;const s=e._lastDate,n=Date.now();e._lastDate=n,s&&e._charts.forEach(((t,i)=>{if(t.options.animation)for(const s in t.options.animation)H(t,s)&&(t.data.datasets.forEach((e=>{"function"!=typeof(i=e.animation)?t.options.animation[s]=e.animation[s]:(i=e.animation({chart:t,numSteps:1,currentState:void 0}),i&&(t.options.animation[s]=i[s]))})),t.update(s));t.draw()})),(t=e,i=t._request,t._request=null,i&&i(n-s)),e._running=!1})))}add(t){this._charts.set(t,!0)}remove(t){this._charts.delete(t)}}let G;function K(){return G||(G=new X),G}const J=Object.freeze({__proto__:null,_isDomSupported:()=>"undefined"!=typeof window,acquireContext:(t,e)=>{const i=t.canvas,s=i&&i.getContext("2d");if(s&&s.canvas===i){const t=s.canvas.width,o=s.canvas.height;return(e.width!==t||e.height!==o)&&(i.width=e.width,i.height=e.height,e.retina&&s.scale(2,2)),s}return null},getMaximumSize:(t,e,i)=>{let s=e,n=i;if(void 0!==t.style.maxWidth)s=Math.min(s,t.style.maxWidth);if(void 0!==t.style.maxHeight)n=Math.min(n,t.style.maxHeight);return{width:s,height:n}},getStyle:(t,e)=>{let i=t.style.getPropertyValue(e);if(i)return i;const s=t.ownerDocument.defaultView.getComputedStyle(t);return s?s.getPropertyValue(e):""},getRelativePosition:(t,e)=>{const i=e.canvas.getBoundingClientRect();let s,n;s=t.touches?t.touches[0].clientX:t.clientX;n=t.touches?t.touches[0].clientY:t.clientY;return{x:s-i.left,y:n-i.top}},getDevicePixelRatio:()=>window.devicePixelRatio,retinaScale:(t,e)=>{const i=e.width,s=e.height;t.canvas.width=i*window.devicePixelRatio,t.canvas.height=s*window.devicePixelRatio,t.canvas.style.width=i+"px",t.canvas.style.height=s+"px",t.scale(window.devicePixelRatio,window.devicePixelRatio)},isAttached:t=>{const e=t.canvas.getRootNode&&t.canvas.getRootNode();return!(!e||!e.host)}}),Q=["touchstart","touchmove","touchend","pointerenter","pointerleave","pointerdown","pointermove","pointerup","mousedown","mouseup","mouseout","mouseenter","mousemove"];const $=new Map;function ee(t,e){let i=$.get(t);if(i)return i;i=new Map;const s=new Set;for(const n in t)s.add(n);return s.forEach((s=>{i.set(s,e[s])})),$.set(t,i),i}const te=/^(.+?)(?::(x|y|r))?$/;function ie(t,e){const i=t.split("."),s=i.pop(),n=te.exec(s),o={property:n[1],axis:n[2]||"x"};return o.property?function(t,e,i,s){const n=i.split(".");let o=n.pop(),a=t;for(const t of n)if(P(t))a=a[t];else a=a(t);return a&&a[o]&&a[o][e]?a[o][e]:s}(t,o,s,e):o}function se(t,e){return"number"!=typeof t&&"string"!=typeof t?t:e}const ne={x:{min:"left",max:"right"},y:{min:"top",max:"bottom"}},oe=Object.freeze({__proto__:null,listen:(t,e,i)=>{t.addEventListener(e,i)},unlisten:(t,e,i)=>{t.removeEventListener(e,i)},getAngleFromPoint:function(t,e){const i=e.y-t.y,s=e.x-t.x;return{angle:Math.atan2(i,s),distance:Math.sqrt(i*i+s*s)}},distanceBetweenPoints:(t,e)=>Math.sqrt(Math.pow(e.x-t.x,2)+Math.pow(e.y-t.y,2)),_getEvent(t,e){const i=J.getRelativePosition(t,e);return i},bindEvents:function(t,e,i){const s=t.events,n=t.options.events;if(!e.length)return;const o=new Set(n),a=(s,n)=>{o.has(s)&&i(n,t)};for(const i of e)t.canvas.addEventListener(i,a)},unbindEvents:function(t,e,i){e.forEach((e=>{t.canvas.removeEventListener(e,i)}))}});const ae={0:D,1:(t,e,i)=>h(t,e,i),2:t=>Math.pow(2,10*(t-1)),3:t=>1-Math.pow(2,-10*t),4:t=>t<.5?Math.pow(2,20*t-10)/2:(2-Math.pow(2,-20*t+10))/2,5:t=>-Math.cos(t*Math.PI/2)+1,6:t=>Math.sin(t*Math.PI/2),7:t=>Math.cos(t*Math.PI/2),8:t=>1-Math.sqrt(1-Math.pow(t,2)),9:t=>Math.sqrt(1-Math.pow(t-1,2)),10:t=>(t*=2)<1?-.5*(Math.sqrt(1-t*t)-1):.5*(Math.sqrt(1-(t-=2)*t)+1),11:t=>t<.5?4*t*t*t:1+Math.pow(2*t-2,3)/ -2,12:t=>Math.pow(t,3),13:t=>Math.pow(t-1,3)+1,14:t=>t<.5?Math.pow(2*t,4)/2:-(Math.pow(2*t-2,4)-2)/2,15:t=>Math.pow(t,4),16:t=>-(Math.pow(t-1,4)-1),17:t=>t<.5?Math.pow(2*t,5)/2:(Math.pow(2*t-2,5)+2)/2,18:t=>Math.pow(t,5),19:t=>Math.pow(t-1,5)+1,20:t=>t<=0?0:t>=1?1:(t/=.5)<1?.5*Math.pow(2,10*(t-1)):.5*(-Math.pow(2,-10*--t)+2),21:t=>t<=0?0:t>=1?1:Math.pow(2,10*(t-1)),22:t=>t<=0?0:t>=1?1:1-Math.pow(2,-10*t),23:t=>t<.5?Math.sin(13*Math.PI/2*2*t)*Math.pow(2,10*(2*t-1))*.5:.5*(Math.sin(-13*Math.PI/2*(2*t-1+1))*Math.pow(2,-10*(2*t-1))+2),24:t=>Math.sin(13*Math.PI/2*t)*Math.pow(2,10*(t-1)),25:t=>Math.sin(-13*Math.PI/2*(t+1))*Math.pow(2,-10*t)+1,26:t=>(t/=Math.PI/2)<1?-.5*(Math.cos(Math.PI*t)-1):.5*(Math.cos(Math.PI*(t-1))+1),27:t=>Math.sin(Math.PI*t),28:t=>-(Math.cos(Math.PI*t)-1)/2,29:()=>1,30:t=>t,31:t=>1-t};function re(t){const e=j(t,"easing");return O(e)?e:ae[e]}const le=N.isNullOrUndef;function he(t){return(t=(t||"").trim())?t.split(/\s+/):[]}const ce={values:t=>t,numeric:function(t,e,i,s){const n=Math.round;let o,a,r,l;return r=s.length,(o=new Array(r),a=new Array(r)),l=(s[0]-s[r-1])/Math.max(r-1,1),ce._do(t,e,i,s,o,a,l,n)}
-        // ... a lot of minified code ...
-        ,ce.color=function(t,e,i,s){const n=s.length;let o=new Array(n),a=new Array(n);const r=t=>new s(t).rgba;return ce._do(t,e,i,s,o,a,{values:s,properties:{r:r,g:r,b:r,a:r}},c)}};return Chart.register(ln,wn,xn,En,Ln),Chart.helpers=p,Object.freeze({__proto__:null,Animations:U,Chart:rn,DatasetController:Y,Element:P,Interaction:Qt,Legend:cn,Scale:V,Ticks:Jt,Title:dn,Tooltip:gn,_adapters:nt,_detectPlatform:b,animator:T,defaults:y,layouts:vn,registry:d})});
-
-    document.addEventListener('DOMContentLoaded', function() {
-            const painPointsData = {
-                retail: {
-                    icon: '🏪',
-                    title: 'Retail (EDS)',
-                    points: [
-                        { icon: '💲', title: 'Presión sobre Márgenes', description: 'Precios regulados eliminan la flexibilidad. La única vía es la eficiencia y control de costos.' },
-                        { icon: '💧', title: 'Pérdida de Combustible (Merma)', description: 'Pérdidas por temperatura, robo, fugas y descalibración impactan directamente la utilidad.' },
-                        { icon: '📈', title: 'Altos Costos Operativos', description: 'Costos de personal amenazan la viabilidad de estaciones de bajo volumen.' }
-                    ]
-                },
-                flotas: {
-                    icon: '🚚',
-                    title: 'Flotas Comerciales',
-                    points: [
-                        { icon: '⛽', title: 'Costo del Combustible', description: 'Representa hasta el 40% de los costos operativos totales, agravado por el aumento de precios.' },
-                        { icon: '🕵️', title: 'Robo Sistemático', description: 'El "pimpineo" puede causar pérdidas de hasta el 18% del gasto en combustible.' },
-                        { icon: '📉', title: 'Ineficiencias Operativas', description: 'Rutas no optimizadas y malos hábitos de conducción inflan el consumo.' }
-                    ]
-                },
-                mineria: {
-                    icon: '⛏️',
-                    title: 'Minería e Industria',
-                    points: [
-                        { icon: '🔥', title: 'Consumo Extremo', description: 'Un solo camión minero puede consumir 350L/hora. La imprecisión genera costos astronómicos.' },
-                        { icon: '🏞️', title: 'Entorno Hostil', description: 'Exige equipos robustos, duraderos y resistentes a la contaminación.' },
-                        { icon: '🛰️', title: 'Supervisión Remota', description: 'Demanda de despacho y gestión de inventario centralizada para volúmenes masivos.' }
-                    ]
-                }
-            };
-
-            function renderPainPoints() {
-                const container = document.getElementById('pain-points-content');
-                container.innerHTML = ''; 
-                ['retail', 'flotas', 'mineria'].forEach((segment, index) => {
-                    const content = painPointsData[segment];
-                    let cardHtml = `
-                    <div class="flip-card reveal" style="transition-delay: ${index * 150}ms;">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="text-6xl mb-4">${content.icon}</div>
-                                <h3 class="text-2xl font-bold" style="color: var(--primary);">${content.title}</h3>
-                            </div>
-                            <div class="flip-card-back">
-                                <ul class="text-left space-y-3">`;
-                    content.points.forEach(point => {
-                        cardHtml += `<li class="flex items-start"><span class="mr-3">${point.icon}</span><span><strong>${point.title}:</strong> ${point.description}</span></li>`;
-                    });
-                    cardHtml += `</ul>
-                            </div>
-                        </div>
-                    </div>`;
-                    container.innerHTML += cardHtml;
-                });
-            }
-
-            renderPainPoints();
-
-            const marketShareCtx = document.getElementById('marketShareChart').getContext('2d');
-            new Chart(marketShareCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Terpel', 'Primax', 'Biomax', 'Independientes y Otros'],
-                    datasets: [{
-                        label: 'Cuota de Mercado',
-                        data: [45, 24, 16, 15], 
-                        backgroundColor: ['#003366', '#5D8AA8', '#A9C2D4', '#D4A017'],
-                        borderColor: '#F8F9FA',
-                        borderWidth: 4,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { padding: 20, font: { family: "'Inter', sans-serif" } } },
-                        tooltip: { callbacks: { label: (c) => `${c.label}: ${c.parsed}%` } }
-                    },
-                    cutout: '60%',
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
-                    }
-                }
-            });
-
-            const solutionTabs = document.querySelectorAll('.solution-tab');
-            const solutionContents = document.querySelectorAll('.solution-content');
-            solutionTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    solutionTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    solutionContents.forEach(c => c.classList.add('hidden'));
-                    const target = document.getElementById(`${tab.dataset.target}-content`);
-                    if(target) {
-                        target.classList.remove('hidden');
-                        target.classList.remove('fade-in');
-                        void target.offsetWidth;
-                        target.classList.add('fade-in');
-                    }
-                });
-            });
-
-            // Mobile menu logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
             const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const closeMenuButton = document.getElementById('close-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
-            const menuBackdrop = document.getElementById('menu-backdrop');
-            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-
-            function openMenu() {
-                mobileMenu.classList.add('open');
-                menuBackdrop.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeMenu() {
-                mobileMenu.classList.remove('open');
-                menuBackdrop.classList.add('hidden');
-                document.body.style.overflow = '';
-            }
-
-            mobileMenuButton.addEventListener('click', openMenu);
-            closeMenuButton.addEventListener('click', closeMenu);
-            menuBackdrop.addEventListener('click', closeMenu);
-            mobileNavLinks.forEach(link => {
-                link.addEventListener('click', closeMenu);
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
             });
-
-
-            const navLinks = document.querySelectorAll('.main-nav a.nav-link');
-            const navIndicator = document.getElementById('nav-indicator');
-            let header = document.getElementById('header');
-
-            function updateNavIndicator(element) {
-                if (!element || !navIndicator) return;
-                navIndicator.style.width = `${element.offsetWidth}px`;
-                navIndicator.style.transform = `translateX(${element.offsetLeft}px)`;
-            }
-
-            const scrollObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const id = entry.target.getAttribute('id');
-                    const activeLink = document.querySelector(`.main-nav a[href="#${id}"]`);
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => link.classList.remove('active'));
-                        if (activeLink) {
-                            activeLink.classList.add('active');
-                            updateNavIndicator(activeLink);
-                        }
-                    }
+            
+            // Close mobile menu when a link is clicked
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
                 });
-            }, { rootMargin: "-40% 0px -60% 0px" });
-
-            document.querySelectorAll('main section[id]').forEach(section => scrollObserver.observe(section));
-            
-            // Set initial indicator position
-            setTimeout(() => {
-                const initialActiveLink = document.querySelector('.main-nav a.nav-link.active');
-                if (initialActiveLink) {
-                    updateNavIndicator(initialActiveLink);
-                } else if (navLinks.length > 0){
-                    navLinks[0].classList.add('active');
-                    updateNavIndicator(navLinks[0]);
-                }
-            }, 100);
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - header.offsetHeight,
-                            behavior: 'smooth'
-                        });
-                    }
-                })
-            })
-
-
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    header.classList.add('shadow-md');
-                } else {
-                    header.classList.remove('shadow-md');
-                }
             });
-            
-            const revealElements = document.querySelectorAll('.reveal');
-            const revealObserver = new IntersectionObserver((entries, observer) => {
+
+            // Scroll animations
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1 });
+            }, {
+                threshold: 0.1
+            });
 
-            revealElements.forEach(el => revealObserver.observe(el));
+            const elementsToReveal = document.querySelectorAll('.scroll-reveal');
+            elementsToReveal.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Sticky Header
+            const header = document.getElementById('header');
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    header.style.top = '-100px';
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+
+            // Set current year in footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // Contact Form Submission
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                formStatus.textContent = 'Enviando...';
+                formStatus.style.color = '#91a6be';
+
+                setTimeout(() => {
+                    formStatus.textContent = '¡Mensaje enviado con éxito!';
+                    formStatus.style.color = '#4ade80'; 
+                    contactForm.reset();
+                     setTimeout(() => {
+                        formStatus.textContent = '';
+                     }, 3000);
+                }, 1000);
+            });
         });
     </script>
 </body>
