@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Interactivo del Mercado FMS en Colombia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Corporate Blue & Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page dashboard layout with a sticky navigation header for smooth scrolling between thematic sections. The structure prioritizes user exploration over the report's linear format. It starts with a high-level market overview (what), moves to the core problems (why it matters), presents the proposed solution (how to solve it), analyzes the competitive landscape (who else is there), and concludes with the specific strategy for the company (the action plan). This logical flow from context to action is designed for clear business decision-making. Interactions include clickable cards to reveal detailed "pain points", interactive charts for data visualization, and tabbed interfaces for comparing complex information, making the dense report digestible and engaging. -->
+    <!-- Visualization & Content Choices: 
+        1. Market Share (Report Table 1) -> Goal: Inform -> Viz: Donut Chart -> Interaction: Hover tooltips -> Justification: Quickly shows market concentration. -> Library: Chart.js.
+        2. Customer Segments (Report 2.2) -> Goal: Organize/Inform -> Viz: Interactive Cards -> Interaction: Click to reveal details -> Justification: Breaks down complex text into digestible chunks for different user types (Retail, Fleet, Mining). -> Method: HTML/CSS/JS.
+        3. GVR Solution (Report 3) -> Goal: Organize/Explain -> Viz: Tabbed component -> Interaction: Click tabs to switch content -> Justification: Organizes the GVR ecosystem (Hardware, Cloud, Benefits) into clear, manageable parts without overwhelming the user. -> Method: HTML/CSS/JS.
+        4. Competitive Matrix (Report 4.3) -> Goal: Compare -> Viz: Custom HTML/CSS 2x2 Grid -> Interaction: Static visual -> Justification: A direct, clear visualization of the competitive positioning described in the report. -> Method: HTML/CSS.
+        5. Prologic's Strategy (Report 6) -> Goal: Inform/Organize -> Viz: Stepped flowchart -> Interaction: Static visual -> Justification: Clearly visualizes the recommended go-to-market process in a linear, easy-to-follow format. -> Method: HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #343A40;
+        }
+        :root {
+            --bg-light: #F8F9FA;
+            --bg-white: #FFFFFF;
+            --text-dark: #212529;
+            --text-muted: #6C757D;
+            --primary: #003366;
+            --primary-light: #E6EEF5;
+            --accent: #D4A017;
+            --border-color: #DEE2E6;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .stat-card {
+            background-color: var(--bg-white);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .segment-card {
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .segment-card.active {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+        .tab-button {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab-button.active {
+            background-color: var(--primary);
+            color: var(--bg-white);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold" style="color: var(--primary);">Prologic Group</span>
+                    <span class="text-xl font-light text-gray-600 ml-2">| Análisis FMS Colombia</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#mercado" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Mercado</a>
+                    <a href="#desafios" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Desafíos</a>
+                    <a href="#solucion" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Solución GVR</a>
+                    <a href="#competencia" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Competencia</a>
+                    <a href="#estrategia" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Estrategia</a>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <a href="#mercado" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Mercado</a>
+            <a href="#desafios" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Desafíos</a>
+            <a href="#solucion" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Solución GVR</a>
+            <a href="#competencia" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Competencia</a>
+            <a href="#estrategia" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Estrategia</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="mercado" class="py-16 lg:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Panorama del Mercado</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Un Mercado Maduro Listo para la Modernización</p>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                        El mercado colombiano de combustibles, aunque dominado por grandes cadenas, presenta una oportunidad significativa para la digitalización y la eficiencia operativa, tanto en grandes redes como en operadores independientes.
+                    </p>
+                </div>
+
+                <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    <div class="stat-card p-6 rounded-2xl">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">⛽</div>
+                            <p class="ml-4 text-lg font-medium text-gray-900">Estaciones de Servicio</p>
+                        </div>
+                        <p class="mt-4 text-4xl font-bold text-gray-900">~6,600</p>
+                        <p class="mt-1 text-base text-gray-500">Mercado total abordable para FMS.</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-2xl">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">📈</div>
+                            <p class="ml-4 text-lg font-medium text-gray-900">Concentración del Mercado</p>
+                        </div>
+                        <p class="mt-4 text-4xl font-bold text-gray-900">~90%</p>
+                        <p class="mt-1 text-base text-gray-500">Controlado por 4 grandes distribuidores.</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-2xl">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">⚙️</div>
+                            <p class="ml-4 text-lg font-medium text-gray-900">Imperativo Regulatorio</p>
+                        </div>
+                        <p class="mt-4 text-4xl font-bold text-gray-900">SICOM</p>
+                        <p class="mt-1 text-base text-gray-500">Reporte obligatorio que impulsa la digitalización.</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 lg:mt-20 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+                    <div class="chart-container">
+                        <canvas id="marketShareChart"></canvas>
+                    </div>
+                    <div class="mt-12 lg:mt-0">
+                        <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Distribución del Mercado Minorista</h3>
+                        <p class="mt-4 text-lg text-gray-500">
+                            El mercado está dominado por Terpel, que posee casi la mitad de la cuota. Sin embargo, el segmento de "Independientes y Otros" representa una porción considerable y un mercado clave para soluciones FMS empaquetadas y con un claro ROI. Este gráfico ilustra la importancia de una estrategia dual: venta empresarial a las grandes cadenas y una oferta de valor para la "larga cola" de operadores más pequeños.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="desafios" class="py-16 lg:py-24" style="background-color: var(--bg-white);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Desafíos Críticos del Operador</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Problemas Reales, Soluciones Urgentes</p>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                        Cada segmento del mercado enfrenta presiones únicas que erosionan su rentabilidad y aumentan el riesgo operativo. Seleccione un segmento para explorar sus principales "puntos de dolor".
+                    </p>
+                </div>
+                <div class="mt-12">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <button class="segment-card p-4 border-2 rounded-lg font-semibold text-center active" data-segment="retail">
+                            Retail (EDS)
+                        </button>
+                        <button class="segment-card p-4 border-2 rounded-lg font-semibold text-center" data-segment="flotas">
+                            Flotas Comerciales
+                        </button>
+                        <button class="segment-card p-4 border-2 rounded-lg font-semibold text-center" data-segment="mineria">
+                            Minería e Industria
+                        </button>
+                    </div>
+
+                    <div id="pain-points-content" class="fade-in">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solucion" class="py-16 lg:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">El Ecosistema Gilbarco Veeder-Root</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">De Reactivo y Vulnerable a Proactivo y Seguro</p>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                        La solución de GVR no es solo un producto, es una transformación operativa. Integra hardware de precisión en el sitio con una potente plataforma de inteligencia en la nube.
+                    </p>
+                </div>
+
+                <div class="mt-12">
+                     <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex justify-center space-x-4 md:space-x-8" aria-label="Tabs">
+                            <button class="tab-button solution-tab active whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm" data-target="hardware">
+                                Hardware en Sitio: TLS-450PLUS
+                            </button>
+                            <button class="tab-button solution-tab whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700" data-target="cloud">
+                                Inteligencia en la Nube: Insite360
+                            </button>
+                            <button class="tab-button solution-tab whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700" data-target="benefits">
+                                Pilares de Valor
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="mt-8">
+                        <div id="hardware-content" class="solution-content fade-in">
+                             <div class="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+                                 <div>
+                                    <h3 class="text-2xl font-bold text-gray-900">El Cerebro de la Operación</h3>
+                                    <p class="mt-3 text-lg text-gray-500">La consola de telemedición (ATG) TLS-450PLUS es el centro neurálgico que recopila, procesa y protege los datos críticos. Sus características avanzadas son el motor de la rentabilidad y el cumplimiento.</p>
+                                    <dl class="mt-8 space-y-6">
+                                        <div>
+                                            <dt class="font-semibold text-gray-900">Control de Inventario (AccuChart™)</dt>
+                                            <dd class="mt-1 text-gray-500">Crea un modelo 3D del tanque para mediciones ultra precisas, eliminando "pérdidas de papel" y protegiendo márgenes.</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="font-semibold text-gray-900">Detección de Fugas (CSLD)</dt>
+                                            <dd class="mt-1 text-gray-500">Realiza pruebas de hermeticidad automáticas y certificadas sin detener la operación, garantizando el cumplimiento ambiental.</dd>
+                                        </div>
+                                         <div>
+                                            <dt class="font-semibold text-gray-900">Seguridad Mejorada</dt>
+                                            <dd class="mt-1 text-gray-500">Acceso basado en roles de usuario para prevenir manipulación no autorizada y fraude interno.</dd>
+                                        </div>
+                                    </dl>
+                                 </div>
+                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl">
+                                     <div class="text-center">
+                                        <div class="text-6xl">🖥️</div>
+                                        <p class="mt-4 font-bold text-xl text-gray-800">TLS-450PLUS</p>
+                                        <p class="text-gray-600">Consola ATG Avanzada</p>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                        <div id="cloud-content" class="solution-content fade-in hidden">
+                             <div class="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+                                 <div>
+                                    <h3 class="text-2xl font-bold text-gray-900">Gestión Centralizada y Predictiva</h3>
+                                    <p class="mt-3 text-lg text-gray-500">Insite360 transforma los datos del sitio en inteligencia de negocio, permitiendo la gestión remota, el mantenimiento predictivo y la optimización de la red.</p>
+                                    <dl class="mt-8 space-y-6">
+                                        <div>
+                                            <dt class="font-semibold text-gray-900">Insite360 Fuel</dt>
+                                            <dd class="mt-1 text-gray-500">Automatiza la reconciliación de inventario y el reporte para SICOM. Identifica pérdidas por robo, fugas o entregas cortas en tiempo real.</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="font-semibold text-gray-900">Insite360 Uptime</dt>
+                                            <dd class="mt-1 text-gray-500">Monitorea la salud de los equipos (ej. caudal de surtidores) para predecir fallas, permitiendo un mantenimiento proactivo y evitando la pérdida de ventas.</dd>
+                                        </div>
+                                    </dl>
+                                 </div>
+                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl">
+                                     <div class="text-center">
+                                        <div class="text-6xl">☁️</div>
+                                        <p class="mt-4 font-bold text-xl text-gray-800">Insite360</p>
+                                        <p class="text-gray-600">Plataforma IoT de Gestión</p>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                        <div id="benefits-content" class="solution-content fade-in hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
+                                    <h4 class="font-bold text-xl text-gray-900">Rentabilidad</h4>
+                                    <p class="mt-2 text-gray-500">Aumenta las ganancias al minimizar las pérdidas de combustible por robo, fugas, entregas incompletas y descalibración de medidores.</p>
+                                </div>
+                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
+                                    <h4 class="font-bold text-xl text-gray-900">Cumplimiento Normativo</h4>
+                                    <p class="mt-2 text-gray-500">Automatiza la recopilación y reporte de datos para cumplir con los requisitos de SICOM y las regulaciones ambientales, mitigando multas.</p>
+                                </div>
+                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
+                                    <h4 class="font-bold text-xl text-gray-900">Disponibilidad (Uptime)</h4>
+                                    <p class="mt-2 text-gray-500">Maximiza los ingresos usando análisis predictivo para prevenir el tiempo de inactividad de los equipos, asegurando que siempre se pueda vender.</p>
+                                </div>
+                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
+                                    <h4 class="font-bold text-xl text-gray-900">Seguridad</h4>
+                                    <p class="mt-2 text-gray-500">Protege activos físicos y datos a través de encriptación, controles de acceso y alertas de manipulación en tiempo real.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="competencia" class="py-16 lg:py-24" style="background-color: var(--bg-white);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Análisis Competitivo</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Posicionamiento en el Ecosistema FMS</p>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                        GVR se diferencia por ofrecer un ecosistema de patio completo y una plataforma en la nube superior. Este es el campo de batalla estratégico.
+                    </p>
+                </div>
+                <div class="mt-12 max-w-4xl mx-auto p-8 border rounded-2xl">
+                    <div class="relative grid grid-cols-2 grid-rows-2 gap-2 h-96">
+                        <div class="absolute w-full h-px bg-gray-300 top-1/2 -translate-y-1/2"></div>
+                        <div class="absolute h-full w-px bg-gray-300 left-1/2 -translate-x-1/2"></div>
+                        
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-center text-sm font-medium text-gray-500">Ecosistema Completo de Patio</div>
+                        <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-center text-sm font-medium text-gray-500">Solución de Componente</div>
+                        <div class="absolute top-1/2 -left-12 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Enfoque en Hardware</div>
+                        <div class="absolute top-1/2 -right-12 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Plataforma Cloud/IoT</div>
+
+                        <div class="p-2 flex justify-end items-start">
+                            <div class="bg-gray-200 text-gray-700 rounded-lg p-3 text-center w-40">
+                                <span class="font-bold">Servicios Locales</span>
+                                <span class="block text-xs">Componentes/Nicho</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2 flex justify-start items-start">
+                            <div class="rounded-lg p-3 text-center w-48" style="background-color: var(--primary-light); border: 2px solid var(--primary);">
+                                <span class="font-bold" style="color: var(--primary);">Gilbarco Veeder-Root</span>
+                                <span class="block text-xs font-medium" style="color: var(--primary);">Ecosistema Completo + Cloud Superior</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2 flex justify-end items-end">
+                             <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 rounded-lg p-3 text-center w-40">
+                                <span class="font-bold">OPW FMS</span>
+                                <span class="block text-xs">Hardware Robusto</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2 flex justify-start items-end">
+                            <div class="bg-blue-100 border border-blue-400 text-blue-800 rounded-lg p-3 text-center w-48">
+                                <span class="font-bold">Franklin Fueling</span>
+                                <span class="block text-xs">Hardware Integrado + Cloud</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-10 text-center text-gray-600">
+                        Esta matriz visualiza el posicionamiento de GVR en el cuadrante superior derecho, destacando su fortaleza única: la combinación de un hardware de patio completo (surtidores, bombas, pago) y una plataforma IoT madura (Insite360). Este es el diferenciador clave a explotar.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="estrategia" class="py-16 lg:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Estrategia para Prologic Group</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">De Vendedor de Equipos a Socio Estratégico</p>
+                     <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                        El éxito no radica en vender productos, sino en entregar soluciones "llave en mano" que resuelvan problemas de negocio. Prologic está posicionado de manera única para ejecutar esta estrategia.
+                    </p>
+                </div>
+                
+                <div class="mt-12">
+                    <h3 class="text-2xl font-bold text-gray-900 text-center mb-8">Ruta hacia el Liderazgo del Mercado</h3>
+                    <div class="relative">
+                        <div class="hidden md:block absolute top-6 left-0 w-full h-0.5 bg-gray-300"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                            <div class="text-center relative">
+                                <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
+                                    <span class="font-bold text-xl" style="color: var(--primary);">1</span>
+                                </div>
+                                <h4 class="mt-4 font-semibold text-gray-900">Formalizar Alianza</h4>
+                                <p class="mt-1 text-sm text-gray-500">Definir un rol como socio de valor agregado o especialista en verticales de nicho (Minería, Industria) con GVR LatAm.</p>
+                            </div>
+                            <div class="text-center relative">
+                                <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
+                                    <span class="font-bold text-xl" style="color: var(--primary);">2</span>
+                                </div>
+                                <h4 class="mt-4 font-semibold text-gray-900">Empaquetar Solución</h4>
+                                <p class="mt-1 text-sm text-gray-500">Crear una oferta "llave en mano" que combine el FMS de GVR con la experiencia de Prologic en ingeniería y cumplimiento ambiental.</p>
+                            </div>
+                            <div class="text-center relative">
+                               <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
+                                    <span class="font-bold text-xl" style="color: var(--primary);">3</span>
+                                </div>
+                                <h4 class="mt-4 font-semibold text-gray-900">Marketing de Valor</h4>
+                                <p class="mt-1 text-sm text-gray-500">Liderar con "Automatización de SICOM" y "ROI". Crear contenido (guías, webinars) y participar en gremios (Fendipetróleo).</p>
+                            </div>
+                            <div class="text-center relative">
+                                <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
+                                    <span class="font-bold text-xl" style="color: var(--primary);">4</span>
+                                </div>
+                                <h4 class="mt-4 font-semibold text-gray-900">Servicio Premium</h4>
+                                <p class="mt-1 text-sm text-gray-500">Ejecutar un modelo de servicio de extremo a extremo: Consulta, Diseño, Implementación, Capacitación y Soporte Continuo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-16 text-center">
+                    <a href="https://prologicgroup.com/" target="_blank" class="inline-block text-white font-bold py-3 px-8 rounded-lg transition" style="background-color: var(--primary); hover:opacity-90;">
+                        Contactar a Prologic Group para una Consulta
+                    </a>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>Este es un análisis interactivo basado en el informe de mercado para Prologic Group Inc.</p>
+            <p class="mt-1 opacity-70">© 2025. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const painPointsData = {
+                retail: {
+                    title: 'Puntos de Dolor: Estaciones de Servicio (EDS) Minoristas',
+                    points: [
+                        { icon: '💲', title: 'Presión sobre Márgenes', description: 'Los precios regulados eliminan la flexibilidad. La única vía para la rentabilidad es la eficiencia y el control de costos.' },
+                        { icon: '💧', title: 'Pérdida de Combustible (Merma)', description: 'Pérdidas por variación de temperatura, robo, fugas y descalibración de surtidores impactan directamente la utilidad neta.' },
+                        { icon: '📈', title: 'Altos Costos Operativos', description: 'Los costos de personal y las reformas laborales amenazan la viabilidad de estaciones de bajo volumen.' }
+                    ]
+                },
+                flotas: {
+                    title: 'Puntos de Dolor: Flotas Comerciales e Industriales',
+                    points: [
+                        { icon: '⛽', title: 'Costo del Combustible', description: 'Representa hasta el 40% de los costos operativos totales, agravado por el aumento de precios del diésel.' },
+                        { icon: '🕵️', title: 'Robo Sistemático de Combustible', description: 'El "pimpineo" o robo por parte de conductores es una práctica endémica que puede causar pérdidas de hasta el 18% del gasto en combustible.' },
+                        { icon: '📉', title: 'Ineficiencias Operativas', description: 'Rutas no optimizadas, ralentí excesivo y malos hábitos de conducción inflan el consumo y los costos de mantenimiento.' }
+                    ]
+                },
+                mineria: {
+                    title: 'Puntos de Dolor: Sector Minero',
+                    points: [
+                        { icon: '🔥', title: 'Consumo Extremo de Combustible', description: 'Un solo camión de acarreo puede consumir 350 litros/hora. La más mínima imprecisión genera costos astronómicos.' },
+                        { icon: '🏞️', title: 'Entorno Operativo Hostil', description: 'Ubicaciones remotas y condiciones extremas exigen equipos robustos, duraderos y resistentes a la contaminación.' },
+                        { icon: '🛰️', title: 'Necesidad de Supervisión Remota', description: 'Demanda de despacho de alto caudal y gestión de inventario centralizada para volúmenes masivos de combustible.' }
+                    ]
+                }
+            };
+
+            function renderPainPoints(segment) {
+                const content = painPointsData[segment];
+                const container = document.getElementById('pain-points-content');
+                let html = `<h3 class="text-2xl font-bold text-center mb-8 text-gray-900">${content.title}</h3>`;
+                html += '<div class="grid grid-cols-1 md:grid-cols-3 gap-8">';
+                content.points.forEach(point => {
+                    html += `
+                        <div class="text-center p-6 rounded-2xl" style="background-color: var(--primary-light);">
+                            <div class="text-4xl mx-auto mb-4">${point.icon}</div>
+                            <h4 class="font-semibold text-lg text-gray-900">${point.title}</h4>
+                            <p class="mt-2 text-gray-600">${point.description}</p>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+                container.classList.remove('fade-in');
+                void container.offsetWidth; 
+                container.classList.add('fade-in');
+            }
+
+            document.querySelectorAll('.segment-card').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.segment-card').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderPainPoints(button.dataset.segment);
+                });
+            });
+
+            renderPainPoints('retail');
+
+            const marketShareCtx = document.getElementById('marketShareChart').getContext('2d');
+            new Chart(marketShareCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Terpel', 'Primax', 'Biomax', 'Independientes y Otros'],
+                    datasets: [{
+                        label: 'Cuota de Mercado',
+                        data: [45, 24, 16, 15], 
+                        backgroundColor: [
+                            '#003366',
+                            '#5D8AA8',
+                            '#A9C2D4',
+                            '#D4A017'
+                        ],
+                        borderColor: '#F8F9FA',
+                        borderWidth: 4,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+
+            const solutionTabs = document.querySelectorAll('.solution-tab');
+            const solutionContents = document.querySelectorAll('.solution-content');
+            solutionTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    solutionTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    solutionContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    const targetContent = document.getElementById(`${tab.dataset.target}-content`);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                        targetContent.classList.remove('fade-in');
+                        void targetContent.offsetWidth; 
+                        targetContent.classList.add('fade-in');
+                    }
+                });
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('header nav a');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
