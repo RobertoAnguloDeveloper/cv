@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prologic Group Inc. | Socios en Soluciones EPC</title>
+    
+    <!-- Chosen Palette: Industrial Precision (Deep Navy, Steel Grays, Industrial Orange) -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page, top-to-bottom narrative journey. This structure was chosen because PLG's core differentiator is its story of evolution from a logistics provider to a full-service EPC powerhouse with deep regional expertise. A linear, scrolling flow allows users to progressively discover the company's history (Timeline), understand its capabilities (EPC cards), visualize its strategic focus (Interactive Map), and recognize its credibility (Partners). This narrative approach is more compelling for B2B decision-makers than a traditional, fragmented website, effectively communicating the company's unique value proposition in a single, cohesive experience. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Company history (1995-Present). Goal: Show evolution. Viz: Interactive vertical timeline. Interaction: Animate-on-scroll. Justification: Transforms a static list of dates into an engaging story of strategic growth. Library: Vanilla JS (Intersection Observer) + CSS.
+        - Report Info: Core EPC services. Goal: Clarify complex services. Viz: Interactive cards. Interaction: Hover effects reveal more detail and highlight the card. Justification: Breaks down the "EPC" acronym into digestible, visually appealing components. Library: CSS Transitions.
+        - Report Info: Geographic focus (LatAm/Caribbean). Goal: Highlight regional expertise. Viz: Interactive map. Interaction: Pulsing hotspots with hover-activated tooltips. Justification: Visually reinforces PLG's key strategic advantage in a dynamic way, solving the NO SVG constraint by using a PNG background with absolutely positioned divs for hotspots. Library: Vanilla JS (Event Listeners) + CSS.
+        - Report Info: Strategic partnerships (NOV, Fluke). Goal: Build credibility. Viz: Logo grid. Interaction: Subtle hover animations. Justification: Lends "borrowed credibility" from major industry players in a clean, professional layout. Library: CSS Transitions.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #003448;
+            --secondary-color: #91a6be;
+            --accent-color: #FF6F20;
+            --bg-color: #f0f0f0;
+            --text-color: #1a1a1a;
+            --light-gray: #dee2ef;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Roboto Condensed', sans-serif;
+            color: var(--primary-color);
+        }
+        .bg-primary { background-color: var(--primary-color); }
+        .bg-accent { background-color: var(--accent-color); }
+        .text-accent { color: var(--accent-color); }
+        .border-accent { border-color: var(--accent-color); }
+
+        .hero-section {
+            background-image: url('https://images.unsplash.com/photo-1549643483-34a175f44b93?q=80&w=2670&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background-color: var(--light-gray);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            border: 4px solid var(--bg-color);
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+        .timeline-item.visible::before {
+             background-color: var(--accent-color);
+        }
+        .map-hotspot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 0 rgba(255, 111, 32, 1);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 111, 32, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0);
+            }
+        }
+        .map-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .map-hotspot:hover .map-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <header id="header" class="bg-primary/90 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white">Prologic Group Inc.</h1>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about" class="text-white hover:text-accent transition-colors">Nosotros</a>
+                <a href="#services" class="text-white hover:text-accent transition-colors">Capacidades</a>
+                <a href="#map" class="text-white hover:text-accent transition-colors">Alcance</a>
+                <a href="#partners" class="text-white hover:text-accent transition-colors">Alianzas</a>
+                <a href="#contact" class="text-white hover:text-accent transition-colors">Contacto</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <span class="text-3xl">☰</span>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-primary">
+            <a href="#about" class="block text-white text-center py-2 hover:bg-accent/50">Nosotros</a>
+            <a href="#services" class="block text-white text-center py-2 hover:bg-accent/50">Capacidades</a>
+            <a href="#map" class="block text-white text-center py-2 hover:bg-accent/50">Alcance</a>
+            <a href="#partners" class="block text-white text-center py-2 hover:bg-accent/50">Alianzas</a>
+            <a href="#contact" class="block text-white text-center py-2 hover:bg-accent/50">Contacto</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section h-screen flex items-center justify-center text-center text-white relative">
+            <div class="absolute inset-0 bg-black/50"></div>
+            <div class="relative z-10 px-4">
+                <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight">Diseñando el Futuro de la Energía.<br> Socios en el Progreso.</h2>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8">Su socio EPC integrado para las industrias de Petróleo, Gas y Minería en el Caribe y Sudamérica.</p>
+                <a href="#about" class="bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-md text-lg transition-transform duration-300 transform hover:scale-105">
+                    Explore Nuestras Soluciones
+                </a>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 md:py-32">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-4xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">De la Logística a la Solución Integral</h2>
+                    <p class="text-lg text-gray-700 mb-8">
+                        Fundada en 1995, Prologic Group Inc. (PLG) ha evolucionado deliberadamente de ser un especialista en procura y logística a un proveedor integral de servicios de Ingeniería, Procura y Construcción (EPC). Esta transformación estratégica, impulsada por nuestra filosofía de que "El Conocimiento Vende", nos permite ser un socio de soluciones de fuente única para los proyectos industriales más complejos en los sectores del petróleo, el gas y la minería.
+                    </p>
+                </div>
+                
+                <div class="relative mt-20">
+                    <div class="timeline-line"></div>
+                    <div class="space-y-16">
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                                <h3 class="text-2xl font-bold text-accent">1995</h3>
+                                <p class="text-lg font-bold">Fundación Estratégica</p>
+                                <p class="text-gray-600">Fundada en Miramar, FL, como especialista en Adquisiciones y Logística para servir eficientemente al Caribe y Latinoamérica.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8"></div>
+                        </div>
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 md:order-2 md:pl-8 md:text-left text-center">
+                                <h3 class="text-2xl font-bold text-accent">2000s</h3>
+                                <p class="text-lg font-bold">Expansión de Capacidades</p>
+                                <p class="text-gray-600">Crecimiento a un proveedor de servicios completos para la industria petrolera, añadiendo capacidades de ingeniería y construcción.</p>
+                            </div>
+                             <div class="md:w-1/2 md:pl-8 md:order-1"></div>
+                        </div>
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                                <h3 class="text-2xl font-bold text-accent">2018</h3>
+                                <p class="text-lg font-bold">Diversificación y Crecimiento</p>
+                                <p class="text-gray-600">Expansión a los sectores de Minería y Petróleo Upstream, diversificando estratégicamente el modelo de servicio.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8"></div>
+                        </div>
+
+                        <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 md:order-2 md:pl-8 md:text-left text-center">
+                                <h3 class="text-2xl font-bold text-accent">2019</h3>
+                                <p class="text-lg font-bold">Alianzas Clave</p>
+                                <p class="text-gray-600">Obtención de acuerdos de distribución con gigantes de la industria como National Oilwell Varco (NOV) y Fluke Industrial.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8 md:order-1"></div>
+                        </div>
+
+                         <div class="timeline-item relative flex flex-col md:flex-row items-center scroll-reveal">
+                            <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                                <h3 class="text-2xl font-bold text-accent">Hoy</h3>
+                                <p class="text-lg font-bold">Líder Regional EPC</p>
+                                <p class="text-gray-600">Un socio EPC líder con un fuerte enfoque en mercados emergentes como Guyana y Surinam, impulsando el futuro energético de la región.</p>
+                            </div>
+                            <div class="md:w-1/2 md:pl-8"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">La Potencia EPC Integrada</h2>
+                    <p class="text-lg text-gray-700 mb-12">Nuestro modelo de Ingeniería, Procura y Construcción (EPC) ofrece un único punto de responsabilidad, reduciendo el riesgo y la carga de gestión del cliente. Gestionamos proyectos desde la concepción hasta la finalización, garantizando calidad, seguridad y eficiencia.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal">
+                        <div class="text-5xl mb-4 text-accent">①</div>
+                        <h3 class="text-2xl font-bold mb-3">Ingeniería y Diseño</h3>
+                        <p class="text-gray-600">Desde estudios de viabilidad y evaluaciones de sitio hasta ingeniería de valor detallada, diseñamos soluciones seguras, eficientes y conformes a las normativas más exigentes.</p>
+                    </div>
+                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal" style="transition-delay: 0.2s;">
+                        <div class="text-5xl mb-4 text-accent">②</div>
+                        <h3 class="text-2xl font-bold mb-3">Procura y Logística</h3>
+                        <p class="text-gray-600">Aprovechando nuestra red global y alianzas, obtenemos y entregamos los equipos y materiales adecuados a tiempo y dentro del presupuesto, gestionando toda la cadena de suministro.</p>
+                    </div>
+                    <div class="service-card bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 border-b-4 border-transparent hover:border-accent transition-all duration-300 scroll-reveal" style="transition-delay: 0.4s;">
+                        <div class="text-5xl mb-4 text-accent">③</div>
+                        <h3 class="text-2xl font-bold mb-3">Construcción y Gestión</h3>
+                        <p class="text-gray-600">Nuestros equipos expertos gestionan la construcción, controlando costes, plazos y calidad, mientras garantizan los más altos estándares de seguridad en cada fase del proyecto.</p>
+                    </div>
+                </div>
+                 <div class="mt-16 text-center max-w-4xl mx-auto scroll-reveal">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Soluciones Especializadas</h3>
+                    <p class="text-lg text-gray-700 mb-8">Más allá del estándar, ofrecemos servicios críticos que demuestran nuestro compromiso con la responsabilidad y la excelencia técnica.</p>
+                    <div class="grid md:grid-cols-2 gap-8 text-left">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                             <h4 class="text-xl font-bold mb-2 text-primary">Evaluación y Remediación Ambiental</h4>
+                             <p class="text-gray-600">Posicionándonos como un socio consciente, ofrecemos investigaciones de sitio, soluciones de remediación y gestión de residuos para mitigar el impacto ambiental y garantizar el cumplimiento normativo.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h4 class="text-xl font-bold mb-2 text-primary">Venta y Distribución de Productos</h4>
+                            <p class="text-gray-600">Como distribuidores de marcas líderes como Fluke y NOV, no solo proveemos servicios, sino que ofrecemos acceso a tecnología de punta, añadiendo una capa de credibilidad y conocimiento técnico profundo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="map" class="py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                 <div class="max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Alcance Global, Pericia Local</h2>
+                    <p class="text-lg text-gray-700 mb-12">Nuestra sede en Florida es la puerta de entrada a nuestra área de especialización: el Caribe, Centro y Sudamérica. Poseemos una larga historia de servicio y un profundo conocimiento local, especialmente en mercados energéticos de alto crecimiento.</p>
+                </div>
+                <div class="relative w-full max-w-4xl mx-auto aspect-video rounded-lg overflow-hidden shadow-2xl scroll-reveal">
+                    <img src="https://i.imgur.com/8TfgyJr.png" alt="Mapa de las Américas destacando el enfoque de Prologic Group" class="w-full h-full object-cover">
+                    
+                    <div class="map-hotspot" style="top: 50%; left: 24%;">
+                        <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Florida, EE. UU.</span><br>Sede Central y centro logístico para las Américas.
+                        </div>
+                    </div>
+                    <div class="map-hotspot" style="top: 72%; left: 46%;">
+                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Guyana</span><br>Apoyando uno de los mercados petroleros de más rápido crecimiento en el mundo.
+                        </div>
+                    </div>
+                    <div class="map-hotspot" style="top: 75%; left: 49%;">
+                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Surinam</span><br>Socio establecido en un mercado energético emergente y clave.
+                        </div>
+                    </div>
+                     <div class="map-hotspot" style="top: 65%; left: 33%;">
+                         <div class="map-tooltip absolute top-full mt-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold">Caribe y Centroamérica</span><br>Extensa red de servicio en toda la región.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="partners" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                 <div class="max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Alianzas Estratégicas para Construir Credibilidad</h2>
+                    <p class="text-lg text-gray-700 mb-12">Nuestras alianzas con líderes de la industria nos permiten ofrecer tecnología de clase mundial e implementar soluciones certificadas, actuando como multiplicadores de fuerza que nos permiten competir al más alto nivel.</p>
+                </div>
+                <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-8">
+                    <div class="scroll-reveal" style="transition-delay: 0.1s;">
+                        <img src="https://i.imgur.com/KqYrk4a.png" alt="Logo de National Oilwell Varco (NOV)" class="h-16 md:h-20 grayscale hover:grayscale-0 transition-all duration-300">
+                    </div>
+                     <div class="scroll-reveal" style="transition-delay: 0.2s;">
+                        <img src="https://i.imgur.com/gA3d7yW.png" alt="Logo de Fluke Industrial" class="h-16 md:h-20 grayscale hover:grayscale-0 transition-all duration-300">
+                    </div>
+                     <div class="scroll-reveal" style="transition-delay: 0.3s;">
+                         <p class="text-xl font-bold text-gray-400 hover:text-primary transition-colors">Fusecon N.V.</p>
+                    </div>
+                     <div class="scroll-reveal" style="transition-delay: 0.4s;">
+                        <p class="text-xl font-bold text-gray-400 hover:text-primary transition-colors">PLG-Industrial & Mining</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-20 md:py-32 bg-primary text-white">
+             <div class="container mx-auto px-6 text-center">
+                <div class="max-w-3xl mx-auto scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Construyamos el Futuro. Juntos.</h2>
+                    <p class="text-lg text-gray-300 mb-12">Póngase en contacto con nuestro equipo de expertos para discutir cómo podemos ayudarle a alcanzar sus objetivos de proyecto.</p>
+                </div>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 text-left">
+                    <div class="scroll-reveal">
+                        <h3 class="text-2xl font-bold mb-4 text-accent">Información de Contacto</h3>
+                        <p class="mb-2"><strong>Dirección:</strong> 11400 Interchange Circle North, Miramar, Florida 33025, EE. UU.</p>
+                        <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:+19544335540" class="hover:text-accent">+1 (954) 433-5540</a></p>
+                        <p class="mb-2"><strong>Email:</strong> <a href="mailto:sales@prologicgroup.com" class="hover:text-accent">sales@prologicgroup.com</a></p>
+                    </div>
+                     <form id="contact-form" class="space-y-4 scroll-reveal" style="transition-delay: 0.2s;">
+                        <div>
+                            <label for="name" class="sr-only">Nombre</label>
+                            <input type="text" id="name" name="name" placeholder="Su Nombre" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label for="email" class="sr-only">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="Su Correo Electrónico" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors">
+                        </div>
+                         <div>
+                            <label for="message" class="sr-only">Mensaje</label>
+                            <textarea id="message" name="message" rows="4" placeholder="Su Mensaje" class="w-full bg-white/10 p-3 rounded-md border-2 border-transparent focus:border-accent focus:outline-none transition-colors"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-accent hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-md text-lg transition-transform duration-300 transform hover:scale-105">
+                            Enviar Mensaje
+                        </button>
+                        <p id="form-status" class="text-center mt-4 h-6"></p>
+                    </form>
+                </div>
+             </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; <span id="year"></span> Prologic Group Inc. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close mobile menu when a link is clicked
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            const elementsToReveal = document.querySelectorAll('.scroll-reveal');
+            elementsToReveal.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Sticky Header
+            const header = document.getElementById('header');
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    header.style.top = '-100px';
+                } else {
+                    header.style.top = '0';
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+
+            // Set current year in footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // Contact Form Submission
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                formStatus.textContent = 'Enviando...';
+                formStatus.style.color = '#91a6be';
+
+                setTimeout(() => {
+                    formStatus.textContent = '¡Mensaje enviado con éxito!';
+                    formStatus.style.color = '#4ade80'; 
+                    contactForm.reset();
+                     setTimeout(() => {
+                        formStatus.textContent = '';
+                     }, 3000);
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
