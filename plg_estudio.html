@@ -19,6 +19,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- LeafletJS for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
 
     <style>
         :root {
@@ -84,38 +92,20 @@
         .timeline-item.visible::before {
              background-color: var(--accent-color);
         }
-        .map-hotspot {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 0 0 rgba(255, 111, 32, 1);
-            animation: pulse 2s infinite;
+        /* Leaflet map popup styling */
+        .leaflet-popup-content-wrapper {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
         }
-        @keyframes pulse {
-            0% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0.7);
-            }
-            70% {
-                transform: scale(1);
-                box-shadow: 0 0 0 10px rgba(255, 111, 32, 0);
-            }
-            100% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(255, 111, 32, 0);
-            }
+        .leaflet-popup-content {
+            font-family: 'Open Sans', sans-serif;
         }
-        .map-tooltip {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s, visibility 0.3s;
+        .leaflet-popup-tip {
+            background: var(--primary-color);
         }
-        .map-hotspot:hover .map-tooltip {
-            visibility: visible;
-            opacity: 1;
+        .leaflet-popup-close-button {
+            color: white !important;
         }
     </style>
 </head>
@@ -302,30 +292,8 @@
                     <h2 class="text-3xl md:text-4xl font-bold mb-4">Alcance Global, Pericia Local</h2>
                     <p class="text-lg text-gray-700 mb-12">Nuestra sede en Florida es la puerta de entrada a nuestra área de especialización: el Caribe, Centro y Sudamérica. Poseemos una larga historia de servicio y un profundo conocimiento local, especialmente en mercados energéticos de alto crecimiento.</p>
                 </div>
-                <div class="relative w-full max-w-4xl mx-auto aspect-video rounded-lg overflow-hidden shadow-2xl scroll-reveal">
-                    <img src="https://i.imgur.com/8TfgyJr.png" alt="Mapa de las Américas destacando el enfoque de Prologic Group" class="w-full h-full object-cover">
-                    
-                    <div class="map-hotspot" style="top: 50%; left: 24%;">
-                        <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Florida, EE. UU.</span><br>Sede Central y centro logístico para las Américas.
-                        </div>
-                    </div>
-                    <div class="map-hotspot" style="top: 72%; left: 46%;">
-                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Guyana</span><br>Apoyando uno de los mercados petroleros de más rápido crecimiento en el mundo.
-                        </div>
-                    </div>
-                    <div class="map-hotspot" style="top: 75%; left: 49%;">
-                         <div class="map-tooltip absolute bottom-full mb-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Surinam</span><br>Socio establecido en un mercado energético emergente y clave.
-                        </div>
-                    </div>
-                     <div class="map-hotspot" style="top: 65%; left: 33%;">
-                         <div class="map-tooltip absolute top-full mt-2 w-48 bg-primary text-white text-xs rounded py-1 px-2 text-center transform -translate-x-1/2 left-1/2">
-                            <span class="font-bold">Caribe y Centroamérica</span><br>Extensa red de servicio en toda la región.
-                        </div>
-                    </div>
-                </div>
+                <!-- Interactive Leaflet Map Container -->
+                <div id="leaflet-map" class="w-full h-[500px] max-w-4xl mx-auto rounded-lg shadow-2xl scroll-reveal z-10"></div>
             </div>
         </section>
 
@@ -411,11 +379,56 @@
                 });
             });
 
+            // --- Leaflet Map Initialization ---
+            let mapInitialized = false;
+            const initLeafletMap = () => {
+                if (mapInitialized) return;
+                mapInitialized = true;
+
+                const map = L.map('leaflet-map').setView([15, -70], 4);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 18,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                const locations = [
+                    {
+                        coords: [26.0112, -80.3250],
+                        popup: '<span class="font-bold">Florida, EE. UU.</span><br>Sede Central y centro logístico para las Américas.'
+                    },
+                    {
+                        coords: [6.8013, -58.1551],
+                        popup: '<span class="font-bold">Guyana</span><br>Apoyando uno de los mercados petroleros de más rápido crecimiento en el mundo.'
+                    },
+                    {
+                        coords: [5.8520, -55.2038],
+                        popup: '<span class="font-bold">Surinam</span><br>Socio establecido en un mercado energético emergente y clave.'
+                    },
+                    {
+                        coords: [12.5, -75],
+                        popup: '<span class="font-bold">Caribe y Centroamérica</span><br>Extensa red de servicio en toda la región.'
+                    }
+                ];
+
+                locations.forEach(loc => {
+                    L.marker(loc.coords).addTo(map)
+                        .bindPopup(loc.popup);
+                });
+                
+                 setTimeout(() => map.invalidateSize(), 100);
+            };
+
+
             // Scroll animations
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
+                        // If the map container is visible, initialize the map
+                        if (entry.target.id === 'leaflet-map') {
+                            initLeafletMap();
+                        }
                     }
                 });
             }, {
