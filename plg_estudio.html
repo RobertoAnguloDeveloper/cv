@@ -50,12 +50,18 @@
             }
         }
         .nav-link {
-            transition: color 0.3s, border-color 0.3s;
-            border-bottom: 2px solid transparent;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            transition: color 0.3s, background-color 0.3s;
+            position: relative;
         }
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover {
             color: var(--primary);
-            border-bottom-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        .nav-link.active {
+            color: var(--bg-white);
+            background-color: var(--primary);
         }
         .stat-card {
             background-color: var(--bg-white);
@@ -65,18 +71,6 @@
         .stat-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.08);
-        }
-        .segment-card {
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
-        }
-        .segment-card:hover {
-             transform: scale(1.05);
-        }
-        .segment-card.active {
-            background-color: var(--primary-light);
-            border-color: var(--primary);
-            transform: scale(1.05);
         }
         .tab-button {
             transition: background-color 0.3s, color 0.3s;
@@ -169,6 +163,36 @@
             background-color: var(--accent);
             color: var(--text-dark);
          }
+         #mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            padding: 2rem;
+            z-index: 100;
+         }
+         #mobile-menu.open {
+            transform: translateX(0);
+         }
+         #mobile-menu a {
+            display: block;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+         }
+         #mobile-menu a:hover {
+             background-color: var(--primary-light);
+             color: var(--primary);
+         }
     </style>
 </head>
 <body class="antialiased">
@@ -180,12 +204,12 @@
                     <span class="text-xl font-bold" style="color: var(--primary);">Prologic Group</span>
                     <span class="text-xl font-light text-gray-600 ml-2">| Análisis FMS Colombia</span>
                 </div>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="#mercado" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Mercado</a>
-                    <a href="#desafios" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Desafíos</a>
-                    <a href="#solucion" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Solución GVR</a>
-                    <a href="#competencia" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Competencia</a>
-                    <a href="#estrategia" class="nav-link text-sm font-medium text-gray-600 hover:text-gray-900 py-4">Estrategia</a>
+                <nav class="hidden md:flex space-x-2">
+                    <a href="#mercado" class="nav-link text-sm font-medium text-gray-600">Mercado</a>
+                    <a href="#desafios" class="nav-link text-sm font-medium text-gray-600">Desafíos</a>
+                    <a href="#solucion" class="nav-link text-sm font-medium text-gray-600">Solución GVR</a>
+                    <a href="#competencia" class="nav-link text-sm font-medium text-gray-600">Competencia</a>
+                    <a href="#estrategia" class="nav-link text-sm font-medium text-gray-600">Estrategia</a>
                 </nav>
                 <div class="md:hidden">
                     <button id="mobile-menu-button" class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
@@ -196,14 +220,26 @@
                 </div>
             </div>
         </div>
-        <div id="mobile-menu" class="md:hidden hidden">
-            <a href="#mercado" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Mercado</a>
-            <a href="#desafios" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Desafíos</a>
-            <a href="#solucion" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Solución GVR</a>
-            <a href="#competencia" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Competencia</a>
-            <a href="#estrategia" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100">Estrategia</a>
-        </div>
     </header>
+
+    <div id="menu-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden"></div>
+
+    <div id="mobile-menu">
+        <div class="flex justify-end mb-4">
+             <button id="close-menu-button" class="p-2 rounded-full hover:bg-gray-100">
+                <svg class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+             </button>
+        </div>
+        <nav class="flex flex-col space-y-2">
+            <a href="#mercado" class="mobile-nav-link">Mercado</a>
+            <a href="#desafios" class="mobile-nav-link">Desafíos</a>
+            <a href="#solucion" class="mobile-nav-link">Solución GVR</a>
+            <a href="#competencia" class="mobile-nav-link">Competencia</a>
+            <a href="#estrategia" class="mobile-nav-link">Estrategia</a>
+        </nav>
+    </div>
 
     <main>
         <section id="mercado" class="py-16 lg:py-24">
@@ -513,10 +549,30 @@
                 });
             });
 
+            // Mobile menu logic
             const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const closeMenuButton = document.getElementById('close-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-            document.querySelectorAll('#mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+            const menuBackdrop = document.getElementById('menu-backdrop');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+            function openMenu() {
+                mobileMenu.classList.add('open');
+                menuBackdrop.classList.remove('hidden');
+            }
+
+            function closeMenu() {
+                mobileMenu.classList.remove('open');
+                menuBackdrop.classList.add('hidden');
+            }
+
+            mobileMenuButton.addEventListener('click', openMenu);
+            closeMenuButton.addEventListener('click', closeMenu);
+            menuBackdrop.addEventListener('click', closeMenu);
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+
 
             const navLinks = document.querySelectorAll('header nav a');
             let header = document.getElementById('header');
