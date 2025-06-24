@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análisis Interactivo del Mercado FMS en Colombia</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     <!-- Chosen Palette: Corporate Blue & Warm Neutrals -->
     <!-- Application Structure Plan: A single-page dashboard layout with a sticky navigation header for smooth scrolling between thematic sections. The structure prioritizes user exploration over the report's linear format. It starts with a high-level market overview (what), moves to the core problems (why it matters), presents the proposed solution (how to solve it), analyzes the competitive landscape (who else is there), and concludes with the specific strategy for the company (the action plan). This logical flow from context to action is designed for clear business decision-making. Interactions include clickable cards to reveal detailed "pain points", interactive charts for data visualization, and tabbed interfaces for comparing complex information, making the dense report digestible and engaging. -->
     <!-- Visualization & Content Choices: 
@@ -63,16 +63,20 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.08);
         }
         .segment-card {
             cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+        }
+        .segment-card:hover {
+             transform: scale(1.05);
         }
         .segment-card.active {
             background-color: var(--primary-light);
             border-color: var(--primary);
+            transform: scale(1.05);
         }
         .tab-button {
             transition: background-color 0.3s, color 0.3s;
@@ -88,11 +92,88 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+            border-radius: 1rem;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .flip-card-front {
+            background-color: var(--primary-light);
+        }
+        .flip-card-back {
+            background-color: var(--primary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        .competitor-item {
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        .competitor-matrix:hover .competitor-item:not(:hover) {
+            opacity: 0.6;
+            transform: scale(0.95);
+        }
+        .competitor-item:hover {
+            transform: scale(1.05) !important;
+            z-index: 10;
+        }
+        .roadmap-line {
+            position: absolute;
+            top: 2rem;
+            left: 12.5%;
+            width: 75%;
+            height: 2px;
+            background-color: var(--border-color);
+            z-index: -1;
+        }
+        .roadmap-step .step-circle {
+            transition: transform 0.3s, background-color 0.3s;
+        }
+         .roadmap-step:hover .step-circle {
+            transform: scale(1.2);
+            background-color: var(--accent);
+            color: var(--text-dark);
+         }
     </style>
 </head>
 <body class="antialiased">
 
-    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm transition-shadow duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
@@ -127,7 +208,7 @@
     <main>
         <section id="mercado" class="py-16 lg:py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="text-center reveal">
                     <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Panorama del Mercado</h2>
                     <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Un Mercado Maduro Listo para la Modernización</p>
                     <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
@@ -136,7 +217,7 @@
                 </div>
 
                 <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <div class="stat-card p-6 rounded-2xl">
+                    <div class="stat-card p-6 rounded-2xl reveal">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">⛽</div>
                             <p class="ml-4 text-lg font-medium text-gray-900">Estaciones de Servicio</p>
@@ -144,7 +225,7 @@
                         <p class="mt-4 text-4xl font-bold text-gray-900">~6,600</p>
                         <p class="mt-1 text-base text-gray-500">Mercado total abordable para FMS.</p>
                     </div>
-                    <div class="stat-card p-6 rounded-2xl">
+                    <div class="stat-card p-6 rounded-2xl reveal" style="transition-delay: 100ms;">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">📈</div>
                             <p class="ml-4 text-lg font-medium text-gray-900">Concentración del Mercado</p>
@@ -152,7 +233,7 @@
                         <p class="mt-4 text-4xl font-bold text-gray-900">~90%</p>
                         <p class="mt-1 text-base text-gray-500">Controlado por 4 grandes distribuidores.</p>
                     </div>
-                    <div class="stat-card p-6 rounded-2xl">
+                    <div class="stat-card p-6 rounded-2xl reveal" style="transition-delay: 200ms;">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl" style="background-color: var(--primary-light); color: var(--primary);">⚙️</div>
                             <p class="ml-4 text-lg font-medium text-gray-900">Imperativo Regulatorio</p>
@@ -163,10 +244,10 @@
                 </div>
 
                 <div class="mt-16 lg:mt-20 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
-                    <div class="chart-container">
+                    <div class="chart-container reveal">
                         <canvas id="marketShareChart"></canvas>
                     </div>
-                    <div class="mt-12 lg:mt-0">
+                    <div class="mt-12 lg:mt-0 reveal">
                         <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Distribución del Mercado Minorista</h3>
                         <p class="mt-4 text-lg text-gray-500">
                             El mercado está dominado por Terpel, que posee casi la mitad de la cuota. Sin embargo, el segmento de "Independientes y Otros" representa una porción considerable y un mercado clave para soluciones FMS empaquetadas y con un claro ROI. Este gráfico ilustra la importancia de una estrategia dual: venta empresarial a las grandes cadenas y una oferta de valor para la "larga cola" de operadores más pequeños.
@@ -178,27 +259,15 @@
 
         <section id="desafios" class="py-16 lg:py-24" style="background-color: var(--bg-white);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="text-center reveal">
                     <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Desafíos Críticos del Operador</h2>
                     <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Problemas Reales, Soluciones Urgentes</p>
                     <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                        Cada segmento del mercado enfrenta presiones únicas que erosionan su rentabilidad y aumentan el riesgo operativo. Seleccione un segmento para explorar sus principales "puntos de dolor".
+                        Cada segmento del mercado enfrenta presiones únicas que erosionan su rentabilidad. Pase el cursor sobre cada tarjeta para descubrir los detalles.
                     </p>
                 </div>
-                <div class="mt-12">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                        <button class="segment-card p-4 border-2 rounded-lg font-semibold text-center active" data-segment="retail">
-                            Retail (EDS)
-                        </button>
-                        <button class="segment-card p-4 border-2 rounded-lg font-semibold text-center" data-segment="flotas">
-                            Flotas Comerciales
-                        </button>
-                        <button class="segment-card p-4 border-2 rounded-lg font-semibold text-center" data-segment="mineria">
-                            Minería e Industria
-                        </button>
-                    </div>
-
-                    <div id="pain-points-content" class="fade-in">
+                <div class="mt-12 reveal">
+                    <div id="pain-points-content" class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     </div>
                 </div>
             </div>
@@ -206,7 +275,7 @@
 
         <section id="solucion" class="py-16 lg:py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="text-center reveal">
                     <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">El Ecosistema Gilbarco Veeder-Root</h2>
                     <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">De Reactivo y Vulnerable a Proactivo y Seguro</p>
                     <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
@@ -214,14 +283,14 @@
                     </p>
                 </div>
 
-                <div class="mt-12">
+                <div class="mt-12 reveal">
                      <div class="border-b border-gray-200">
                         <nav class="-mb-px flex justify-center space-x-4 md:space-x-8" aria-label="Tabs">
                             <button class="tab-button solution-tab active whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm" data-target="hardware">
-                                Hardware en Sitio: TLS-450PLUS
+                                Hardware en Sitio
                             </button>
                             <button class="tab-button solution-tab whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700" data-target="cloud">
-                                Inteligencia en la Nube: Insite360
+                                Inteligencia en la Nube
                             </button>
                             <button class="tab-button solution-tab whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700" data-target="benefits">
                                 Pilares de Valor
@@ -232,75 +301,36 @@
                         <div id="hardware-content" class="solution-content fade-in">
                              <div class="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
                                  <div>
-                                    <h3 class="text-2xl font-bold text-gray-900">El Cerebro de la Operación</h3>
-                                    <p class="mt-3 text-lg text-gray-500">La consola de telemedición (ATG) TLS-450PLUS es el centro neurálgico que recopila, procesa y protege los datos críticos. Sus características avanzadas son el motor de la rentabilidad y el cumplimiento.</p>
+                                    <h3 class="text-2xl font-bold text-gray-900">El Cerebro de la Operación: TLS-450PLUS</h3>
+                                    <p class="mt-3 text-lg text-gray-500">La consola de telemedición (ATG) es el centro neurálgico que recopila, procesa y protege los datos críticos. Sus características avanzadas son el motor de la rentabilidad y el cumplimiento.</p>
                                     <dl class="mt-8 space-y-6">
-                                        <div>
-                                            <dt class="font-semibold text-gray-900">Control de Inventario (AccuChart™)</dt>
-                                            <dd class="mt-1 text-gray-500">Crea un modelo 3D del tanque para mediciones ultra precisas, eliminando "pérdidas de papel" y protegiendo márgenes.</dd>
-                                        </div>
-                                        <div>
-                                            <dt class="font-semibold text-gray-900">Detección de Fugas (CSLD)</dt>
-                                            <dd class="mt-1 text-gray-500">Realiza pruebas de hermeticidad automáticas y certificadas sin detener la operación, garantizando el cumplimiento ambiental.</dd>
-                                        </div>
-                                         <div>
-                                            <dt class="font-semibold text-gray-900">Seguridad Mejorada</dt>
-                                            <dd class="mt-1 text-gray-500">Acceso basado en roles de usuario para prevenir manipulación no autorizada y fraude interno.</dd>
-                                        </div>
+                                        <div><dt class="font-semibold text-gray-900">📈 Control de Inventario (AccuChart™)</dt><dd class="mt-1 text-gray-500">Crea un modelo 3D del tanque para mediciones ultra precisas, eliminando "pérdidas de papel".</dd></div>
+                                        <div><dt class="font-semibold text-gray-900">💧 Detección de Fugas (CSLD)</dt><dd class="mt-1 text-gray-500">Realiza pruebas de hermeticidad automáticas sin detener la operación, garantizando el cumplimiento ambiental.</dd></div>
+                                        <div><dt class="font-semibold text-gray-900">🔒 Seguridad Mejorada</dt><dd class="mt-1 text-gray-500">Acceso basado en roles de usuario para prevenir manipulación no autorizada y fraude interno.</dd></div>
                                     </dl>
                                  </div>
-                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl">
-                                     <div class="text-center">
-                                        <div class="text-6xl">🖥️</div>
-                                        <p class="mt-4 font-bold text-xl text-gray-800">TLS-450PLUS</p>
-                                        <p class="text-gray-600">Consola ATG Avanzada</p>
-                                     </div>
-                                 </div>
+                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl"><div class="text-center"><div class="text-6xl">🖥️</div><p class="mt-4 font-bold text-xl text-gray-800">TLS-450PLUS</p><p class="text-gray-600">Consola ATG Avanzada</p></div></div>
                              </div>
                         </div>
                         <div id="cloud-content" class="solution-content fade-in hidden">
                              <div class="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
                                  <div>
-                                    <h3 class="text-2xl font-bold text-gray-900">Gestión Centralizada y Predictiva</h3>
+                                    <h3 class="text-2xl font-bold text-gray-900">Gestión Centralizada y Predictiva: Insite360</h3>
                                     <p class="mt-3 text-lg text-gray-500">Insite360 transforma los datos del sitio en inteligencia de negocio, permitiendo la gestión remota, el mantenimiento predictivo y la optimización de la red.</p>
                                     <dl class="mt-8 space-y-6">
-                                        <div>
-                                            <dt class="font-semibold text-gray-900">Insite360 Fuel</dt>
-                                            <dd class="mt-1 text-gray-500">Automatiza la reconciliación de inventario y el reporte para SICOM. Identifica pérdidas por robo, fugas o entregas cortas en tiempo real.</dd>
-                                        </div>
-                                        <div>
-                                            <dt class="font-semibold text-gray-900">Insite360 Uptime</dt>
-                                            <dd class="mt-1 text-gray-500">Monitorea la salud de los equipos (ej. caudal de surtidores) para predecir fallas, permitiendo un mantenimiento proactivo y evitando la pérdida de ventas.</dd>
-                                        </div>
+                                        <div><dt class="font-semibold text-gray-900">📊 Insite360 Fuel</dt><dd class="mt-1 text-gray-500">Automatiza la reconciliación y el reporte para SICOM. Identifica pérdidas en tiempo real.</dd></div>
+                                        <div><dt class="font-semibold text-gray-900">🔧 Insite360 Uptime</dt><dd class="mt-1 text-gray-500">Monitorea la salud de los equipos para predecir fallas, permitiendo un mantenimiento proactivo.</dd></div>
                                     </dl>
                                  </div>
-                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl">
-                                     <div class="text-center">
-                                        <div class="text-6xl">☁️</div>
-                                        <p class="mt-4 font-bold text-xl text-gray-800">Insite360</p>
-                                        <p class="text-gray-600">Plataforma IoT de Gestión</p>
-                                     </div>
-                                 </div>
+                                 <div class="mt-10 lg:mt-0 flex justify-center items-center p-8 bg-gray-100 rounded-2xl"><div class="text-center"><div class="text-6xl">☁️</div><p class="mt-4 font-bold text-xl text-gray-800">Insite360</p><p class="text-gray-600">Plataforma IoT de Gestión</p></div></div>
                              </div>
                         </div>
                         <div id="benefits-content" class="solution-content fade-in hidden">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
-                                    <h4 class="font-bold text-xl text-gray-900">Rentabilidad</h4>
-                                    <p class="mt-2 text-gray-500">Aumenta las ganancias al minimizar las pérdidas de combustible por robo, fugas, entregas incompletas y descalibración de medidores.</p>
-                                </div>
-                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
-                                    <h4 class="font-bold text-xl text-gray-900">Cumplimiento Normativo</h4>
-                                    <p class="mt-2 text-gray-500">Automatiza la recopilación y reporte de datos para cumplir con los requisitos de SICOM y las regulaciones ambientales, mitigando multas.</p>
-                                </div>
-                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
-                                    <h4 class="font-bold text-xl text-gray-900">Disponibilidad (Uptime)</h4>
-                                    <p class="mt-2 text-gray-500">Maximiza los ingresos usando análisis predictivo para prevenir el tiempo de inactividad de los equipos, asegurando que siempre se pueda vender.</p>
-                                </div>
-                                <div class="p-6 rounded-2xl border" style="border-color: var(--border-color);">
-                                    <h4 class="font-bold text-xl text-gray-900">Seguridad</h4>
-                                    <p class="mt-2 text-gray-500">Protege activos físicos y datos a través de encriptación, controles de acceso y alertas de manipulación en tiempo real.</p>
-                                </div>
+                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">💰 Rentabilidad</h4><p class="mt-2 text-gray-500">Aumenta las ganancias al minimizar las pérdidas de combustible por robo, fugas y descalibración.</p></div>
+                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">📜 Cumplimiento</h4><p class="mt-2 text-gray-500">Automatiza la recopilación de datos para cumplir con SICOM y normas ambientales, mitigando multas.</p></div>
+                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">⚙️ Disponibilidad</h4><p class="mt-2 text-gray-500">Maximiza los ingresos usando análisis predictivo para prevenir el tiempo de inactividad de los equipos.</p></div>
+                                <div class="stat-card p-6 rounded-2xl"><h4 class="font-bold text-xl text-gray-900">🛡️ Seguridad</h4><p class="mt-2 text-gray-500">Protege activos físicos y datos a través de encriptación, controles de acceso y alertas en tiempo real.</p></div>
                             </div>
                         </div>
                     </div>
@@ -310,53 +340,30 @@
 
         <section id="competencia" class="py-16 lg:py-24" style="background-color: var(--bg-white);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="text-center reveal">
                     <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Análisis Competitivo</h2>
                     <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Posicionamiento en el Ecosistema FMS</p>
                     <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
                         GVR se diferencia por ofrecer un ecosistema de patio completo y una plataforma en la nube superior. Este es el campo de batalla estratégico.
                     </p>
                 </div>
-                <div class="mt-12 max-w-4xl mx-auto p-8 border rounded-2xl">
-                    <div class="relative grid grid-cols-2 grid-rows-2 gap-2 h-96">
+                <div class="mt-12 max-w-4xl mx-auto p-8 reveal">
+                    <div class="relative grid grid-cols-2 grid-rows-2 gap-4 h-96 competitor-matrix">
                         <div class="absolute w-full h-px bg-gray-300 top-1/2 -translate-y-1/2"></div>
                         <div class="absolute h-full w-px bg-gray-300 left-1/2 -translate-x-1/2"></div>
                         
-                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-center text-sm font-medium text-gray-500">Ecosistema Completo de Patio</div>
+                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-center text-sm font-medium text-gray-500">Ecosistema Completo</div>
                         <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-center text-sm font-medium text-gray-500">Solución de Componente</div>
-                        <div class="absolute top-1/2 -left-12 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Enfoque en Hardware</div>
-                        <div class="absolute top-1/2 -right-12 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Plataforma Cloud/IoT</div>
+                        <div class="absolute top-1/2 -left-16 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Hardware Robusto</div>
+                        <div class="absolute top-1/2 -right-16 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-gray-500">Plataforma Cloud/IoT</div>
 
-                        <div class="p-2 flex justify-end items-start">
-                            <div class="bg-gray-200 text-gray-700 rounded-lg p-3 text-center w-40">
-                                <span class="font-bold">Servicios Locales</span>
-                                <span class="block text-xs">Componentes/Nicho</span>
-                            </div>
-                        </div>
-
-                        <div class="p-2 flex justify-start items-start">
-                            <div class="rounded-lg p-3 text-center w-48" style="background-color: var(--primary-light); border: 2px solid var(--primary);">
-                                <span class="font-bold" style="color: var(--primary);">Gilbarco Veeder-Root</span>
-                                <span class="block text-xs font-medium" style="color: var(--primary);">Ecosistema Completo + Cloud Superior</span>
-                            </div>
-                        </div>
-
-                        <div class="p-2 flex justify-end items-end">
-                             <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 rounded-lg p-3 text-center w-40">
-                                <span class="font-bold">OPW FMS</span>
-                                <span class="block text-xs">Hardware Robusto</span>
-                            </div>
-                        </div>
-
-                        <div class="p-2 flex justify-start items-end">
-                            <div class="bg-blue-100 border border-blue-400 text-blue-800 rounded-lg p-3 text-center w-48">
-                                <span class="font-bold">Franklin Fueling</span>
-                                <span class="block text-xs">Hardware Integrado + Cloud</span>
-                            </div>
-                        </div>
+                        <div class="p-2 flex justify-end items-start competitor-item"><div class="bg-gray-200 text-gray-700 rounded-lg p-3 text-center w-40"><span class="font-bold">Servicios Locales</span><span class="block text-xs">Componentes/Nicho</span></div></div>
+                        <div class="p-2 flex justify-start items-start competitor-item"><div class="rounded-lg p-3 text-center w-48" style="background-color: var(--primary-light); border: 2px solid var(--primary);"><span class="font-bold" style="color: var(--primary);">Gilbarco Veeder-Root</span><span class="block text-xs font-medium" style="color: var(--primary);">Ecosistema + Cloud Superior</span></div></div>
+                        <div class="p-2 flex justify-end items-end competitor-item"><div class="bg-yellow-100 border border-yellow-400 text-yellow-800 rounded-lg p-3 text-center w-40"><span class="font-bold">OPW FMS</span><span class="block text-xs">Hardware Robusto</span></div></div>
+                        <div class="p-2 flex justify-start items-end competitor-item"><div class="bg-blue-100 border border-blue-400 text-blue-800 rounded-lg p-3 text-center w-48"><span class="font-bold">Franklin Fueling</span><span class="block text-xs">Hardware + Cloud</span></div></div>
                     </div>
                     <p class="mt-10 text-center text-gray-600">
-                        Esta matriz visualiza el posicionamiento de GVR en el cuadrante superior derecho, destacando su fortaleza única: la combinación de un hardware de patio completo (surtidores, bombas, pago) y una plataforma IoT madura (Insite360). Este es el diferenciador clave a explotar.
+                        Esta matriz visualiza el posicionamiento de GVR en el cuadrante superior derecho, destacando su fortaleza única: la combinación de un hardware de patio completo (surtidores, bombas, pago) y una plataforma IoT madura (Insite360).
                     </p>
                 </div>
             </div>
@@ -364,54 +371,30 @@
 
         <section id="estrategia" class="py-16 lg:py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
+                <div class="text-center reveal">
                     <h2 class="text-base font-semibold tracking-wide uppercase" style="color: var(--primary);">Estrategia para Prologic Group</h2>
                     <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">De Vendedor de Equipos a Socio Estratégico</p>
                      <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-                        El éxito no radica en vender productos, sino en entregar soluciones "llave en mano" que resuelvan problemas de negocio. Prologic está posicionado de manera única para ejecutar esta estrategia.
+                        El éxito no radica en vender productos, sino en entregar soluciones "llave en mano" que resuelvan problemas de negocio. Prologic está posicionado para ejecutar esta estrategia.
                     </p>
                 </div>
                 
-                <div class="mt-12">
-                    <h3 class="text-2xl font-bold text-gray-900 text-center mb-8">Ruta hacia el Liderazgo del Mercado</h3>
+                <div class="mt-20">
+                    <h3 class="text-2xl font-bold text-gray-900 text-center mb-16 reveal">Ruta hacia el Liderazgo del Mercado</h3>
                     <div class="relative">
-                        <div class="hidden md:block absolute top-6 left-0 w-full h-0.5 bg-gray-300"></div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                            <div class="text-center relative">
-                                <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
-                                    <span class="font-bold text-xl" style="color: var(--primary);">1</span>
-                                </div>
-                                <h4 class="mt-4 font-semibold text-gray-900">Formalizar Alianza</h4>
-                                <p class="mt-1 text-sm text-gray-500">Definir un rol como socio de valor agregado o especialista en verticales de nicho (Minería, Industria) con GVR LatAm.</p>
-                            </div>
-                            <div class="text-center relative">
-                                <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
-                                    <span class="font-bold text-xl" style="color: var(--primary);">2</span>
-                                </div>
-                                <h4 class="mt-4 font-semibold text-gray-900">Empaquetar Solución</h4>
-                                <p class="mt-1 text-sm text-gray-500">Crear una oferta "llave en mano" que combine el FMS de GVR con la experiencia de Prologic en ingeniería y cumplimiento ambiental.</p>
-                            </div>
-                            <div class="text-center relative">
-                               <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
-                                    <span class="font-bold text-xl" style="color: var(--primary);">3</span>
-                                </div>
-                                <h4 class="mt-4 font-semibold text-gray-900">Marketing de Valor</h4>
-                                <p class="mt-1 text-sm text-gray-500">Liderar con "Automatización de SICOM" y "ROI". Crear contenido (guías, webinars) y participar en gremios (Fendipetróleo).</p>
-                            </div>
-                            <div class="text-center relative">
-                                <div class="flex justify-center items-center mx-auto w-12 h-12 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);">
-                                    <span class="font-bold text-xl" style="color: var(--primary);">4</span>
-                                </div>
-                                <h4 class="mt-4 font-semibold text-gray-900">Servicio Premium</h4>
-                                <p class="mt-1 text-sm text-gray-500">Ejecutar un modelo de servicio de extremo a extremo: Consulta, Diseño, Implementación, Capacitación y Soporte Continuo.</p>
-                            </div>
+                        <div class="hidden md:block roadmap-line"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-12">
+                            <div class="text-center relative roadmap-step reveal"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">1</span></div><h4 class="mt-4 font-semibold text-gray-900">Formalizar Alianza</h4><p class="mt-1 text-sm text-gray-500">Definir un rol como socio de valor agregado o especialista con GVR LatAm.</p></div>
+                            <div class="text-center relative roadmap-step reveal" style="transition-delay: 150ms;"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">2</span></div><h4 class="mt-4 font-semibold text-gray-900">Empaquetar Solución</h4><p class="mt-1 text-sm text-gray-500">Crear una oferta "llave en mano" combinando FMS y la experiencia de Prologic.</p></div>
+                            <div class="text-center relative roadmap-step reveal" style="transition-delay: 300ms;"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">3</span></div><h4 class="mt-4 font-semibold text-gray-900">Marketing de Valor</h4><p class="mt-1 text-sm text-gray-500">Liderar con "Automatización de SICOM" y "ROI". Crear contenido y participar en gremios.</p></div>
+                            <div class="text-center relative roadmap-step reveal" style="transition-delay: 450ms;"><div class="step-circle flex justify-center items-center mx-auto w-16 h-16 rounded-full border-2" style="border-color: var(--primary); background-color: var(--bg-white);"><span class="font-bold text-2xl" style="color: var(--primary);">4</span></div><h4 class="mt-4 font-semibold text-gray-900">Servicio Premium</h4><p class="mt-1 text-sm text-gray-500">Ejecutar un modelo de servicio de extremo a extremo: Consulta, Diseño, Implementación y Soporte.</p></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-16 text-center">
-                    <a href="https://prologicgroup.com/" target="_blank" class="inline-block text-white font-bold py-3 px-8 rounded-lg transition" style="background-color: var(--primary); hover:opacity-90;">
-                        Contactar a Prologic Group para una Consulta
+                <div class="mt-20 text-center reveal">
+                    <a href="https://prologicgroup.com/" target="_blank" class="inline-block text-white font-bold py-4 px-10 rounded-lg transition-transform duration-300 hover:scale-105" style="background-color: var(--primary);">
+                        Contactar a Prologic Group
                     </a>
                 </div>
 
@@ -430,61 +413,60 @@
         document.addEventListener('DOMContentLoaded', function() {
             const painPointsData = {
                 retail: {
-                    title: 'Puntos de Dolor: Estaciones de Servicio (EDS) Minoristas',
+                    icon: '🏪',
+                    title: 'Retail (EDS)',
                     points: [
-                        { icon: '💲', title: 'Presión sobre Márgenes', description: 'Los precios regulados eliminan la flexibilidad. La única vía para la rentabilidad es la eficiencia y el control de costos.' },
-                        { icon: '💧', title: 'Pérdida de Combustible (Merma)', description: 'Pérdidas por variación de temperatura, robo, fugas y descalibración de surtidores impactan directamente la utilidad neta.' },
-                        { icon: '📈', title: 'Altos Costos Operativos', description: 'Los costos de personal y las reformas laborales amenazan la viabilidad de estaciones de bajo volumen.' }
+                        { icon: '💲', title: 'Presión sobre Márgenes', description: 'Precios regulados eliminan la flexibilidad. La única vía es la eficiencia y control de costos.' },
+                        { icon: '💧', title: 'Pérdida de Combustible (Merma)', description: 'Pérdidas por temperatura, robo, fugas y descalibración impactan directamente la utilidad.' },
+                        { icon: '📈', title: 'Altos Costos Operativos', description: 'Costos de personal amenazan la viabilidad de estaciones de bajo volumen.' }
                     ]
                 },
                 flotas: {
-                    title: 'Puntos de Dolor: Flotas Comerciales e Industriales',
+                    icon: '🚚',
+                    title: 'Flotas Comerciales',
                     points: [
-                        { icon: '⛽', title: 'Costo del Combustible', description: 'Representa hasta el 40% de los costos operativos totales, agravado por el aumento de precios del diésel.' },
-                        { icon: '🕵️', title: 'Robo Sistemático de Combustible', description: 'El "pimpineo" o robo por parte de conductores es una práctica endémica que puede causar pérdidas de hasta el 18% del gasto en combustible.' },
-                        { icon: '📉', title: 'Ineficiencias Operativas', description: 'Rutas no optimizadas, ralentí excesivo y malos hábitos de conducción inflan el consumo y los costos de mantenimiento.' }
+                        { icon: '⛽', title: 'Costo del Combustible', description: 'Representa hasta el 40% de los costos operativos totales, agravado por el aumento de precios.' },
+                        { icon: '🕵️', title: 'Robo Sistemático', description: 'El "pimpineo" puede causar pérdidas de hasta el 18% del gasto en combustible.' },
+                        { icon: '📉', title: 'Ineficiencias Operativas', description: 'Rutas no optimizadas y malos hábitos de conducción inflan el consumo.' }
                     ]
                 },
                 mineria: {
-                    title: 'Puntos de Dolor: Sector Minero',
+                    icon: '⛏️',
+                    title: 'Minería e Industria',
                     points: [
-                        { icon: '🔥', title: 'Consumo Extremo de Combustible', description: 'Un solo camión de acarreo puede consumir 350 litros/hora. La más mínima imprecisión genera costos astronómicos.' },
-                        { icon: '🏞️', title: 'Entorno Operativo Hostil', description: 'Ubicaciones remotas y condiciones extremas exigen equipos robustos, duraderos y resistentes a la contaminación.' },
-                        { icon: '🛰️', title: 'Necesidad de Supervisión Remota', description: 'Demanda de despacho de alto caudal y gestión de inventario centralizada para volúmenes masivos de combustible.' }
+                        { icon: '🔥', title: 'Consumo Extremo', description: 'Un solo camión minero puede consumir 350L/hora. La imprecisión genera costos astronómicos.' },
+                        { icon: '🏞️', title: 'Entorno Hostil', description: 'Exige equipos robustos, duraderos y resistentes a la contaminación.' },
+                        { icon: '🛰️', title: 'Supervisión Remota', description: 'Demanda de despacho y gestión de inventario centralizada para volúmenes masivos.' }
                     ]
                 }
             };
 
-            function renderPainPoints(segment) {
-                const content = painPointsData[segment];
+            function renderPainPoints() {
                 const container = document.getElementById('pain-points-content');
-                let html = `<h3 class="text-2xl font-bold text-center mb-8 text-gray-900">${content.title}</h3>`;
-                html += '<div class="grid grid-cols-1 md:grid-cols-3 gap-8">';
-                content.points.forEach(point => {
-                    html += `
-                        <div class="text-center p-6 rounded-2xl" style="background-color: var(--primary-light);">
-                            <div class="text-4xl mx-auto mb-4">${point.icon}</div>
-                            <h4 class="font-semibold text-lg text-gray-900">${point.title}</h4>
-                            <p class="mt-2 text-gray-600">${point.description}</p>
+                container.innerHTML = ''; 
+                ['retail', 'flotas', 'mineria'].forEach((segment, index) => {
+                    const content = painPointsData[segment];
+                    let cardHtml = `
+                    <div class="flip-card reveal" style="transition-delay: ${index * 150}ms;">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="text-6xl mb-4">${content.icon}</div>
+                                <h3 class="text-2xl font-bold" style="color: var(--primary);">${content.title}</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <ul class="text-left space-y-3">`;
+                    content.points.forEach(point => {
+                        cardHtml += `<li class="flex items-start"><span class="mr-3">${point.icon}</span><span><strong>${point.title}:</strong> ${point.description}</span></li>`;
+                    });
+                    cardHtml += `</ul>
+                            </div>
                         </div>
-                    `;
+                    </div>`;
+                    container.innerHTML += cardHtml;
                 });
-                html += '</div>';
-                container.innerHTML = html;
-                container.classList.remove('fade-in');
-                void container.offsetWidth; 
-                container.classList.add('fade-in');
             }
 
-            document.querySelectorAll('.segment-card').forEach(button => {
-                button.addEventListener('click', () => {
-                    document.querySelectorAll('.segment-card').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    renderPainPoints(button.dataset.segment);
-                });
-            });
-
-            renderPainPoints('retail');
+            renderPainPoints();
 
             const marketShareCtx = document.getElementById('marketShareChart').getContext('2d');
             new Chart(marketShareCtx, {
@@ -494,12 +476,7 @@
                     datasets: [{
                         label: 'Cuota de Mercado',
                         data: [45, 24, 16, 15], 
-                        backgroundColor: [
-                            '#003366',
-                            '#5D8AA8',
-                            '#A9C2D4',
-                            '#D4A017'
-                        ],
+                        backgroundColor: ['#003366', '#5D8AA8', '#A9C2D4', '#D4A017'],
                         borderColor: '#F8F9FA',
                         borderWidth: 4,
                         hoverOffset: 10
@@ -508,32 +485,14 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                font: {
-                                    family: "'Inter', sans-serif"
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed !== null) {
-                                        label += context.parsed + '%';
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
+                    plugins: { legend: { position: 'bottom', labels: { padding: 20, font: { family: "'Inter', sans-serif" } } },
+                        tooltip: { callbacks: { label: (c) => `${c.label}: ${c.parsed}%` } }
                     },
-                    cutout: '60%'
+                    cutout: '60%',
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
                 }
             });
 
@@ -543,48 +502,57 @@
                 tab.addEventListener('click', () => {
                     solutionTabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-
-                    solutionContents.forEach(content => {
-                        content.classList.add('hidden');
-                    });
-                    const targetContent = document.getElementById(`${tab.dataset.target}-content`);
-                    if (targetContent) {
-                        targetContent.classList.remove('hidden');
-                        targetContent.classList.remove('fade-in');
-                        void targetContent.offsetWidth; 
-                        targetContent.classList.add('fade-in');
+                    solutionContents.forEach(c => c.classList.add('hidden'));
+                    const target = document.getElementById(`${tab.dataset.target}-content`);
+                    if(target) {
+                        target.classList.remove('hidden');
+                        target.classList.remove('fade-in');
+                        void target.offsetWidth;
+                        target.classList.add('fade-in');
                     }
                 });
             });
 
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
-            document.querySelectorAll('#mobile-menu a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
-                });
-            });
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            document.querySelectorAll('#mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
 
-            const sections = document.querySelectorAll('main section');
             const navLinks = document.querySelectorAll('header nav a');
+            let header = document.getElementById('header');
 
-            const observer = new IntersectionObserver((entries) => {
+            const scrollObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    const navLink = document.querySelector(`nav a[href="#${id}"]`);
                     if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
-                        });
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        if (navLink) navLink.classList.add('active');
                     }
                 });
-            }, { rootMargin: "-50% 0px -50% 0px" });
+            }, { rootMargin: "-30% 0px -70% 0px" });
 
-            sections.forEach(section => {
-                observer.observe(section);
+            document.querySelectorAll('main section[id]').forEach(section => scrollObserver.observe(section));
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('shadow-md');
+                } else {
+                    header.classList.remove('shadow-md');
+                }
             });
+            
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            revealElements.forEach(el => revealObserver.observe(el));
         });
     </script>
 </body>
