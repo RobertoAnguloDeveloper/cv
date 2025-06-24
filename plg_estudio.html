@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análisis Interactivo del Mercado FMS en Colombia</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⛽</text></svg>">
-    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Corporate Blue & Warm Neutrals -->
     <!-- Application Structure Plan: A single-page dashboard layout with a sticky navigation header for smooth scrolling between thematic sections. The structure prioritizes user exploration over the report's linear format. It starts with a high-level market overview (what), moves to the core problems (why it matters), presents the proposed solution (how to solve it), analyzes the competitive landscape (who else is there), and concludes with the specific strategy for the company (the action plan). This logical flow from context to action is designed for clear business decision-making. Interactions include clickable cards to reveal detailed "pain points", interactive charts for data visualization, and tabbed interfaces for comparing complex information, making the dense report digestible and engaging. -->
     <!-- Visualization & Content Choices: 
@@ -592,7 +592,7 @@
             let header = document.getElementById('header');
 
             function updateNavIndicator(element) {
-                if (!element) return;
+                if (!element || !navIndicator) return;
                 navIndicator.style.width = `${element.offsetWidth}px`;
                 navIndicator.style.transform = `translateX(${element.offsetLeft}px)`;
             }
@@ -623,6 +623,20 @@
                     updateNavIndicator(navLinks[0]);
                 }
             }, 100);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - header.offsetHeight,
+                            behavior: 'smooth'
+                        });
+                    }
+                })
+            })
 
 
             window.addEventListener('scroll', () => {
