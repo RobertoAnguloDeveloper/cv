@@ -9,597 +9,388 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+        // Register GSAP plugins immediately after they are loaded to prevent reference errors.
+        gsap.registerPlugin(ScrollTrigger);
+    </script>
     <style>
         :root {
+            --plg-primary-color: #00AEEF;
             --newmont-color: #f59e0b;
             --rgm-color: #06b6d4;
             --cmms-color: #10b981;
+            --bg-color: #f8f9fa;
+            --text-color-primary: #1f2937;
+            --text-color-secondary: #4b5563;
+            --card-bg-color: #ffffff;
+            --border-color: #e2e8f0;
+            --subtle-bg-color: #f1f5f9;
         }
-        
+
+        html.dark {
+            --bg-color: #0f172a;
+            --text-color-primary: #e2e8f0;
+            --text-color-secondary: #94a3b8;
+            --card-bg-color: #1e293b;
+            --border-color: #334155;
+            --subtle-bg-color: #334155;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
-            background-size: 400% 400%;
-            animation: gradient-animation 15s ease infinite;
-            min-height: 100vh;
-            overflow-x: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-color-primary);
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        
-        @keyframes gradient-animation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
         .card {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(100, 116, 139, 0.3);
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.8s ease-out forwards;
-            transform-style: preserve-3d;
-            perspective: 1000px;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease-in-out;
+            visibility: hidden; /* Required for WOW.js */
         }
-        
         .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            border-color: rgba(100, 116, 139, 0.6);
-        }
-        
-        .card.newmont:hover {
-            border-color: var(--newmont-color);
-            box-shadow: 0 25px 50px rgba(245, 158, 11, 0.15);
-        }
-        
-        .card.rgm:hover {
-            border-color: var(--rgm-color);
-            box-shadow: 0 25px 50px rgba(6, 182, 212, 0.15);
-        }
-        
-        .card.cmms:hover {
-            border-color: var(--cmms-color);
-            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.15);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1);
         }
         
         .card-item {
-            transition: all 0.3s ease;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            margin: -0.75rem;
-            background: rgba(30, 41, 59, 0.3);
-            border-left: 3px solid transparent;
+            position: relative;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .card-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background-color: currentColor;
+            box-shadow: 0 0 8px currentColor, 0 0 12px currentColor;
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card-item:hover::before {
+            transform: scaleY(1);
+            transform-origin: top;
         }
         
-        .card-item:hover {
-            background: rgba(30, 41, 59, 0.6);
-            transform: translateX(5px);
-            border-left: 3px solid currentColor;
-        }
-        
+        #newmont .card-item { color: var(--newmont-color); }
+        #rgm .card-item { color: var(--rgm-color); }
+        #cmms .card-item { color: var(--cmms-color); }
+
+
         .icon {
             flex-shrink: 0;
             margin-right: 1rem;
-            margin-top: 0.25rem;
-            transition: all 0.3s ease;
-            font-size: 1.5rem;
+            margin-top: 0.125rem;
+            font-size: 1.25rem;
+            width: 32px;
+            text-align: center;
         }
-        
         .status-badge {
             display: inline-block;
-            padding: 0.35rem 1rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
-            margin-top: 0.75rem;
+            margin-top: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
-        .pulse-red {
-            animation: pulse-red 2s infinite;
-        }
-        
-        @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
-        }
-        
-        .pulse-orange {
-             animation: pulse-orange 2s infinite;
-        }
-        
-        @keyframes pulse-orange {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(249, 115, 22, 0); }
-        }
-        
-        .header-anim {
-            animation: slideDown 1s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* New Effects */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-        
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            animation: float 15s infinite linear;
-        }
-        
-        @keyframes float {
-            to {
-                transform: translateY(-100vh) rotate(360deg);
-            }
-        }
-        
-        .glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            border-radius: inherit;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-            background: radial-gradient(circle at center, currentColor, transparent 70%);
-        }
-        
-        .card:hover .glow {
-            opacity: 0.2;
-        }
-        
-        .gradient-text {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 300% 300%;
-            animation: gradient-shift 4s ease infinite;
-        }
-        
-        @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .section-title {
-            position: relative;
-            display: inline-block;
-            padding-bottom: 0.5rem;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: currentColor;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.5s ease;
-        }
-        
-        .card:hover .section-title::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-        
-        .floating {
-            animation: floatElement 3s ease-in-out infinite;
-        }
-        
-        @keyframes floatElement {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .floating-2 {
-            animation: floatElement 3.5s ease-in-out infinite;
-            animation-delay: 0.5s;
-        }
-        
-        .floating-3 {
-            animation: floatElement 4s ease-in-out infinite;
-            animation-delay: 1s;
-        }
-        
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .data-sphere {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            overflow: hidden;
-            animation: rotate 20s linear infinite;
-        }
-        
-        .data-sphere::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: conic-gradient(transparent, rgba(255,255,255,0.1), transparent);
-            animation: rotate 3s linear infinite;
-        }
-        
-        .data-sphere-inner {
-            position: absolute;
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
         .stat-card {
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            border: 1px solid rgba(100, 116, 139, 0.2);
-            transition: all 0.3s ease;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-left-width: 4px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            visibility: hidden; /* Required for WOW.js */
         }
-        
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            border-color: rgba(100, 116, 139, 0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.07);
         }
         
-        .progress-bar {
-            height: 8px;
-            border-radius: 4px;
-            background: rgba(100, 116, 139, 0.2);
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 1.5s ease-out;
-        }
+        /* Dynamic Colors */
+        .text-primary { color: var(--text-color-primary); }
+        .text-secondary { color: var(--text-color-secondary); }
+        .border-dynamic { border-color: var(--border-color); }
+
+        /* Theme Toggle Icon */
+        #theme-toggle .fa-moon { display: block; }
+        #theme-toggle .fa-sun { display: none; }
+        html.dark #theme-toggle .fa-moon { display: none; }
+        html.dark #theme-toggle .fa-sun { display: block; }
+
     </style>
 </head>
-<body class="text-gray-200">
-    <!-- Particles Background -->
-    <div class="particles" id="particles"></div>
-    
-    <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8 max-w-6xl">
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+
         <!-- Header -->
-        <header class="text-center mb-12 header-anim">
-            <div class="data-sphere mb-6">
-                <div class="data-sphere-inner">
-                    <i class="fas fa-database text-4xl text-cyan-400"></i>
+        <header class="mb-10">
+            <div class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-dynamic">
+                <div class="flex items-center">
+                    <img src="logos/PLG Logo.png" alt="PLG Logo" class="h-14 mr-4">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-primary header-title">PLG Data Center Weekly Summary</h1>
+                        <p class="text-md text-secondary mt-1 header-subtitle">July 1-7, 2025</p>
+                    </div>
+                </div>
+                 <div class="flex items-center mt-4 sm:mt-0">
+                    <button id="theme-toggle" class="p-2 rounded-full text-secondary hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 mr-4">
+                        <i class="fas fa-moon"></i>
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <div id="location-time" class="text-right text-sm text-secondary header-time">
+                        <p><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>Cartagena, Colombia</p>
+                        <p id="live-clock" class="font-semibold text-primary"></p>
+                    </div>
                 </div>
             </div>
-            <h1 class="text-4xl sm:text-5xl font-bold gradient-text">PLG Data Center Weekly Summary</h1>
-            <p class="text-xl sm:text-2xl text-gray-400 mt-3">July 1-7, 2025</p>
-            <div id="location-time" class="mt-4 text-sm text-gray-400">
-                <p><i class="fas fa-map-marker-alt mr-2"></i>Cartagena, Colombia</p>
-                <p id="live-clock" class="mt-1 text-cyan-300 font-medium"></p>
-            </div>
-            
-            <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                <div class="stat-card">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-gray-400">Projects</span>
-                        <span class="font-bold text-lg text-cyan-300">3</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-cyan-500 w-full"></div>
+             <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="stat-card wow animate__animated animate__fadeInUp rounded-lg p-4" data-wow-delay="0.2s" style="border-left-color: var(--plg-primary-color);">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-secondary">Total Tasks</p>
+                            <p class="text-2xl font-bold text-primary stat-number" data-value="10">0</p>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-gray-400">Tasks</span>
-                        <span class="font-bold text-lg text-yellow-300">10</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-yellow-500 w-4/5"></div>
+                <div class="stat-card wow animate__animated animate__fadeInUp rounded-lg p-4 border-l-orange-500" data-wow-delay="0.3s">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-secondary">Pending Items</p>
+                            <p class="text-2xl font-bold text-primary stat-number" data-value="3">0</p>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-gray-400">Resolved</span>
-                        <span class="font-bold text-lg text-green-300">7</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-green-500 w-3/5"></div>
+                 <div class="stat-card wow animate__animated animate__fadeInUp rounded-lg p-4 border-l-red-500" data-wow-delay="0.4s">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4">
+                           <i class="fas fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-secondary">Action Required</p>
+                            <p class="text-2xl font-bold text-primary stat-number" data-value="1">0</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </header>
 
-        <main class="dashboard-grid">
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
             <!-- Newmont Section -->
-            <section id="newmont" class="card rounded-2xl p-6 newmont" style="animation-delay: 100ms;">
-                <div class="glow" style="color: var(--newmont-color);"></div>
-                <h2 class="text-2xl font-semibold text-yellow-400 pb-3 mb-4 section-title">Newmont</h2>
-                <ul class="space-y-4">
+            <section id="newmont" class="card wow animate__animated animate__fadeInUp rounded-lg p-6" data-wow-delay="0.5s">
+                 <h2 class="flex items-center text-xl font-semibold text-primary border-b-2 border-yellow-500 pb-3 mb-4">
+                    <img src="logos/Newmont logo.png" alt="Newmont Logo" class="h-8 mr-3">
+                </h2>
+                <ul class="space-y-2">
                     <li class="flex items-start card-item">
-                        <div class="icon text-blue-400 floating">
-                            <i class="fas fa-question-circle"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-magnifying-glass-chart"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Diesel Reconciliation Variance</h3>
-                            <p class="text-gray-400 mt-1">Investigating the accepted variance percentage (currently 1.5%) against RGM's tolerance of 0.50%. Awaiting decision on potential reduction for Newmont's margin.</p>
-                            <span class="status-badge bg-blue-500/20 text-blue-300">Investigating</span>
+                            <h3 class="font-semibold text-md text-primary">Diesel Reconciliation Variance</h3>
+                            <p class="text-secondary text-sm mt-1">Investigating the accepted variance percentage (currently 1.5%) against RGM's tolerance of 0.50%.</p>
+                            <span class="status-badge bg-blue-100 text-blue-800">Investigating</span>
                         </div>
                     </li>
                     <li class="flex items-start card-item">
-                        <div class="icon text-green-400 floating-2">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-bullhorn"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Reconciliation Timing Adjustment</h3>
-                            <p class="text-gray-400 mt-1">Suggestion made to pause refueling operations between 11:30 PM and 1:00 AM to prevent transaction discrepancies caused by the 00:00 report cutoff.</p>
-                             <span class="status-badge bg-green-500/20 text-green-300">Suggestion</span>
+                            <h3 class="font-semibold text-md text-primary">Reconciliation Timing Adjustment</h3>
+                            <p class="text-secondary text-sm mt-1">Suggestion made to pause refueling operations between 11:30 PM and 1:00 AM.</p>
+                             <span class="status-badge bg-green-100 text-green-800">Suggestion</span>
                         </div>
                     </li>
                     <li class="flex items-start card-item">
-                        <div class="icon text-red-400 floating-3">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-triangle-exclamation"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Missing Totalizer Reports</h3>
-                            <p class="text-gray-400 mt-1">No reports found for product output meter totalizers. This data is critical for comparison with transactions and identifying urgent meter calibration needs.</p>
-                            <span class="status-badge bg-red-500/20 text-red-300 pulse-red">Action Required</span>
+                            <h3 class="font-semibold text-md text-primary">Missing Totalizer Reports</h3>
+                            <p class="text-secondary text-sm mt-1">No reports found for product output meter totalizers for urgent calibration needs.</p>
+                            <span class="status-badge bg-red-100 text-red-800">Action Required</span>
                         </div>
                     </li>
                 </ul>
             </section>
 
             <!-- RGM Section -->
-            <section id="rgm" class="card rounded-2xl p-6 rgm" style="animation-delay: 200ms;">
-                <div class="glow" style="color: var(--rgm-color);"></div>
-                <h2 class="text-2xl font-semibold text-cyan-400 pb-3 mb-4 section-title">RGM</h2>
-                <ul class="space-y-4">
+            <section id="rgm" class="card wow animate__animated animate__fadeInUp rounded-lg p-6" data-wow-delay="0.6s">
+                <h2 class="flex items-center text-xl font-semibold text-primary border-b-2 border-cyan-500 pb-3 mb-4">
+                    <img src="logos/RGM Logo.png" alt="RGM Logo" class="h-14 mr-3">
+                </h2>
+                <ul class="space-y-2">
                     <li class="flex items-start card-item">
-                        <div class="icon text-orange-400 floating">
-                            <i class="fas fa-clock"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-hourglass-half"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">DB248 Controller Installation</h3>
-                            <p class="text-gray-400 mt-1">Awaiting response from GAFS regarding the reinstallation of the old DB247 controller into the damaged DB248 Bowser.</p>
-                            <span class="status-badge bg-orange-500/20 text-orange-300 pulse-orange">Pending</span>
+                            <h3 class="font-semibold text-md text-primary">DB248 Controller Installation</h3>
+                            <p class="text-secondary text-sm mt-1">Awaiting response from GAFS regarding the reinstallation of the old DB247 controller.</p>
+                            <span class="status-badge bg-orange-100 text-orange-800">Pending</span>
                         </div>
                     </li>
                     <li class="flex items-start card-item">
-                        <div class="icon text-orange-400 floating-2">
-                            <i class="fas fa-sync-alt"></i>
-                        </div>
+                         <div class="icon"><i class="fas fa-network-wired"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Saramacca TLS Synchronization</h3>
-                            <p class="text-gray-400 mt-1">Wiring for DataFlex360 synchronization is still pending. This is needed to resolve issues with ad-hoc level requests not being properly documented.</p>
-                            <span class="status-badge bg-orange-500/20 text-orange-300 pulse-orange">Pending</span>
+                            <h3 class="font-semibold text-md text-primary">Saramacca TLS Synchronization</h3>
+                            <p class="text-secondary text-sm mt-1">Wiring for DataFlex360 synchronization is still pending to resolve documentation issues.</p>
+                            <span class="status-badge bg-orange-100 text-orange-800">Pending</span>
                         </div>
                     </li>
                     <li class="flex items-start card-item">
-                        <div class="icon text-green-400 floating-3">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-circle-check"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">TLS Historical Data Storage</h3>
-                            <p class="text-gray-400 mt-1">Identified and guided the on-site team to fix a configuration issue on TLS 4xx (Plus) units at LDV and Saramacca, which were not storing historical inventory records.</p>
-                            <span class="status-badge bg-green-500/20 text-green-300">Complete</span>
+                            <h3 class="font-semibold text-md text-primary">TLS Historical Data Storage</h3>
+                            <p class="text-secondary text-sm mt-1">Guided on-site team to fix a configuration issue on TLS 4xx (Plus) units.</p>
+                            <span class="status-badge bg-green-100 text-green-800">Complete</span>
                         </div>
                     </li>
                      <li class="flex items-start card-item">
-                        <div class="icon text-purple-400 floating">
-                            <i class="fas fa-users"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-user-tie"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Personnel Update & Training</h3>
-                            <p class="text-gray-400 mt-1">Vincent Rolong (new hire) has received task lists from Valentina. He will be in Cartagena until July 18 for direct training on RGM report delivery.</p>
-                            <span class="status-badge bg-purple-500/20 text-purple-300">In Progress</span>
+                            <h3 class="font-semibold text-md text-primary">Personnel Update & Training</h3>
+                            <p class="text-secondary text-sm mt-1">Vincent Rolong in Cartagena until July 18 for direct training on RGM report delivery.</p>
+                            <span class="status-badge bg-purple-100 text-purple-800">In Progress</span>
                         </div>
                     </li>
                 </ul>
             </section>
 
             <!-- CMMS Project Section -->
-            <section id="cmms" class="card rounded-2xl p-6 cmms" style="animation-delay: 300ms;">
-                <div class="glow" style="color: var(--cmms-color);"></div>
-                <h2 class="text-2xl font-semibold text-green-400 pb-3 mb-4 section-title">CMMS Project</h2>
-                <ul class="space-y-4">
+            <section id="cmms" class="card wow animate__animated animate__fadeInUp rounded-lg p-6" data-wow-delay="0.7s">
+                <h2 class="flex items-center text-xl font-semibold text-primary border-b-2 border-green-500 pb-3 mb-4">
+                     <i class="fas fa-cogs h-6 mr-3 text-green-500"></i> CMMS Project
+                </h2>
+                <ul class="space-y-2">
                     <li class="flex items-start card-item">
-                        <div class="icon text-pink-400 floating">
-                            <i class="fas fa-rocket"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-check-to-slot"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Application Launched</h3>
-                            <p class="text-gray-400 mt-1">The application has been successfully launched on a public domain for use.</p>
-                            <span class="status-badge bg-green-500/20 text-green-300">Complete</span>
+                            <h3 class="font-semibold text-md text-primary">Application Launched</h3>
+                            <p class="text-secondary text-sm mt-1">The application is now live on a public domain.</p>
+                             <a href="https://www.plgcmms.site/" target="_blank" rel="noopener noreferrer" class="inline-block bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-full hover:bg-cyan-600 transition-colors mt-2">
+                                Visit Project Site <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                            </a>
                         </div>
                     </li>
                     <li class="flex items-start card-item">
-                        <div class="icon text-blue-400 floating-2">
-                            <i class="fas fa-tasks"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-tasks-alt"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Testing Phase Rollout Plan</h3>
-                            <p class="text-gray-400 mt-1">Credentials for the testing phase will be provided to projects in the following order:</p>
-                            <ol class="list-decimal list-inside mt-2 text-gray-300 pl-4">
+                            <h3 class="font-semibold text-md text-primary">Testing Phase Rollout Plan</h3>
+                            <p class="text-secondary text-sm mt-1">Credentials will be provided in the following order:</p>
+                            <ol class="list-decimal list-inside mt-2 text-secondary text-sm pl-2">
                                 <li>RGM</li>
                                 <li>BAITALI</li>
                                 <li>NEWMONT</li>
                             </ol>
-                            <span class="status-badge bg-blue-500/20 text-blue-300">Upcoming</span>
+                            <span class="status-badge bg-blue-100 text-blue-800">Upcoming</span>
                         </div>
                     </li>
                     <li class="flex items-start card-item">
-                        <div class="icon text-gray-400 floating-3">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
+                        <div class="icon"><i class="fas fa-angles-right"></i></div>
                         <div>
-                            <h3 class="font-semibold text-lg">Future Deployment</h3>
-                            <p class="text-gray-400 mt-1">After collecting feedback and fixing identified errors, the application will be delivered to FUSECON and then MIAMI.</p>
-                            <span class="status-badge bg-gray-500/20 text-gray-300">Planned</span>
+                            <h3 class="font-semibold text-md text-primary">Future Deployment</h3>
+                            <p class="text-secondary text-sm mt-1">The app will be delivered to FUSECON and MIAMI after feedback and fixes.</p>
+                            <span class="status-badge bg-gray-100 text-gray-800">Planned</span>
                         </div>
                     </li>
                 </ul>
             </section>
+
         </main>
 
-        <footer class="text-center mt-12 pt-8 border-t border-gray-700">
-            <div class="flex justify-center space-x-6 mb-4">
-                <a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">
-                    <i class="fab fa-github text-xl"></i>
-                </a>
-                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
-                    <i class="fab fa-linkedin text-xl"></i>
-                </a>
-                <a href="#" class="text-gray-400 hover:text-green-400 transition-colors">
-                    <i class="fas fa-envelope text-xl"></i>
-                </a>
-            </div>
-            <p class="text-gray-500">PLG Data Center | Confidential</p>
-            <p class="text-gray-600 text-sm mt-2">© 2025 PLG Technologies. All rights reserved.</p>
+        <footer class="text-center mt-10 pt-6 border-t border-dynamic">
+            <p class="text-sm text-secondary">&copy; 2025 PLG Data Center | Confidential</p>
+            <p class="text-xs text-gray-400 mt-2">Last updated: <span id="last-updated"></span></p>
         </footer>
     </div>
-    
     <script>
-        // Create particles for background
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                // Random size
-                const size = Math.random() * 4 + 1;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                // Random position
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                
-                // Random animation duration
-                const duration = Math.random() * 20 + 10;
-                particle.style.animationDuration = `${duration}s`;
-                
-                // Random delay
-                particle.style.animationDelay = `-${Math.random() * 20}s`;
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
-        
-        // Set the initial date and time
-        const initialDate = new Date('2025-07-07T21:32:00-05:00');
-        
-        function updateClock() {
-            // Increment the time by one second
-            initialDate.setSeconds(initialDate.getSeconds() + 1);
-            
-            const clockElement = document.getElementById('live-clock');
-            if (clockElement) {
-                 const options = {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true,
-                    timeZone: 'America/Bogota'
-                };
-                try {
-                    clockElement.textContent = new Intl.DateTimeFormat('en-US', options).format(initialDate);
-                } catch (e) {
-                    // Fallback for older browsers
-                    clockElement.textContent = initialDate.toLocaleString('en-US', { timeZone: 'America/Bogota' });
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- WOW.js INITIALIZATION ---
+            new WOW().init();
+
+            // --- THEME TOGGLER ---
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+
+            function updateToggleIcon() {
+                const moonIcon = themeToggle.querySelector('.fa-moon');
+                const sunIcon = themeToggle.querySelector('.fa-sun');
+                if (htmlElement.classList.contains('dark')) {
+                    moonIcon.style.display = 'none';
+                    sunIcon.style.display = 'block';
+                } else {
+                    moonIcon.style.display = 'block';
+                    sunIcon.style.display = 'none';
                 }
             }
-        }
-        
-        // Initialize animations
-        function initAnimations() {
-            // Animate progress bars on page load
-            document.querySelectorAll('.progress-fill').forEach((bar, index) => {
-                // Store original width
-                const width = bar.style.width;
-                bar.style.width = '0';
-                
-                // Animate to original width with delay
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 500 + index * 200);
+            
+            if (localStorage.getItem('theme') === 'dark') {
+                htmlElement.classList.add('dark');
+            }
+            updateToggleIcon();
+
+            themeToggle.addEventListener('click', () => {
+                htmlElement.classList.toggle('dark');
+                if (htmlElement.classList.contains('dark')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+                updateToggleIcon();
             });
-            
-            // Add GSAP animations for sections
-            gsap.registerPlugin(ScrollTrigger);
-            
-            gsap.utils.toArray('.card').forEach((card, i) => {
-                gsap.from(card, {
+
+            // --- TIME AND DATE ---
+            const initialDate = new Date('2025-07-07T22:30:00-05:00');
+            const clockElement = document.getElementById('live-clock');
+            const lastUpdatedElement = document.getElementById('last-updated');
+
+            function updateTime() {
+                initialDate.setSeconds(initialDate.getSeconds() + 1);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'America/Bogota' };
+                const timeString = new Intl.DateTimeFormat('en-US', options).format(initialDate);
+                if (clockElement) clockElement.textContent = timeString;
+                if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // --- GSAP ANIMATIONS ---
+            // Animate header elements
+            gsap.from(".header-title", { duration: 0.8, y: -30, opacity: 0, ease: "power3.out", delay: 0.2 });
+            gsap.from(".header-subtitle", { duration: 0.8, y: -20, opacity: 0, ease: "power3.out", delay: 0.4 });
+            gsap.from(".header-time", { duration: 0.8, opacity: 0, ease: "power3.out", delay: 0.6 });
+
+            // Animate stat numbers
+            document.querySelectorAll('.stat-number').forEach(el => {
+                const endValue = parseInt(el.getAttribute('data-value'), 10);
+                gsap.to(el, {
+                    duration: 2,
+                    innerText: endValue,
+                    roundProps: "innerText",
+                    ease: "power2.inOut",
                     scrollTrigger: {
-                        trigger: card,
-                        start: "top 90%",
-                    },
-                    opacity: 0,
-                    y: 50,
-                    duration: 0.8,
-                    delay: i * 0.15,
-                    ease: "power3.out"
+                        trigger: el,
+                        start: 'top 90%',
+                        toggleActions: 'play none none none'
+                    }
                 });
             });
-        }
-        
-        // Initialize when page loads
-        window.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            updateClock();
-            setInterval(updateClock, 1000);
-            initAnimations();
         });
     </script>
 </body>
