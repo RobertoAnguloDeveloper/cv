@@ -1,0 +1,24 @@
+{
+      "id": "cmms",
+      "items": [
+        {
+          "type": "link",
+          "title": "Application Launched",
+          "description": "The application is now live on a public domain for initial testing and feedback.",
+          "url": "https://www.plgcmms.site/"
+        },
+        {
+          "type": "list",
+          "title": "Testing Phase Rollout Plan",
+          "description": "Credentials will be provided in the following order:",
+          "listItems": ["RGM", "BAITALI", "NEWMONT"],
+          "status": "Upcoming"
+        },
+        {
+          "type": "info",
+          "title": "Future Deployment",
+          "description": "The app will be delivered to FUSECON and MIAMI after feedback and fixes.",
+          "status": "Planned"
+        }
+      ]
+    }

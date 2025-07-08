@@ -1,0 +1,25 @@
+{
+      "id": "rgm",
+      "tasks": [
+        {
+          "title": "DB248 Controller Installation",
+          "description": "Awaiting response from GAFS regarding the reinstallation of the old DB247 controller.",
+          "status": "Pending"
+        },
+        {
+          "title": "Saramacca TLS Synchronization",
+          "description": "Wiring for DataFlex360 synchronization is still pending to resolve documentation issues.",
+          "status": "Pending"
+        },
+        {
+          "title": "TLS Historical Data Storage",
+          "description": "Guided on-site team to fix a configuration issue on TLS 4xx (Plus) units.",
+          "status": "Complete"
+        },
+        {
+          "title": "Personnel Update & Training",
+          "description": "Vincent Rolong in Cartagena until July 18 for direct training on RGM report delivery.",
+          "status": "In Progress"
+        }
+      ]
+    }

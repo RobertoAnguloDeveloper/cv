@@ -1,0 +1,79 @@
+{
+  "reportDateRange": "July 1-7, 2025",
+  "stats": {
+    "totalTasks": 10,
+    "pendingItems": 3,
+    "actionRequired": 1
+  },
+  "sections": [
+    {
+      "id": "newmont",
+      "tasks": [
+        {
+          "title": "Diesel Reconciliation Variance",
+          "description": "Investigating the accepted variance percentage (currently 1.5%) against RGM's tolerance of 0.50%.",
+          "status": "Investigating"
+        },
+        {
+          "title": "Reconciliation Timing Adjustment",
+          "description": "Suggestion made to pause refueling operations between 11:30 PM and 1:00 AM.",
+          "status": "Suggestion"
+        },
+        {
+          "title": "Missing Totalizer Reports",
+          "description": "No reports found for product output meter totalizers for urgent calibration needs.",
+          "status": "Action Required"
+        }
+      ]
+    },
+    {
+      "id": "rgm",
+      "tasks": [
+        {
+          "title": "DB248 Controller Installation",
+          "description": "Awaiting response from GAFS regarding the reinstallation of the old DB247 controller.",
+          "status": "Pending"
+        },
+        {
+          "title": "Saramacca TLS Synchronization",
+          "description": "Wiring for DataFlex360 synchronization is still pending to resolve documentation issues.",
+          "status": "Pending"
+        },
+        {
+          "title": "TLS Historical Data Storage",
+          "description": "Guided on-site team to fix a configuration issue on TLS 4xx (Plus) units.",
+          "status": "Complete"
+        },
+        {
+          "title": "Personnel Update & Training",
+          "description": "Vincent Rolong in Cartagena until July 18 for direct training on RGM report delivery.",
+          "status": "In Progress"
+        }
+      ]
+    },
+    {
+      "id": "cmms",
+      "items": [
+        {
+          "type": "link",
+          "title": "Application Launched",
+          "description": "The application is now live on a public domain for initial testing and feedback.",
+          "url": "https://www.plgcmms.site/"
+        },
+        {
+          "type": "list",
+          "title": "Testing Phase Rollout Plan",
+          "description": "Credentials will be provided in the following order:",
+          "listItems": ["RGM", "BAITALI", "NEWMONT"],
+          "status": "Upcoming"
+        },
+        {
+          "type": "info",
+          "title": "Future Deployment",
+          "description": "The app will be delivered to FUSECON and MIAMI after feedback and fixes.",
+          "status": "Planned"
+        }
+      ]
+    }
+  ]
+}

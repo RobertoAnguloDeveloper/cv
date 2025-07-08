@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLG Data Center - Report Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css"/>
+    <style>
+        :root {
+            --plg-primary-color: #00AEEF;
+            --newmont-color: #00539F;
+            --rgm-color: #DAA520;
+            --cmms-color: #10b981;
+            --bg-color-light: #f4f7f9;
+            --text-primary-light: #1a202c;
+            --text-secondary-light: #4a5568;
+            --card-bg-light: #ffffff;
+            --border-light: #e2e8f0;
+            
+            --bg-color-dark: #0d1117;
+            --text-primary-dark: #c9d1d9;
+            --text-secondary-dark: #8b949e;
+            --card-bg-dark: #161b22;
+            --border-dark: #30363d;
+        }
+
+        html.light {
+            --bg-color: var(--bg-color-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --card-bg: var(--card-bg-light);
+            --border-color: var(--border-light);
+        }
+
+        html.dark {
+            --bg-color: var(--bg-color-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --card-bg: var(--card-bg-dark);
+            --border-color: var(--border-dark);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            --tw-ring-color: var(--plg-primary-color);
+            border-color: var(--plg-primary-color);
+        }
+
+        .task-card {
+            border-left-width: 4px;
+            border-color: var(--border-color);
+            background-color: var(--card-bg);
+            transition: all 0.3s;
+        }
+        .task-card:hover {
+            border-color: var(--plg-primary-color);
+        }
+        .litepicker {
+            background-color: var(--card-bg) !important;
+            border-color: var(--border-color) !important;
+        }
+        html.dark .litepicker, html.dark .litepicker .container__months .month-item-header, html.dark .litepicker .container__months .month-item, html.dark .litepicker .container__tooltip, html.dark .litepicker .container__footer {
+             background-color: var(--card-bg-dark) !important;
+             color: var(--text-primary-dark) !important;
+             border-color: var(--border-dark) !important;
+        }
+        html.dark .litepicker .day-item:not(.is-start-date):not(.is-end-date):hover {
+            background-color: #2d333b !important;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl">
+        <!-- Header -->
+        <header class="mb-8 pb-6 border-b" style="border-color: var(--border-color);">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold" style="color: var(--text-primary);">Report Content Generator</h1>
+                    <p class="text-md mt-1" style="color: var(--text-secondary);">Fill out the form below to generate the weekly summary JSON file(s).</p>
+                </div>
+                <button id="theme-toggle" class="relative w-9 h-9 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="background-color: var(--card-bg); border: 1px solid var(--border-color);">
+                    <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="color: var(--text-secondary);"></i>
+                    <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="color: var(--text-secondary);"></i>
+                </button>
+            </div>
+             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                    <label for="report-date-range" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Report Date Range</label>
+                    <input type="text" id="report-date-range" class="form-input w-full rounded-md shadow-sm">
+                 </div>
+                 <div>
+                    <label for="project-selector" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Select Project to Edit/Export</label>
+                    <select id="project-selector" class="form-select w-full rounded-md shadow-sm">
+                        <option value="all">All Projects</option>
+                        <option value="newmont">Newmont</option>
+                        <option value="rgm">RGM</option>
+                        <option value="cmms">CMMS</option>
+                    </select>
+                 </div>
+            </div>
+        </header>
+
+        <main id="form-container" class="space-y-10">
+            <!-- Newmont Section -->
+            <section id="newmont-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold" style="color: var(--newmont-color);">Newmont Updates</h2>
+                    <button onclick="addTask('newmont')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Add Task
+                    </button>
+                </div>
+                <div id="newmont-tasks-container" class="space-y-4"></div>
+            </section>
+
+            <!-- RGM Section -->
+            <section id="rgm-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold" style="color: var(--rgm-color);">RGM Updates</h2>
+                    <button onclick="addTask('rgm')" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Add Task
+                    </button>
+                </div>
+                <div id="rgm-tasks-container" class="space-y-4"></div>
+            </section>
+
+            <!-- CMMS Section -->
+            <section id="cmms-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold" style="color: var(--cmms-color);">CMMS Project Updates</h2>
+                    <button onclick="addCmmsItem()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Add Item
+                    </button>
+                </div>
+                <div id="cmms-items-container" class="space-y-4"></div>
+            </section>
+        </main>
+        
+        <footer class="mt-12 pt-8 border-t" style="border-color: var(--border-color);">
+            <div class="text-center">
+                <button id="export-button" class="bg-cyan-500 hover:bg-cyan-600 text-white font-extrabold py-4 px-8 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    <i class="fas fa-download mr-3"></i> Generate and Download JSON(s)
+                </button>
+                <p id="success-message" class="text-green-500 mt-4 h-5"></p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+
+            const applyTheme = (theme) => {
+                htmlElement.classList.toggle('dark', theme === 'dark');
+                htmlElement.classList.toggle('light', theme !== 'dark');
+            };
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            applyTheme(savedTheme);
+            themeToggle.addEventListener('click', () => {
+                const newTheme = htmlElement.classList.contains('dark') ? 'light' : 'dark';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Initialize Litepicker
+            const picker = new Litepicker({
+                element: document.getElementById('report-date-range'),
+                singleMode: false,
+                format: 'MMM DD, YYYY',
+                startDate: new Date(),
+                endDate: new Date(new Date().setDate(new Date().getDate() + 6)),
+                setup: (picker) => {
+                    picker.on('selected', (date1, date2) => {
+                        // Handle date selection if needed
+                    });
+                },
+            });
+
+            document.getElementById('project-selector').addEventListener('change', handleProjectVisibility);
+            loadInitialData();
+            handleProjectVisibility();
+            document.getElementById('export-button').addEventListener('click', exportFiles);
+        });
+
+        let taskCounter = 0;
+        const statusOptions = ['Investigating', 'Suggestion', 'Action Required', 'Pending', 'Complete', 'In Progress', 'Upcoming', 'Planned'];
+
+        function handleProjectVisibility() {
+            const selectedProject = document.getElementById('project-selector').value;
+            const sections = {
+                newmont: document.getElementById('newmont-section'),
+                rgm: document.getElementById('rgm-section'),
+                cmms: document.getElementById('cmms-section')
+            };
+            if (selectedProject === 'all') {
+                Object.values(sections).forEach(sec => sec.style.display = 'block');
+            } else {
+                Object.entries(sections).forEach(([key, sec]) => {
+                    sec.style.display = key === selectedProject ? 'block' : 'none';
+                });
+            }
+        }
+
+        function loadInitialData() {
+            // No initial data is loaded. The form will start empty.
+        }
+
+        function addTask(section, taskData = { title: '', description: '', status: 'Pending' }) {
+            taskCounter++;
+            const container = document.getElementById(`${section}-tasks-container`);
+            const taskCard = document.createElement('div');
+            taskCard.className = 'task-card p-4 rounded-lg shadow-sm border-l-4';
+            taskCard.id = `task-${taskCounter}`;
+            const statusDropdown = statusOptions.map(opt => `<option value="${opt}" ${taskData.status === opt ? 'selected' : ''}>${opt}</option>`).join('');
+            taskCard.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Title</label><input type="text" class="form-input w-full rounded-md shadow-sm task-title" value="${taskData.title}"></div><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Status</label><select class="form-select w-full rounded-md shadow-sm task-status">${statusDropdown}</select></div><div class="md:col-span-2"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Description</label><textarea class="form-textarea w-full rounded-md shadow-sm task-description" rows="3">${taskData.description}</textarea></div></div><div class="text-right mt-3"><button onclick="removeElement('task-${taskCounter}')" class="text-red-500 hover:text-red-700 font-semibold text-sm"><i class="fas fa-trash-alt mr-1"></i>Remove</button></div>`;
+            container.appendChild(taskCard);
+        }
+
+        function addCmmsItem(itemData = { type: 'info', title: '', description: '', status: 'Planned', url: '', listItems: '' }) {
+            taskCounter++;
+            const container = document.getElementById('cmms-items-container');
+            const itemCard = document.createElement('div');
+            itemCard.className = 'task-card p-4 rounded-lg shadow-sm border-l-4';
+            itemCard.id = `task-${taskCounter}`;
+            itemCard.dataset.type = itemData.type;
+            const updateVisibility = (card, type) => {
+                card.querySelector('.cmms-url-field').style.display = type === 'link' ? 'block' : 'none';
+                card.querySelector('.cmms-list-field').style.display = type === 'list' ? 'block' : 'none';
+                card.querySelector('.cmms-status-field').style.display = (type === 'list' || type === 'info') ? 'block' : 'none';
+            };
+            const typeDropdown = ['info', 'link', 'list'].map(opt => `<option value="${opt}" ${itemData.type === opt ? 'selected' : ''}>${opt.charAt(0).toUpperCase() + opt.slice(1)}</option>`).join('');
+            const statusDropdown = statusOptions.map(opt => `<option value="${opt}" ${itemData.status === opt ? 'selected' : ''}>${opt}</option>`).join('');
+            itemCard.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Item Type</label><select class="form-select w-full rounded-md shadow-sm cmms-type">${typeDropdown}</select></div><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Title</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-title" value="${itemData.title}"></div><div class="md:col-span-2"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Description</label><textarea class="form-textarea w-full rounded-md shadow-sm cmms-description" rows="2">${itemData.description}</textarea></div><div class="cmms-url-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">URL</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-url" value="${itemData.url || ''}"></div><div class="cmms-list-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">List Items (comma-separated)</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-list-items" value="${itemData.listItems || ''}"></div><div class="cmms-status-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Status</label><select class="form-select w-full rounded-md shadow-sm cmms-status">${statusDropdown}</select></div></div><div class="text-right mt-3"><button onclick="removeElement('task-${taskCounter}')" class="text-red-500 hover:text-red-700 font-semibold text-sm"><i class="fas fa-trash-alt mr-1"></i>Remove</button></div>`;
+            container.appendChild(itemCard);
+            const typeSelector = itemCard.querySelector('.cmms-type');
+            typeSelector.addEventListener('change', (e) => {
+                const newType = e.target.value;
+                itemCard.dataset.type = newType;
+                updateVisibility(itemCard, newType);
+            });
+            updateVisibility(itemCard, itemData.type);
+        }
+
+        function removeElement(id) {
+            document.getElementById(id).remove();
+        }
+
+        function downloadJSON(filename, data) {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 4));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", filename);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function exportFiles() {
+            const selectedProject = document.getElementById('project-selector').value;
+
+            const getNewmontData = () => ({ id: "newmont", tasks: Array.from(document.querySelectorAll('#newmont-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
+            const getRgmData = () => ({ id: "rgm", tasks: Array.from(document.querySelectorAll('#rgm-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
+            const getCmmsData = () => ({ id: "cmms", items: Array.from(document.querySelectorAll('#cmms-items-container .task-card')).map(card => { const type = card.dataset.type; const item = { type: type, title: card.querySelector('.cmms-title').value, description: card.querySelector('.cmms-description').value }; if (type === 'link') item.url = card.querySelector('.cmms-url').value; if (type === 'list') { item.listItems = card.querySelector('.cmms-list-items').value.split(',').map(s => s.trim()).filter(Boolean); item.status = card.querySelector('.cmms-status').value; } if (type === 'info') item.status = card.querySelector('.cmms-status').value; return item; }) });
+            
+            if (selectedProject === 'all') {
+                downloadJSON('report-config.json', { reportDateRange: document.getElementById('report-date-range').value });
+                setTimeout(() => downloadJSON('newmont.json', getNewmontData()), 200);
+                setTimeout(() => downloadJSON('rgm.json', getRgmData()), 400);
+                setTimeout(() => downloadJSON('cmms.json', getCmmsData()), 600);
+            } else {
+                if (selectedProject === 'newmont') downloadJSON('newmont.json', getNewmontData());
+                if (selectedProject === 'rgm') downloadJSON('rgm.json', getRgmData());
+                if (selectedProject === 'cmms') downloadJSON('cmms.json', getCmmsData());
+            }
+
+            const successMsg = document.getElementById('success-message');
+            successMsg.textContent = 'JSON file(s) downloaded successfully!';
+            setTimeout(() => { successMsg.textContent = ''; }, 4000);
+        }
+    </script>
+</body>
+</html>
