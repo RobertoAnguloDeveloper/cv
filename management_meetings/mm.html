@@ -143,12 +143,17 @@
     <!-- Top Bar -->
     <div class="py-2 px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-10" style="background-color: var(--top-bar-bg); border-color: var(--border-color);">
         <div class="container mx-auto flex justify-between items-center text-sm">
-            <div id="location-time" class="flex items-center" style="color: var(--text-secondary);">
-                <p class="hidden sm:flex items-center"><i class="fas fa-map-marker-alt mr-2 opacity-75"></i>Cartagena Province, Bolivar, Colombia</p>
-                <p id="live-clock" class="font-semibold ml-0 sm:ml-4 sm:pl-4 sm:border-l" style="color: var(--text-primary); border-color: var(--border-color);"></p>
-            </div>
+            <!-- Left side: Logo -->
             <div class="flex items-center">
-                 <img src="./logos/PLG Logo.png" alt="PLG Logo" class="h-8 w-auto mr-4">
+                 <img src="./logos/PLG Logo.png" alt="PLG Logo" class="h-8 w-auto">
+            </div>
+
+            <!-- Right side: Location, Time, and Theme Toggle -->
+            <div class="flex items-center">
+                <div id="location-time" class="flex items-center mr-4" style="color: var(--text-secondary);">
+                    <p id="system-location" class="hidden md:flex items-center"><i class="fas fa-map-marker-alt mr-2 opacity-75"></i> Cartagena, Colombia</p>
+                    <p id="live-clock" class="font-semibold ml-0 md:ml-4 md:pl-4 md:border-l" style="color: var(--text-primary); border-color: var(--border-color);"></p>
+                </div>
                 <button id="theme-toggle" class="relative w-9 h-9 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
                     <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
                     <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
@@ -163,8 +168,8 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b" style="border-color: var(--border-color);">
                 <div class="flex items-center">
                     <div>
-                        <h1 class="text-2xl sm:text-6xl font-extrabold" style="color: var(--text-primary);">PLG Data Center</h1>
-                        <p class="text-md mt-1" style="color: var(--text-secondary);">Weekly Summary: July 1-7, 2025</p>
+                        <h1 class="text-3xl sm:text-4xl font-extrabold" style="color: var(--text-primary);">Data Center Weekly Summary</h1>
+                        <p class="text-md mt-1" style="color: var(--text-secondary);">July 1-7, 2025</p>
                     </div>
                 </div>
             </div>
@@ -353,14 +358,15 @@
             const clockElement = document.getElementById('live-clock');
             const lastUpdatedElement = document.getElementById('last-updated');
             // Set the initial date and time based on the provided context.
-            const initialDate = new Date('2025-07-07T23:22:00-05:00');
+            const initialDate = new Date('2025-07-08T06:53:00-05:00');
             
             function updateTime() {
                 // Increment the time by one second every time the function is called.
                 initialDate.setSeconds(initialDate.getSeconds() + 1);
                 const options = { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'America/Bogota' };
                 const timeString = new Intl.DateTimeFormat('en-US', options).format(initialDate);
-                if (clockElement) clockElement.textContent = timeString; // Display full date and time
+                
+                if (clockElement) clockElement.textContent = timeString;
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
             }
             updateTime();
