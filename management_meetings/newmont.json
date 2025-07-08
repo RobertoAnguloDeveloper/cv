@@ -4,7 +4,7 @@
         {
           "title": "Diesel Reconciliation Variance",
           "description": "Investigating the accepted variance percentage (currently 1.5%) against RGM's tolerance of 0.50%.",
-          "status": "Investigating"
+          "status": "Pending"
         },
         {
           "title": "Reconciliation Timing Adjustment",
