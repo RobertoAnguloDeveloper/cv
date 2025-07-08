@@ -14,9 +14,6 @@
     <style>
         :root {
             --plg-primary-color: #00AEEF;
-            --newmont-color: #00539F;
-            --rgm-color: #DAA520; /* Darker Gold for better contrast */
-            --cmms-color: #10b981;
             --bg-color-light: #f4f7f9;
             --text-primary-light: #1a202c;
             --text-secondary-light: #4a5568;
@@ -61,8 +58,8 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            opacity: 0; /* Initially hidden for GSAP */
-            transform: translateY(30px); /* Initial position for GSAP */
+            opacity: 0;
+            transform: translateY(30px);
         }
 
         .card:hover {
@@ -73,6 +70,7 @@
         .card-item {
             position: relative;
             padding-left: 1.5rem;
+            color: var(--project-color);
             transition: background-color 0.3s;
         }
 
@@ -83,7 +81,7 @@
             left: 0;
             width: 4px;
             height: 0;
-            background-color: currentColor;
+            background-color: var(--project-color);
             border-radius: 2px;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
@@ -92,10 +90,6 @@
             height: 100%;
             top: 0;
         }
-
-        #newmont .card-item { color: var(--newmont-color); }
-        #rgm .card-item { color: var(--rgm-color); }
-        #cmms .card-item { color: var(--cmms-color); }
 
         .status-badge {
             padding: 0.25rem 0.75rem;
@@ -142,11 +136,11 @@
     <div class="py-2 px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-10" style="background-color: var(--top-bar-bg); border-color: var(--border-color);">
         <div class="container mx-auto flex justify-between items-center text-sm">
             <div class="flex items-center">
-                    <img src="./logos/PLG Logo.png" alt="PLG Logo" class="h-8 w-auto" onerror="this.style.display='none'">
+                <img id="company-logo" src="" alt="PLG Logo" class="h-8 w-auto" onerror="this.style.display='none'">
             </div>
             <div class="flex items-center">
                 <div id="location-time" class="flex items-center mr-4" style="color: var(--text-secondary);">
-                    <p id="system-location" class="hidden md:flex items-center"><i class="fas fa-map-marker-alt mr-2 opacity-75"></i> Cartagena, Colombia</p>
+                    <p id="system-location" class="hidden md:flex items-center"><i class="fas fa-map-marker-alt mr-2 opacity-75"></i> <span id="location-display">Requesting...</span></p>
                     <p id="live-clock" class="font-semibold ml-0 md:ml-4 md:pl-4 md:border-l" style="color: var(--text-primary); border-color: var(--border-color);"></p>
                 </div>
                 <button id="theme-toggle" class="relative w-9 h-9 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
@@ -160,67 +154,20 @@
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
         <header class="mb-12">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b" style="border-color: var(--border-color);">
-                <div class="flex items-center">
-                    <div>
-                        <h1 class="text-3xl sm:text-5xl font-extrabold" style="color: var(--text-primary);">PLG Data Center Weekly Summary</h1>
-                        <p id="report-date-range" class="text-md mt-1" style="color: var(--text-secondary);"></p>
-                    </div>
+                <div>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold" style="color: var(--text-primary);">PLG Data Center Weekly Summary</h1>
+                    <p id="report-date-range" class="text-md mt-1" style="color: var(--text-secondary);"></p>
                 </div>
             </div>
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Stat Cards -->
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);">
-                    <div class="flex items-center">
-                        <div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i></div>
-                        <div>
-                            <p class="text-sm" style="color: var(--text-secondary);">Total Tasks</p>
-                            <p id="total-tasks-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;">
-                    <div class="flex items-center">
-                        <div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i></div>
-                        <div>
-                            <p class="text-sm" style="color: var(--text-secondary);">Pending Items</p>
-                            <p id="pending-items-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;">
-                    <div class="flex items-center">
-                        <div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i></div>
-                        <div>
-                            <p class="text-sm" style="color: var(--text-secondary);">Action Required</p>
-                            <p id="action-required-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Total Tasks</p><p id="total-tasks-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;"><div class="flex items-center"><div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Pending Items</p><p id="pending-items-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;"><div class="flex items-center"><div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Action Required</p><p id="action-required-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
             </div>
         </header>
 
         <main id="main-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Project Sections will be populated by JS -->
-            <section id="newmont" class="card rounded-xl p-6" style="display: none;">
-                <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--newmont-color); color: var(--text-primary);">
-                    <img src="./logos/Newmont logo.png" alt="Newmont Logo" class="h-8 mr-3" onerror="this.style.display='none'">
-                </h2>
-                <ul id="newmont-tasks" class="space-y-6"></ul>
-            </section>
-
-            <section id="rgm" class="card rounded-xl p-6" style="display: none;">
-                <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--rgm-color); color: var(--text-primary);">
-                    <img src="./logos/RGM Logo.png" alt="RGM Logo" class="h-14 mr-3" onerror="this.style.display='none'">
-                </h2>
-                <ul id="rgm-tasks" class="space-y-6"></ul>
-            </section>
-
-            <section id="cmms" class="card rounded-xl p-6" style="display: none;">
-                <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--cmms-color); color: var(--text-primary);">
-                    <i class="fas fa-cogs h-6 mr-3" style="color: var(--cmms-color);"></i> CMMS Project
-                </h2>
-                <ul id="cmms-items" class="space-y-6"></ul>
-            </section>
+            <!-- Project Sections will be dynamically generated here -->
         </main>
 
         <footer class="text-center mt-16 pt-8 border-t" style="border-color: var(--border-color);">
@@ -232,7 +179,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger);
 
-            // --- THEME MANAGEMENT ---
             const themeToggle = document.getElementById('theme-toggle');
             const htmlElement = document.documentElement;
             const applyTheme = (theme) => {
@@ -247,79 +193,126 @@
                 localStorage.setItem('theme', newTheme);
             });
 
-            // --- LIVE CLOCK & DATE ---
             const clockElement = document.getElementById('live-clock');
             const lastUpdatedElement = document.getElementById('last-updated');
-            const initialDate = new Date('2025-07-08T08:18:00-05:00');
+            
             function updateTime() {
-                initialDate.setSeconds(initialDate.getSeconds() + 1);
-                const options = { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'America/Bogota' };
-                const timeString = new Intl.DateTimeFormat('en-US', options).format(initialDate);
+                const now = new Date();
+                const options = { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                const timeString = new Intl.DateTimeFormat('en-US', options).format(now);
                 if (clockElement) clockElement.textContent = timeString;
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
             }
+
+            function requestAndUpdateLocation() {
+                const locationDisplayElement = document.getElementById('location-display');
+                if (!navigator.geolocation) {
+                    locationDisplayElement.textContent = 'Geolocation not supported';
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        try {
+                            // Using a free reverse geocoding service
+                            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                            const data = await response.json();
+                            const city = data.address.city || data.address.town || data.address.village || 'Unknown city';
+                            const country = data.address.country || 'Unknown country';
+                            locationDisplayElement.textContent = `${city}, ${country}`;
+                        } catch (error) {
+                            console.error('Error fetching location name:', error);
+                            locationDisplayElement.textContent = 'Location unavailable';
+                        }
+                    },
+                    (error) => {
+                        console.error('Geolocation error:', error);
+                        locationDisplayElement.textContent = 'Location permission denied';
+                    }
+                );
+            }
+
+            requestAndUpdateLocation();
             updateTime();
             setInterval(updateTime, 1000);
 
-            // --- DATA LOADING & RENDERING ---
             const statusClasses = {
-                'Investigating': 'bg-blue-100 text-blue-800', 'Suggestion': 'bg-green-100 text-green-800',
-                'Action Required': 'bg-red-100 text-red-800', 'Pending': 'bg-orange-100 text-orange-800',
-                'Complete': 'bg-green-100 text-green-800', 'In Progress': 'bg-purple-100 text-purple-800',
-                'Upcoming': 'bg-blue-100 text-blue-800', 'Planned': 'bg-gray-100 text-gray-800'
+                'Investigating': 'bg-blue-100 text-blue-800', 
+                'Suggestion': 'bg-green-100 text-green-800',
+                'Action Required': 'bg-red-100 text-red-800', 
+                'Pending': 'bg-orange-100 text-orange-800',
+                'Complete': 'bg-green-100 text-green-800', 
+                'In Progress': 'bg-purple-100 text-purple-800',
+                'Upcoming': 'bg-blue-100 text-blue-800', 
+                'Planned': 'bg-gray-100 text-gray-800'
             };
 
-            async function loadAllData() {
-                // 1. Fetch global config
+            async function loadAndBuildPage() {
                 try {
                     const response = await fetch('report-config.json');
+                    if (!response.ok) throw new Error('Configuration file not found.');
                     const config = await response.json();
+                    
                     document.getElementById('report-date-range').textContent = config.reportDateRange;
+                    document.getElementById('company-logo').src = config.companyLogo;
+
+                    buildProjectSections(config.projects);
+                    
+                    const dataPromises = config.projects.map(p => fetch(p.dataFile).then(res => res.ok ? res.json() : Promise.reject(`File not found: ${p.dataFile}`)));
+                    const results = await Promise.allSettled(dataPromises);
+
+                    let allProjectData = [];
+                    results.forEach((result, index) => {
+                        if (result.status === 'fulfilled') {
+                            const data = result.value;
+                            allProjectData.push(data);
+                            populateSection(data);
+                        } else {
+                            console.error(`Failed to load data for ${config.projects[index].name}:`, result.reason);
+                            document.getElementById(config.projects[index].id).style.display = 'none';
+                        }
+                    });
+                    
+                    calculateAndDisplayStats(allProjectData);
+                    runAnimations();
+
                 } catch (error) {
-                    console.error("Could not load report-config.json.", error);
-                    document.getElementById('report-date-range').textContent = "Date range not available";
+                    console.error("Failed to initialize page:", error);
+                    document.getElementById('main-content').innerHTML = `<p class="text-red-500 text-center col-span-full">${error.message}</p>`;
                 }
+            }
 
-                // 2. Fetch all project data files in parallel
-                const projectFiles = ['newmont.json', 'rgm.json', 'cmms.json'];
-                const promises = projectFiles.map(file => fetch(file).then(res => {
-                    if (!res.ok) throw new Error(`Failed to load ${file}`);
-                    return res.json();
-                }));
-                
-                const results = await Promise.allSettled(promises);
-                
-                let allProjectData = [];
-                results.forEach((result, index) => {
-                    if (result.status === 'fulfilled') {
-                        const data = result.value;
-                        allProjectData.push(data);
-                        populateSection(data);
-                    } else {
-                        console.error(`Failed to load ${projectFiles[index]}:`, result.reason);
-                    }
+            function buildProjectSections(projects) {
+                const mainContent = document.getElementById('main-content');
+                mainContent.innerHTML = ''; // Clear existing content
+                projects.forEach(project => {
+                    const logoHtml = project.logo 
+                        ? `<img src="${project.logo}" alt="${project.name} Logo" class="h-8 mr-3" onerror="this.style.display='none'">`
+                        : `<i class="${project.icon} h-6 mr-3" style="color: ${project.color};"></i>`;
+                    
+                    const sectionHtml = `
+                        <section id="${project.id}" class="card rounded-xl p-6" style="--project-color: ${project.color};">
+                            <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--project-color); color: var(--text-primary);">
+                                ${logoHtml} ${project.name}
+                            </h2>
+                            <ul id="${project.id}-tasks" class="space-y-6"></ul>
+                        </section>
+                    `;
+                    mainContent.insertAdjacentHTML('beforeend', sectionHtml);
                 });
-                
-                // 3. Calculate and display aggregated stats
-                calculateAndDisplayStats(allProjectData);
-
-                // 4. Run animations
-                runAnimations();
             }
 
             function populateSection(data) {
-                const sectionElement = document.getElementById(data.id);
-                if (!sectionElement) return;
+                const containerId = data.id === 'cmms' ? `${data.id}-tasks` : `${data.id}-tasks`;
+                const container = document.getElementById(containerId);
+                if (!container) return;
 
                 if (data.id === 'cmms') {
-                    populateCmmsItems(data.items);
+                    container.innerHTML = (data.items || []).map(createCmmsItemHTML).join('');
                 } else {
-                    const taskListElement = document.getElementById(`${data.id}-tasks`);
-                    if (taskListElement) {
-                        taskListElement.innerHTML = data.tasks.map(createTaskHTML).join('');
-                    }
+                    container.innerHTML = (data.tasks || []).map(createTaskHTML).join('');
                 }
-                sectionElement.style.display = 'block'; // Show the card
             }
 
             function createTaskHTML(task) {
@@ -327,20 +320,16 @@
                 return `<li class="flex card-item"><div class="flex-grow"><h3 class="font-semibold text-md" style="color: var(--text-primary);">${task.title}</h3><p class="text-sm mt-1" style="color: var(--text-secondary);">${task.description}</p><span class="status-badge ${badgeClass} mt-3 inline-block">${task.status}</span></div></li>`;
             }
 
-            function populateCmmsItems(items) {
-                const container = document.getElementById('cmms-items');
-                if (!container) return;
-                container.innerHTML = items.map(item => {
-                    let contentHTML = `<h3 class="font-semibold text-md" style="color: var(--text-primary);">${item.title}</h3><p class="text-sm mt-1" style="color: var(--text-secondary);">${item.description}</p>`;
-                    if (item.type === 'link') {
-                        contentHTML += `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-full hover:bg-cyan-600 transition-colors mt-3 group">Visit Project Site <i class="fas fa-arrow-right ml-2 text-xs transform group-hover:translate-x-1 transition-transform"></i></a>`;
-                    } else if (item.type === 'list') {
-                        contentHTML += `<ol class="list-decimal list-inside mt-2 text-sm pl-2" style="color: var(--text-secondary);">${item.listItems.map(li => `<li>${li}</li>`).join('')}</ol><span class="status-badge ${statusClasses[item.status]} mt-3 inline-block">${item.status}</span>`;
-                    } else if (item.type === 'info' && item.status) {
-                        contentHTML += `<span class="status-badge ${statusClasses[item.status]} mt-3 inline-block">${item.status}</span>`;
-                    }
-                    return `<li class="flex card-item"><div class="flex-grow">${contentHTML}</div></li>`;
-                }).join('');
+            function createCmmsItemHTML(item) {
+                let contentHTML = `<h3 class="font-semibold text-md" style="color: var(--text-primary);">${item.title}</h3><p class="text-sm mt-1" style="color: var(--text-secondary);">${item.description}</p>`;
+                if (item.type === 'link') {
+                    contentHTML += `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-full hover:bg-cyan-600 transition-colors mt-3 group">Visit Project Site <i class="fas fa-arrow-right ml-2 text-xs transform group-hover:translate-x-1 transition-transform"></i></a>`;
+                } else if (item.type === 'list') {
+                    contentHTML += `<ol class="list-decimal list-inside mt-2 text-sm pl-2" style="color: var(--text-secondary);">${(item.listItems || []).map(li => `<li>${li}</li>`).join('')}</ol><span class="status-badge ${statusClasses[item.status]} mt-3 inline-block">${item.status}</span>`;
+                } else if (item.type === 'info' && item.status) {
+                    contentHTML += `<span class="status-badge ${statusClasses[item.status]} mt-3 inline-block">${item.status}</span>`;
+                }
+                return `<li class="flex card-item"><div class="flex-grow">${contentHTML}</div></li>`;
             }
 
             function calculateAndDisplayStats(allData) {
@@ -351,9 +340,7 @@
                         pendingItems += data.tasks.filter(t => t.status === 'Pending').length;
                         actionRequired += data.tasks.filter(t => t.status === 'Action Required').length;
                     }
-                    if (data.items) {
-                        totalTasks += data.items.length;
-                    }
+                    if (data.items) totalTasks += data.items.length;
                 });
                 document.getElementById('total-tasks-stat').setAttribute('data-value', totalTasks);
                 document.getElementById('pending-items-stat').setAttribute('data-value', pendingItems);
@@ -369,7 +356,7 @@
                 gsap.to(".card", { duration: 0.8, y: 0, opacity: 1, ease: "power3.out", stagger: 0.2, scrollTrigger: { trigger: "#main-content", start: 'top 80%', toggleActions: 'play none none none' } });
             }
             
-            loadAllData();
+            loadAndBuildPage();
         });
     </script>
 </body>

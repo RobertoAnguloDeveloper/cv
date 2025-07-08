@@ -1,3 +1,27 @@
 {
-  "reportDateRange": "July 1-7, 2025"
+  "reportDateRange": "July 1-7, 2025",
+  "companyLogo": "./logos/PLG Logo.png",
+  "projects": [
+    {
+      "id": "newmont",
+      "name": "Newmont",
+      "dataFile": "newmont.json",
+      "logo": "./logos/Newmont logo.png",
+      "color": "#00539F"
+    },
+    {
+      "id": "rgm",
+      "name": "RGM",
+      "dataFile": "rgm.json",
+      "logo": "./logos/RGM Logo.png",
+      "color": "#DAA520"
+    },
+    {
+      "id": "cmms",
+      "name": "CMMS Project",
+      "dataFile": "cmms.json",
+      "icon": "fas fa-cogs",
+      "color": "#10b981"
+    }
+  ]
 }
