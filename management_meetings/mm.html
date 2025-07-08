@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,189 +7,190 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
-    <script>
-        // Register GSAP plugins immediately after they are loaded to prevent reference errors.
-        gsap.registerPlugin(ScrollTrigger);
-    </script>
     <style>
         :root {
             --plg-primary-color: #00AEEF;
-            --newmont-color: #f59e0b;
-            --rgm-color: #06b6d4;
+            --newmont-color: #00539F;
+            --rgm-color: #DAA520; /* Darker Gold for better contrast */
             --cmms-color: #10b981;
-            --bg-color: #f8f9fa;
-            --text-color-primary: #1f2937;
-            --text-color-secondary: #4b5563;
-            --card-bg-color: #ffffff;
-            --border-color: #e2e8f0;
-            --subtle-bg-color: #f1f5f9;
+            --bg-color-light: #f4f7f9;
+            --text-primary-light: #1a202c;
+            --text-secondary-light: #4a5568;
+            --card-bg-light: #ffffff;
+            --border-light: #e2e8f0;
+            
+            --bg-color-dark: #0d1117;
+            --text-primary-dark: #c9d1d9;
+            --text-secondary-dark: #8b949e;
+            --card-bg-dark: #161b22;
+            --border-dark: #30363d;
+        }
+
+        html.light {
+            --bg-color: var(--bg-color-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --card-bg: var(--card-bg-light);
+            --border-color: var(--border-light);
         }
 
         html.dark {
-            --bg-color: #0f172a;
-            --text-color-primary: #e2e8f0;
-            --text-color-secondary: #94a3b8;
-            --card-bg-color: #1e293b;
-            --border-color: #334155;
-            --subtle-bg-color: #334155;
+            --bg-color: var(--bg-color-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --card-bg: var(--card-bg-dark);
+            --border-color: var(--border-dark);
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color-primary);
-            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
-            background-size: 20px 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            color: var(--text-primary);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
         }
+
         .card {
-            background-color: var(--card-bg-color);
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease-in-out;
-            visibility: hidden; /* Required for WOW.js */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            opacity: 0; /* Initially hidden for GSAP */
+            transform: translateY(30px); /* Initial position for GSAP */
         }
+
         .card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1);
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
         }
         
         .card-item {
             position: relative;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            transition: background-color 0.3s ease;
+            padding-left: 1.5rem;
+            transition: background-color 0.3s;
         }
 
         .card-item::before {
             content: '';
             position: absolute;
-            top: 0;
+            top: 50%;
             left: 0;
-            width: 3px;
-            height: 100%;
+            width: 4px;
+            height: 0;
             background-color: currentColor;
-            box-shadow: 0 0 8px currentColor, 0 0 12px currentColor;
-            transform: scaleY(0);
-            transform-origin: bottom;
-            transition: transform 0.3s ease-in-out;
+            border-radius: 2px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .card-item:hover::before {
-            transform: scaleY(1);
-            transform-origin: top;
+        .card:hover .card-item::before {
+             height: 100%;
+             top: 0;
         }
-        
+
         #newmont .card-item { color: var(--newmont-color); }
         #rgm .card-item { color: var(--rgm-color); }
         #cmms .card-item { color: var(--cmms-color); }
 
-
-        .icon {
-            flex-shrink: 0;
-            margin-right: 1rem;
-            margin-top: 0.125rem;
-            font-size: 1.25rem;
-            width: 32px;
-            text-align: center;
-        }
         .status-badge {
-            display: inline-block;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
         .stat-card {
-            background-color: var(--card-bg-color);
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-left-width: 4px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            visibility: hidden; /* Required for WOW.js */
+            transition: all 0.3s ease-in-out;
+            opacity: 0;
+            transform: translateY(20px);
         }
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
-        
-        /* Dynamic Colors */
-        .text-primary { color: var(--text-color-primary); }
-        .text-secondary { color: var(--text-color-secondary); }
-        .border-dynamic { border-color: var(--border-color); }
 
-        /* Theme Toggle Icon */
-        #theme-toggle .fa-moon { display: block; }
-        #theme-toggle .fa-sun { display: none; }
-        html.dark #theme-toggle .fa-moon { display: none; }
-        html.dark #theme-toggle .fa-sun { display: block; }
+        /* Dark Mode Specific Badge/Icon Colors */
+        html.dark .status-badge.bg-blue-100 { background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+        html.dark .status-badge.bg-green-100 { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
+        html.dark .status-badge.bg-red-100 { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        html.dark .status-badge.bg-orange-100 { background-color: rgba(249, 115, 22, 0.2); color: #fdba74; }
+        html.dark .status-badge.bg-purple-100 { background-color: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
+        html.dark .status-badge.bg-gray-100 { background-color: rgba(107, 114, 128, 0.2); color: #d1d5db; }
 
+        html.dark .stat-icon-bg.bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
+        html.dark .stat-icon-color.text-blue-600 { color: #93c5fd !important; }
+        html.dark .stat-icon-bg.bg-orange-100 { background-color: rgba(249, 115, 22, 0.15) !important; }
+        html.dark .stat-icon-color.text-orange-600 { color: #fdba74 !important; }
+        html.dark .stat-icon-bg.bg-red-100 { background-color: rgba(239, 68, 68, 0.15) !important; }
+        html.dark .stat-icon-color.text-red-600 { color: #fca5a5 !important; }
+
+        #theme-toggle .fa-moon, #theme-toggle .fa-sun { transition: transform 0.3s ease-out; }
+        html.dark #theme-toggle .fa-moon { transform: scale(0); }
+        html.light #theme-toggle .fa-sun { transform: scale(0); }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="antialiased">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
 
         <!-- Header -->
-        <header class="mb-10">
-            <div class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-dynamic">
+        <header class="mb-12">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b" style="border-color: var(--border-color);">
                 <div class="flex items-center">
-                    <img src="logos/PLG Logo.png" alt="PLG Logo" class="h-14 mr-4">
+                    <img src="./logos/PLG Logo.png" alt="PLG Logo" class="h-14 w-auto mr-4">
                     <div>
-                        <h1 class="text-2xl sm:text-3xl font-bold text-primary header-title">PLG Data Center Weekly Summary</h1>
-                        <p class="text-md text-secondary mt-1 header-subtitle">July 1-7, 2025</p>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold" style="color: var(--text-primary);">PLG Data Center</h1>
+                        <p class="text-md mt-1" style="color: var(--text-secondary);">Weekly Summary: July 1-7, 2025</p>
                     </div>
                 </div>
-                 <div class="flex items-center mt-4 sm:mt-0">
-                    <button id="theme-toggle" class="p-2 rounded-full text-secondary hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 mr-4">
-                        <i class="fas fa-moon"></i>
-                        <i class="fas fa-sun"></i>
+                <div class="flex items-center mt-4 sm:mt-0">
+                    <button id="theme-toggle" class="relative w-10 h-10 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
+                        <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
+                        <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
                     </button>
-                    <div id="location-time" class="text-right text-sm text-secondary header-time">
-                        <p><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>Cartagena, Colombia</p>
-                        <p id="live-clock" class="font-semibold text-primary"></p>
+                    <div id="location-time" class="text-right text-sm ml-4" style="color: var(--text-secondary);">
+                        <p><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>Cartagena Province, Bolivar, Colombia</p>
+                        <p id="live-clock" class="font-semibold" style="color: var(--text-primary);"></p>
                     </div>
                 </div>
             </div>
-             <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="stat-card wow animate__animated animate__fadeInUp rounded-lg p-4" data-wow-delay="0.2s" style="border-left-color: var(--plg-primary-color);">
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                            <i class="fas fa-clipboard-list"></i>
+                        <div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-secondary">Total Tasks</p>
-                            <p class="text-2xl font-bold text-primary stat-number" data-value="10">0</p>
+                            <p class="text-sm" style="color: var(--text-secondary);">Total Tasks</p>
+                            <p class="text-3xl font-bold stat-number" data-value="10" style="color: var(--text-primary);">0</p>
                         </div>
                     </div>
                 </div>
-                <div class="stat-card wow animate__animated animate__fadeInUp rounded-lg p-4 border-l-orange-500" data-wow-delay="0.3s">
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
-                            <i class="fas fa-hourglass-half"></i>
+                        <div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-secondary">Pending Items</p>
-                            <p class="text-2xl font-bold text-primary stat-number" data-value="3">0</p>
+                            <p class="text-sm" style="color: var(--text-secondary);">Pending Items</p>
+                            <p class="text-3xl font-bold stat-number" data-value="3" style="color: var(--text-primary);">0</p>
                         </div>
                     </div>
                 </div>
-                 <div class="stat-card wow animate__animated animate__fadeInUp rounded-lg p-4 border-l-red-500" data-wow-delay="0.4s">
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4">
-                           <i class="fas fa-triangle-exclamation"></i>
+                        <div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-secondary">Action Required</p>
-                            <p class="text-2xl font-bold text-primary stat-number" data-value="1">0</p>
+                            <p class="text-sm" style="color: var(--text-secondary);">Action Required</p>
+                            <p class="text-3xl font-bold stat-number" data-value="1" style="color: var(--text-primary);">0</p>
                         </div>
                     </div>
                 </div>
@@ -199,114 +200,104 @@
         <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             <!-- Newmont Section -->
-            <section id="newmont" class="card wow animate__animated animate__fadeInUp rounded-lg p-6" data-wow-delay="0.5s">
-                 <h2 class="flex items-center text-xl font-semibold text-primary border-b-2 border-yellow-500 pb-3 mb-4">
-                    <img src="logos/Newmont logo.png" alt="Newmont Logo" class="h-8 mr-3">
+            <section id="newmont" class="card rounded-xl p-6">
+                <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--newmont-color); color: var(--text-primary);">
+                    <img src="./logos/Newmont logo.png" alt="Newmont Logo" class="h-8 mr-3">
                 </h2>
-                <ul class="space-y-2">
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-magnifying-glass-chart"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Diesel Reconciliation Variance</h3>
-                            <p class="text-secondary text-sm mt-1">Investigating the accepted variance percentage (currently 1.5%) against RGM's tolerance of 0.50%.</p>
-                            <span class="status-badge bg-blue-100 text-blue-800">Investigating</span>
+                <ul class="space-y-6">
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Diesel Reconciliation Variance</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Investigating the accepted variance percentage (currently 1.5%) against RGM's tolerance of 0.50%.</p>
+                            <span class="status-badge bg-blue-100 text-blue-800 mt-3 inline-block">Investigating</span>
                         </div>
                     </li>
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-bullhorn"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Reconciliation Timing Adjustment</h3>
-                            <p class="text-secondary text-sm mt-1">Suggestion made to pause refueling operations between 11:30 PM and 1:00 AM.</p>
-                             <span class="status-badge bg-green-100 text-green-800">Suggestion</span>
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Reconciliation Timing Adjustment</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Suggestion made to pause refueling operations between 11:30 PM and 1:00 AM.</p>
+                            <span class="status-badge bg-green-100 text-green-800 mt-3 inline-block">Suggestion</span>
                         </div>
                     </li>
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-triangle-exclamation"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Missing Totalizer Reports</h3>
-                            <p class="text-secondary text-sm mt-1">No reports found for product output meter totalizers for urgent calibration needs.</p>
-                            <span class="status-badge bg-red-100 text-red-800">Action Required</span>
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Missing Totalizer Reports</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">No reports found for product output meter totalizers for urgent calibration needs.</p>
+                            <span class="status-badge bg-red-100 text-red-800 mt-3 inline-block">Action Required</span>
                         </div>
                     </li>
                 </ul>
             </section>
 
             <!-- RGM Section -->
-            <section id="rgm" class="card wow animate__animated animate__fadeInUp rounded-lg p-6" data-wow-delay="0.6s">
-                <h2 class="flex items-center text-xl font-semibold text-primary border-b-2 border-cyan-500 pb-3 mb-4">
-                    <img src="logos/RGM Logo.png" alt="RGM Logo" class="h-14 mr-3">
+            <section id="rgm" class="card rounded-xl p-6">
+                 <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--rgm-color); color: var(--text-primary);">
+                    <img src="./logos/RGM Logo.png" alt="RGM Logo" class="h-14 mr-3">
                 </h2>
-                <ul class="space-y-2">
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-hourglass-half"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">DB248 Controller Installation</h3>
-                            <p class="text-secondary text-sm mt-1">Awaiting response from GAFS regarding the reinstallation of the old DB247 controller.</p>
-                            <span class="status-badge bg-orange-100 text-orange-800">Pending</span>
+                <ul class="space-y-6">
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">DB248 Controller Installation</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Awaiting response from GAFS regarding the reinstallation of the old DB247 controller.</p>
+                            <span class="status-badge bg-orange-100 text-orange-800 mt-3 inline-block">Pending</span>
                         </div>
                     </li>
-                    <li class="flex items-start card-item">
-                         <div class="icon"><i class="fas fa-network-wired"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Saramacca TLS Synchronization</h3>
-                            <p class="text-secondary text-sm mt-1">Wiring for DataFlex360 synchronization is still pending to resolve documentation issues.</p>
-                            <span class="status-badge bg-orange-100 text-orange-800">Pending</span>
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Saramacca TLS Synchronization</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Wiring for DataFlex360 synchronization is still pending to resolve documentation issues.</p>
+                            <span class="status-badge bg-orange-100 text-orange-800 mt-3 inline-block">Pending</span>
                         </div>
                     </li>
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-circle-check"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">TLS Historical Data Storage</h3>
-                            <p class="text-secondary text-sm mt-1">Guided on-site team to fix a configuration issue on TLS 4xx (Plus) units.</p>
-                            <span class="status-badge bg-green-100 text-green-800">Complete</span>
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">TLS Historical Data Storage</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Guided on-site team to fix a configuration issue on TLS 4xx (Plus) units.</p>
+                            <span class="status-badge bg-green-100 text-green-800 mt-3 inline-block">Complete</span>
                         </div>
                     </li>
-                     <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-user-tie"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Personnel Update & Training</h3>
-                            <p class="text-secondary text-sm mt-1">Vincent Rolong in Cartagena until July 18 for direct training on RGM report delivery.</p>
-                            <span class="status-badge bg-purple-100 text-purple-800">In Progress</span>
+                    <li class="flex card-item">
+                         <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Personnel Update & Training</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Vincent Rolong in Cartagena until July 18 for direct training on RGM report delivery.</p>
+                            <span class="status-badge bg-purple-100 text-purple-800 mt-3 inline-block">In Progress</span>
                         </div>
                     </li>
                 </ul>
             </section>
 
             <!-- CMMS Project Section -->
-            <section id="cmms" class="card wow animate__animated animate__fadeInUp rounded-lg p-6" data-wow-delay="0.7s">
-                <h2 class="flex items-center text-xl font-semibold text-primary border-b-2 border-green-500 pb-3 mb-4">
-                     <i class="fas fa-cogs h-6 mr-3 text-green-500"></i> CMMS Project
+            <section id="cmms" class="card rounded-xl p-6">
+                <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--cmms-color); color: var(--text-primary);">
+                    <i class="fas fa-cogs h-6 mr-3" style="color: var(--cmms-color);"></i> CMMS Project
                 </h2>
-                <ul class="space-y-2">
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-check-to-slot"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Application Launched</h3>
-                            <p class="text-secondary text-sm mt-1">The application is now live on a public domain.</p>
-                             <a href="https://www.plgcmms.site/" target="_blank" rel="noopener noreferrer" class="inline-block bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-full hover:bg-cyan-600 transition-colors mt-2">
-                                Visit Project Site <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                <ul class="space-y-6">
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Application Launched</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">The application is now live on a public domain for initial testing and feedback.</p>
+                            <a href="https://www.plgcmms.site/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-full hover:bg-cyan-600 transition-colors mt-3 group">
+                                Visit Project Site <i class="fas fa-arrow-right ml-2 text-xs transform group-hover:translate-x-1 transition-transform"></i>
                             </a>
                         </div>
                     </li>
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-tasks-alt"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Testing Phase Rollout Plan</h3>
-                            <p class="text-secondary text-sm mt-1">Credentials will be provided in the following order:</p>
-                            <ol class="list-decimal list-inside mt-2 text-secondary text-sm pl-2">
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Testing Phase Rollout Plan</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Credentials will be provided in the following order:</p>
+                            <ol class="list-decimal list-inside mt-2 text-sm pl-2" style="color: var(--text-secondary);">
                                 <li>RGM</li>
                                 <li>BAITALI</li>
                                 <li>NEWMONT</li>
                             </ol>
-                            <span class="status-badge bg-blue-100 text-blue-800">Upcoming</span>
+                            <span class="status-badge bg-blue-100 text-blue-800 mt-3 inline-block">Upcoming</span>
                         </div>
                     </li>
-                    <li class="flex items-start card-item">
-                        <div class="icon"><i class="fas fa-angles-right"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-md text-primary">Future Deployment</h3>
-                            <p class="text-secondary text-sm mt-1">The app will be delivered to FUSECON and MIAMI after feedback and fixes.</p>
-                            <span class="status-badge bg-gray-100 text-gray-800">Planned</span>
+                    <li class="flex card-item">
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-md" style="color: var(--text-primary);">Future Deployment</h3>
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">The app will be delivered to FUSECON and MIAMI after feedback and fixes.</p>
+                            <span class="status-badge bg-gray-100 text-gray-800 mt-3 inline-block">Planned</span>
                         </div>
                     </li>
                 </ul>
@@ -314,79 +305,109 @@
 
         </main>
 
-        <footer class="text-center mt-10 pt-6 border-t border-dynamic">
-            <p class="text-sm text-secondary">&copy; 2025 PLG Data Center | Confidential</p>
-            <p class="text-xs text-gray-400 mt-2">Last updated: <span id="last-updated"></span></p>
+        <footer class="text-center mt-16 pt-8 border-t" style="border-color: var(--border-color);">
+            <p class="text-sm" style="color: var(--text-secondary);">&copy; 2025 PLG Data Center | Confidential</p>
+            <p class="text-xs mt-2" style="color: var(--text-secondary);">Generated on: <span id="last-updated"></span></p>
         </footer>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- WOW.js INITIALIZATION ---
-            new WOW().init();
+            // --- GSAP PLUGIN REGISTRATION ---
+            gsap.registerPlugin(ScrollTrigger);
 
-            // --- THEME TOGGLER ---
+            // --- THEME MANAGEMENT ---
             const themeToggle = document.getElementById('theme-toggle');
             const htmlElement = document.documentElement;
 
-            function updateToggleIcon() {
-                const moonIcon = themeToggle.querySelector('.fa-moon');
-                const sunIcon = themeToggle.querySelector('.fa-sun');
-                if (htmlElement.classList.contains('dark')) {
-                    moonIcon.style.display = 'none';
-                    sunIcon.style.display = 'block';
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    htmlElement.classList.add('dark');
+                    htmlElement.classList.remove('light');
                 } else {
-                    moonIcon.style.display = 'block';
-                    sunIcon.style.display = 'none';
+                    htmlElement.classList.remove('dark');
+                    htmlElement.classList.add('light');
                 }
-            }
-            
-            if (localStorage.getItem('theme') === 'dark') {
-                htmlElement.classList.add('dark');
-            }
-            updateToggleIcon();
+            };
 
+            // On load, check for saved theme or system preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+            // Toggle theme on click
             themeToggle.addEventListener('click', () => {
-                htmlElement.classList.toggle('dark');
-                if (htmlElement.classList.contains('dark')) {
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    localStorage.setItem('theme', 'light');
-                }
-                updateToggleIcon();
+                const newTheme = htmlElement.classList.contains('dark') ? 'light' : 'dark';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
             });
 
-            // --- TIME AND DATE ---
-            const initialDate = new Date('2025-07-07T22:30:00-05:00');
+            // --- LIVE CLOCK & DATE ---
             const clockElement = document.getElementById('live-clock');
             const lastUpdatedElement = document.getElementById('last-updated');
-
+            // Set the initial date and time based on the provided context.
+            const initialDate = new Date('2025-07-07T23:11:00-05:00');
+            
             function updateTime() {
+                // Increment the time by one second every time the function is called.
                 initialDate.setSeconds(initialDate.getSeconds() + 1);
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'America/Bogota' };
+                const options = { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'America/Bogota' };
                 const timeString = new Intl.DateTimeFormat('en-US', options).format(initialDate);
-                if (clockElement) clockElement.textContent = timeString;
+                if (clockElement) clockElement.textContent = timeString.split(', ')[2]; // Just the time part
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
             }
             updateTime();
             setInterval(updateTime, 1000);
-
+            
             // --- GSAP ANIMATIONS ---
-            // Animate header elements
-            gsap.from(".header-title", { duration: 0.8, y: -30, opacity: 0, ease: "power3.out", delay: 0.2 });
-            gsap.from(".header-subtitle", { duration: 0.8, y: -20, opacity: 0, ease: "power3.out", delay: 0.4 });
-            gsap.from(".header-time", { duration: 0.8, opacity: 0, ease: "power3.out", delay: 0.6 });
+            // Staggered header animation
+            gsap.from("header > div > div > *", {
+                duration: 0.8,
+                y: -30,
+                opacity: 0,
+                ease: "power3.out",
+                stagger: 0.15
+            });
 
-            // Animate stat numbers
+            // Animate stat cards and numbers
+            const statCards = document.querySelectorAll('.stat-card');
+            gsap.to(statCards, {
+                duration: 0.6,
+                y: 0,
+                opacity: 1,
+                ease: "power2.out",
+                stagger: 0.1,
+                scrollTrigger: {
+                    trigger: ".stat-card",
+                    start: 'top 95%',
+                    toggleActions: 'play none none none'
+                }
+            });
+
             document.querySelectorAll('.stat-number').forEach(el => {
                 const endValue = parseInt(el.getAttribute('data-value'), 10);
                 gsap.to(el, {
-                    duration: 2,
+                    duration: 2.5,
                     innerText: endValue,
                     roundProps: "innerText",
-                    ease: "power2.inOut",
+                    ease: "expo.out",
                     scrollTrigger: {
                         trigger: el,
-                        start: 'top 90%',
+                        start: 'top 95%',
+                    }
+                });
+            });
+
+            // Animate main content cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                gsap.to(card, {
+                    duration: 0.8,
+                    y: 0,
+                    opacity: 1,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
                         toggleActions: 'play none none none'
                     }
                 });
