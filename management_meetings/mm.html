@@ -28,6 +28,7 @@
             --text-secondary-dark: #8b949e;
             --card-bg-dark: #161b22;
             --border-dark: #30363d;
+            --top-bar-bg-dark: #161b22;
         }
 
         html.light {
@@ -36,6 +37,7 @@
             --text-secondary: var(--text-secondary-light);
             --card-bg: var(--card-bg-light);
             --border-color: var(--border-light);
+            --top-bar-bg: #ffffff;
         }
 
         html.dark {
@@ -44,6 +46,7 @@
             --text-secondary: var(--text-secondary-dark);
             --card-bg: var(--card-bg-dark);
             --border-color: var(--border-dark);
+            --top-bar-bg: var(--top-bar-bg-dark);
         }
 
         body {
@@ -137,26 +140,29 @@
 </head>
 <body class="antialiased">
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+    <!-- Top Bar -->
+    <div class="py-2 px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-10" style="background-color: var(--top-bar-bg); border-color: var(--border-color);">
+        <div class="container mx-auto flex justify-between items-center text-sm">
+            <div id="location-time" class="flex items-center" style="color: var(--text-secondary);">
+                <p class="hidden sm:flex items-center"><i class="fas fa-map-marker-alt mr-2 opacity-75"></i>Cartagena Province, Bolivar, Colombia</p>
+                <p id="live-clock" class="font-semibold ml-0 sm:ml-4 sm:pl-4 sm:border-l" style="color: var(--text-primary); border-color: var(--border-color);"></p>
+            </div>
+            <button id="theme-toggle" class="relative w-9 h-9 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
+                <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
+                <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
+            </button>
+        </div>
+    </div>
 
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
         <!-- Header -->
         <header class="mb-12">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b" style="border-color: var(--border-color);">
                 <div class="flex items-center">
                     <img src="./logos/PLG Logo.png" alt="PLG Logo" class="h-14 w-auto mr-4">
                     <div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold" style="color: var(--text-primary);">PLG Data Center</h1>
+                        <h1 class="text-2xl sm:text-4xl font-extrabold" style="color: var(--text-primary);">PLG Data Center</h1>
                         <p class="text-md mt-1" style="color: var(--text-secondary);">Weekly Summary: July 1-7, 2025</p>
-                    </div>
-                </div>
-                <div class="flex items-center mt-4 sm:mt-0">
-                    <button id="theme-toggle" class="relative w-10 h-10 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
-                        <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
-                        <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
-                    </button>
-                    <div id="location-time" class="text-right text-sm ml-4" style="color: var(--text-secondary);">
-                        <p><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>Cartagena Province, Bolivar, Colombia</p>
-                        <p id="live-clock" class="font-semibold" style="color: var(--text-primary);"></p>
                     </div>
                 </div>
             </div>
@@ -345,14 +351,14 @@
             const clockElement = document.getElementById('live-clock');
             const lastUpdatedElement = document.getElementById('last-updated');
             // Set the initial date and time based on the provided context.
-            const initialDate = new Date('2025-07-07T23:11:00-05:00');
+            const initialDate = new Date('2025-07-07T23:18:00-05:00');
             
             function updateTime() {
                 // Increment the time by one second every time the function is called.
                 initialDate.setSeconds(initialDate.getSeconds() + 1);
                 const options = { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'America/Bogota' };
                 const timeString = new Intl.DateTimeFormat('en-US', options).format(initialDate);
-                if (clockElement) clockElement.textContent = timeString.split(', ')[2]; // Just the time part
+                if (clockElement) clockElement.textContent = timeString; // Display full date and time
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
             }
             updateTime();
