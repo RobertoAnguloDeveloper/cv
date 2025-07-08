@@ -147,10 +147,13 @@
                 <p class="hidden sm:flex items-center"><i class="fas fa-map-marker-alt mr-2 opacity-75"></i>Cartagena Province, Bolivar, Colombia</p>
                 <p id="live-clock" class="font-semibold ml-0 sm:ml-4 sm:pl-4 sm:border-l" style="color: var(--text-primary); border-color: var(--border-color);"></p>
             </div>
-            <button id="theme-toggle" class="relative w-9 h-9 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
-                <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
-                <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
-            </button>
+            <div class="flex items-center">
+                 <img src="./logos/PLG Logo.png" alt="PLG Logo" class="h-8 w-auto mr-4">
+                <button id="theme-toggle" class="relative w-9 h-9 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
+                    <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
+                    <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -159,9 +162,8 @@
         <header class="mb-12">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b" style="border-color: var(--border-color);">
                 <div class="flex items-center">
-                    <img src="./logos/PLG Logo.png" alt="PLG Logo" class="h-14 w-auto mr-4">
                     <div>
-                        <h1 class="text-2xl sm:text-4xl font-extrabold" style="color: var(--text-primary);">PLG Data Center</h1>
+                        <h1 class="text-2xl sm:text-6xl font-extrabold" style="color: var(--text-primary);">PLG Data Center</h1>
                         <p class="text-md mt-1" style="color: var(--text-secondary);">Weekly Summary: July 1-7, 2025</p>
                     </div>
                 </div>
@@ -351,7 +353,7 @@
             const clockElement = document.getElementById('live-clock');
             const lastUpdatedElement = document.getElementById('last-updated');
             // Set the initial date and time based on the provided context.
-            const initialDate = new Date('2025-07-07T23:18:00-05:00');
+            const initialDate = new Date('2025-07-07T23:22:00-05:00');
             
             function updateTime() {
                 // Increment the time by one second every time the function is called.
