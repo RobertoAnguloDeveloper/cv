@@ -1,25 +1,25 @@
 {
-      "id": "rgm",
-      "tasks": [
+    "id": "rgm",
+    "tasks": [
         {
-          "title": "DB248 Controller Installation",
-          "description": "Awaiting response from GAFS regarding the reinstallation of the old DB247 controller.",
-          "status": "Pending"
+            "title": "C2FT-004 Genset issues with DB251",
+            "description": "A test with Bowsers different from FON ones (DB251 and DB252) was requested and still pending",
+            "status": "Suggestion"
         },
         {
-          "title": "Saramacca TLS Synchronization",
-          "description": "Wiring for DataFlex360 synchronization is still pending to resolve documentation issues.",
-          "status": "Pending"
+            "title": "DB248 without FMS",
+            "description": "RGM didn't have the Bowser prepared for the Scheduled GAFS support. Next support availability is 16/07/2025 13 Hrs. SAST (08 Hrs SRT)",
+            "status": "Action Required"
         },
         {
-          "title": "TLS Historical Data Storage",
-          "description": "Guided on-site team to fix a configuration issue on TLS 4xx (Plus) units.",
-          "status": "Complete"
+            "title": "Fake Bypass alarm fixing",
+            "description": "A new automation for Pump Controller by GVR Team was recently sent. The Truck Prime UX installed in DB251 and DB252 is showing Bypass alarm every time a refuel starts. Once one pump is off, the system is recognizing this pump as a Bypass. In order to have a real alarm notification, this fixing was requested to GVR.",
+            "status": "Action Required"
         },
         {
-          "title": "Personnel Update & Training",
-          "description": "Vincent Rolong in Cartagena until July 18 for direct training on RGM report delivery.",
-          "status": "In Progress"
+            "title": "Vincent's training progress",
+            "description": "This week we are talking about Diesel Reconciliation Process. Nex week he will be taking Consumption reports ",
+            "status": "In Progress"
         }
-      ]
-    }
+    ]
+}
