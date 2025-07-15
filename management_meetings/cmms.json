@@ -10,31 +10,31 @@
         {
             "type": "info",
             "title": "PLG CMMS Credentials",
-            "description": "All credentials have been sent today",
-            "status": "Complete"
+            "description": "All credentials will be sent today",
+            "status": "In Progress"
         },
         {
             "type": "info",
             "title": "Requirements and fixings collection",
-            "description": "CMMS Development team will stay receiving your usage feedback until 15/08/2025.",
+            "description": "The CMMS Development Team will continue receiving your feedback until 15/08/2025.",
             "status": "Planned"
         },
         {
             "type": "info",
             "title": "Fixings and Improving phase",
-            "description": "Depending on the type of new requirements gathered during the testing phase, the dev team will set a deadline for the new upgrade and fixings and will share with all stakeholders.",
+            "description": "Based on the feedback received during testing, the development team will set a deadline for upgrades and fixes, and will communicate it to all stakeholders.",
             "status": "Upcoming"
         },
         {
             "type": "info",
-            "title": "PLG FUSECON Tablet's count",
-            "description": "How many tablets do we have for CMMS usage?",
+            "title": "PLG FUSECON Tablet Count",
+            "description": "How many tablets are available for CMMS use?",
             "status": "Action Required"
         },
         {
             "type": "info",
-            "title": "APK (Android app) will be delivered on demand",
-            "description": "Depending on the available Tables for CMMS usage we will be sending the corresponding APK for app installations.",
+            "title": "APK (Android App) Delivery on Demand",
+            "description": "Depending on the number of available tablets for CMMS, the corresponding APK will be sent for app installation.",
             "status": "Planned"
         }
       ]

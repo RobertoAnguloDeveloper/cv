@@ -3,17 +3,17 @@
     "tasks": [
         {
             "title": "Issue with HT0822 Unloading and Volume Discrepancy",
-            "description": "An operational error during the unloading of a truck, by not opening a valve, caused the pump to run dry. This generated multiple incorrect delivery records in the system and a shortage of approximately 2,000 liters of fuel. Technical support (Veridapt) was contacted, who canceled the erroneous transactions and adjusted the volume to correct the data.\n",
+            "description": "An operational error during truck unloading—caused by a valve not being opened—led to the pump running dry. This resulted in multiple incorrect delivery records and a fuel shortage of approximately 2,000 liters. Technical support (Veridapt) was contacted, canceled the erroneous transactions, and adjusted the volumes to correct the data.",
             "status": "In Progress"
         },
         {
             "title": "Investigation of Tank Level Discrepancies",
-            "description": "Claro, aquí tienes el resumen y las opciones de título para la nueva información.\n\nResumen\nSe detectó una gran discrepancia entre el volumen de combustible que registra el medidor de entrada y lo que reflejan los niveles del tanque. A pesar de que las entregas se validan como completas, el sistema de medición del tanque reporta consistentemente volúmenes mucho menores, como una entrega de 34,000 litros que solo mostró 27,000. Se concluye que el sistema de medición de nivel del tanque está defectuoso y se solicita su reparación o reemplazo.",
+            "description": "A significant discrepancy was found between the inlet meter readings and the tank level measurements. Despite deliveries being validated as complete, the tank level system consistently reports lower volumes—for example, a 34,000-liter delivery showing only 27,000 liters. It was concluded that the tank level measurement system is faulty, and repair or replacement has been requested.",
             "status": "In Progress"
         },
         {
             "title": "Activities Handover and Reception Report - Valentina",
-            "description": "On Friday, July 4th, a meeting was held to receive Valentina's activities: Activity, KPIs (Just service reports), Inventory, KPIs + Fleet maintenance + Fleet List, Check unauthorized transactions, Schedule (Plan Staff) sent to Manicha. Reception of activities was validated and they have been in execution from the training date until today.\n",
+            "description": "On Friday, July 4th, a meeting was held to transfer Valentina's responsibilities: Activities, KPIs (only service reports), Inventory, KPIs + Fleet Maintenance + Fleet List, checking unauthorized transactions, and the schedule (Staff Plan) sent to Manicha. The handover was validated, and activities have been executed from the training date to present.",
             "status": "Complete"
         }
     ]

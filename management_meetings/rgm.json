@@ -2,23 +2,23 @@
     "id": "rgm",
     "tasks": [
         {
-            "title": "C2FT-004 Genset issues with DB251",
-            "description": "A test with Bowsers different from FON ones (DB251 and DB252) was requested and still pending",
+            "title": "C2FT-004 Genset Issues with DB251",
+            "description": "A test using bowsers other than the FON units (DB251 and DB252) was requested and is still pending.",
             "status": "Suggestion"
         },
         {
             "title": "DB248 without FMS",
-            "description": "RGM didn't have the Bowser prepared for the Scheduled GAFS support. Next support availability is 16/07/2025 13 Hrs. SAST (08 Hrs SRT)",
+            "description": "RGM did not have the bowser ready for the scheduled GAFS support. The next available support slot is on 16/07/2025 at 13:00 Hrs SAST (08:00 Hrs SRT).",
             "status": "Action Required"
         },
         {
             "title": "Fake Bypass alarm fixing",
-            "description": "A new automation for Pump Controller by GVR Team was recently sent. The Truck Prime UX installed in DB251 and DB252 is showing Bypass alarm every time a refuel starts. Once one pump is off, the system is recognizing this pump as a Bypass. In order to have a real alarm notification, this fixing was requested to GVR.",
+            "description": "A new automation update for the pump controller by the GVR Team was recently deployed. The Truck Prime UX installed in DB251 and DB252 is triggering a bypass alarm every time refueling starts. When one pump turns off, the system mistakenly identifies it as a bypass. A fix has been requested from GVR to ensure real alarms are accurately detected.",
             "status": "Action Required"
         },
         {
             "title": "Vincent's training progress",
-            "description": "This week we are talking about Diesel Reconciliation Process. Nex week he will be taking Consumption reports ",
+            "description": "This week we are covering the Diesel Reconciliation Process. Next week, he will focus on Consumption Reports.",
             "status": "In Progress"
         }
     ]
