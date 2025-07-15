@@ -8,17 +8,34 @@
           "url": "https://www.plgcmms.site/"
         },
         {
-          "type": "list",
-          "title": "Testing Phase Rollout Plan",
-          "description": "Credentials will be provided in the following order:",
-          "listItems": ["RGM", "BAITALI", "NEWMONT"],
-          "status": "Upcoming"
+            "type": "info",
+            "title": "PLG CMMS Credentials",
+            "description": "All credentials have been sent today",
+            "status": "Complete"
         },
         {
-          "type": "info",
-          "title": "Future Deployment",
-          "description": "The app will be delivered to FUSECON and MIAMI after feedback and fixes.",
-          "status": "Planned"
+            "type": "info",
+            "title": "Requirements and fixings collection",
+            "description": "CMMS Development team will stay receiving your usage feedback until 15/08/2025.",
+            "status": "Planned"
+        },
+        {
+            "type": "info",
+            "title": "Fixings and Improving phase",
+            "description": "Depending on the type of new requirements gathered during the testing phase, the dev team will set a deadline for the new upgrade and fixings and will share with all stakeholders.",
+            "status": "Upcoming"
+        },
+        {
+            "type": "info",
+            "title": "PLG FUSECON Tablet's count",
+            "description": "How many tablets do we have for CMMS usage?",
+            "status": "Action Required"
+        },
+        {
+            "type": "info",
+            "title": "APK (Android app) will be delivered on demand",
+            "description": "Depending on the available Tables for CMMS usage we will be sending the corresponding APK for app installations.",
+            "status": "Planned"
         }
       ]
     }
