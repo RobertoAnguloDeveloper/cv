@@ -112,6 +112,7 @@
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
 
+        /* Dark Mode Status Badge Overrides */
         html.dark .status-badge.bg-blue-100 { background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; }
         html.dark .status-badge.bg-green-100 { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
         html.dark .status-badge.bg-red-100 { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
@@ -119,12 +120,18 @@
         html.dark .status-badge.bg-purple-100 { background-color: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
         html.dark .status-badge.bg-gray-100 { background-color: rgba(107, 114, 128, 0.2); color: #d1d5db; }
 
+        /* Dark Mode Stat Icon Overrides */
         html.dark .stat-icon-bg.bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
         html.dark .stat-icon-color.text-blue-600 { color: #93c5fd !important; }
         html.dark .stat-icon-bg.bg-orange-100 { background-color: rgba(249, 115, 22, 0.15) !important; }
         html.dark .stat-icon-color.text-orange-600 { color: #fdba74 !important; }
         html.dark .stat-icon-bg.bg-red-100 { background-color: rgba(239, 68, 68, 0.15) !important; }
         html.dark .stat-icon-color.text-red-600 { color: #fca5a5 !important; }
+        html.dark .stat-icon-bg.bg-purple-100 { background-color: rgba(168, 85, 247, 0.15) !important; }
+        html.dark .stat-icon-color.text-purple-600 { color: #d8b4fe !important; }
+        html.dark .stat-icon-bg.bg-green-100 { background-color: rgba(34, 197, 94, 0.15) !important; }
+        html.dark .stat-icon-color.text-green-600 { color: #86efac !important; }
+
 
         #theme-toggle .fa-moon, #theme-toggle .fa-sun { transition: transform 0.3s ease-out; }
         html.dark #theme-toggle .fa-moon { transform: scale(0); }
@@ -159,10 +166,14 @@
                     <p id="report-date-range" class="text-md mt-1" style="color: var(--text-secondary);"></p>
                 </div>
             </div>
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Stat Cards -->
                 <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Total Tasks</p><p id="total-tasks-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;"><div class="flex items-center"><div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Pending Items</p><p id="pending-items-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
                 <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;"><div class="flex items-center"><div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Action Required</p><p id="action-required-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;"><div class="flex items-center"><div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Pending Items</p><p id="pending-items-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #a855f7;"><div class="flex items-center"><div class="stat-icon-bg bg-purple-100 p-3 rounded-full mr-4"><i class="fas fa-wrench fa-lg stat-icon-color text-purple-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">In Progress</p><p id="in-progress-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #3b82f6;"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-calendar-check fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Upcoming</p><p id="upcoming-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #22c55e;"><div class="flex items-center"><div class="stat-icon-bg bg-green-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-check fa-lg stat-icon-color text-green-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Completed</p><p id="completed-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
             </div>
         </header>
 
@@ -179,6 +190,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger);
 
+            // --- THEME TOGGLE ---
             const themeToggle = document.getElementById('theme-toggle');
             const htmlElement = document.documentElement;
             const applyTheme = (theme) => {
@@ -193,6 +205,7 @@
                 localStorage.setItem('theme', newTheme);
             });
 
+            // --- CLOCK & DATE ---
             const clockElement = document.getElementById('live-clock');
             const lastUpdatedElement = document.getElementById('last-updated');
             
@@ -204,18 +217,17 @@
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
             }
 
+            // --- LOCATION ---
             function requestAndUpdateLocation() {
                 const locationDisplayElement = document.getElementById('location-display');
                 if (!navigator.geolocation) {
                     locationDisplayElement.textContent = 'Geolocation not supported';
                     return;
                 }
-
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
                         const { latitude, longitude } = position.coords;
                         try {
-                            // Using a free reverse geocoding service
                             const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
                             const data = await response.json();
                             const city = data.address.city || data.address.town || data.address.village || 'Unknown city';
@@ -237,6 +249,7 @@
             updateTime();
             setInterval(updateTime, 1000);
 
+            // --- DATA & PAGE BUILDING ---
             const statusClasses = {
                 'Investigating': 'bg-blue-100 text-blue-800', 
                 'Suggestion': 'bg-green-100 text-green-800',
@@ -304,7 +317,7 @@
             }
 
             function populateSection(data) {
-                const containerId = data.id === 'cmms' ? `${data.id}-tasks` : `${data.id}-tasks`;
+                const containerId = `${data.id}-tasks`;
                 const container = document.getElementById(containerId);
                 if (!container) return;
 
@@ -333,18 +346,46 @@
             }
 
             function calculateAndDisplayStats(allData) {
-                let totalTasks = 0, pendingItems = 0, actionRequired = 0;
+                let totalTasks = 0, 
+                    pendingItems = 0, 
+                    actionRequired = 0,
+                    inProgress = 0,
+                    upcoming = 0,
+                    completed = 0;
+
                 allData.forEach(data => {
-                    if (data.tasks) {
-                        totalTasks += data.tasks.length;
-                        pendingItems += data.tasks.filter(t => t.status === 'Pending').length;
-                        actionRequired += data.tasks.filter(t => t.status === 'Action Required').length;
-                    }
-                    if (data.items) totalTasks += data.items.length;
+                    const allItems = (data.tasks || []).concat(data.items || []);
+                    totalTasks += allItems.length;
+
+                    allItems.forEach(item => {
+                        if (!item.status) return; // Skip items without a status property
+
+                        switch (item.status) {
+                            case 'Pending':
+                                pendingItems++;
+                                break;
+                            case 'Action Required':
+                                actionRequired++;
+                                break;
+                            case 'In Progress':
+                                inProgress++;
+                                break;
+                            case 'Upcoming':
+                                upcoming++;
+                                break;
+                            case 'Complete':
+                                completed++;
+                                break;
+                        }
+                    });
                 });
+
                 document.getElementById('total-tasks-stat').setAttribute('data-value', totalTasks);
                 document.getElementById('pending-items-stat').setAttribute('data-value', pendingItems);
                 document.getElementById('action-required-stat').setAttribute('data-value', actionRequired);
+                document.getElementById('in-progress-stat').setAttribute('data-value', inProgress);
+                document.getElementById('upcoming-stat').setAttribute('data-value', upcoming);
+                document.getElementById('completed-stat').setAttribute('data-value', completed);
             }
             
             function runAnimations() {
