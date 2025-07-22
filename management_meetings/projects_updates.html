@@ -123,9 +123,14 @@
             <section id="newmont-section">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold" style="color: var(--newmont-color);">Newmont Updates</h2>
-                    <button onclick="addTask('newmont')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors">
-                        <i class="fas fa-plus mr-2"></i> Add Task
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="exportNewmont()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                            <i class="fas fa-download mr-2"></i> Download
+                        </button>
+                        <button onclick="addTask('newmont')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                            <i class="fas fa-plus mr-2"></i> Add Task
+                        </button>
+                    </div>
                 </div>
                 <div id="newmont-tasks-container" class="space-y-4"></div>
             </section>
@@ -134,9 +139,14 @@
             <section id="rgm-section">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold" style="color: var(--rgm-color);">RGM Updates</h2>
-                    <button onclick="addTask('rgm')" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors">
-                        <i class="fas fa-plus mr-2"></i> Add Task
-                    </button>
+                     <div class="flex items-center space-x-2">
+                        <button onclick="exportRgm()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                            <i class="fas fa-download mr-2"></i> Download
+                        </button>
+                        <button onclick="addTask('rgm')" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                            <i class="fas fa-plus mr-2"></i> Add Task
+                        </button>
+                    </div>
                 </div>
                 <div id="rgm-tasks-container" class="space-y-4"></div>
             </section>
@@ -145,9 +155,14 @@
             <section id="cmms-section">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold" style="color: var(--cmms-color);">CMMS Project Updates</h2>
-                    <button onclick="addCmmsItem()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors">
-                        <i class="fas fa-plus mr-2"></i> Add Item
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="exportCmms()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                            <i class="fas fa-download mr-2"></i> Download
+                        </button>
+                        <button onclick="addCmmsItem()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                            <i class="fas fa-plus mr-2"></i> Add Item
+                        </button>
+                    </div>
                 </div>
                 <div id="cmms-items-container" class="space-y-4"></div>
             </section>
@@ -156,7 +171,7 @@
         <footer class="mt-12 pt-8 border-t" style="border-color: var(--border-color);">
             <div class="text-center">
                 <button id="export-button" class="bg-cyan-500 hover:bg-cyan-600 text-white font-extrabold py-4 px-8 text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
-                    <i class="fas fa-download mr-3"></i> Generate and Download JSON(s)
+                    <i class="fas fa-download mr-3"></i> Generate and Download All
                 </button>
                 <p id="success-message" class="text-green-500 mt-4 h-5"></p>
             </div>
@@ -169,6 +184,7 @@
             const themeToggle = document.getElementById('theme-toggle');
             const htmlElement = document.documentElement;
 
+            // --- Theme Handling ---
             const applyTheme = (theme) => {
                 htmlElement.classList.toggle('dark', theme === 'dark');
                 htmlElement.classList.toggle('light', theme !== 'dark');
@@ -181,7 +197,7 @@
                 localStorage.setItem('theme', newTheme);
             });
 
-            // Initialize Litepicker
+            // --- Initialize Litepicker ---
             const picker = new Litepicker({
                 element: document.getElementById('report-date-range'),
                 singleMode: false,
@@ -195,6 +211,7 @@
                 },
             });
 
+            // --- Event Listeners ---
             document.getElementById('project-selector').addEventListener('change', handleProjectVisibility);
             loadInitialData();
             handleProjectVisibility();
@@ -203,6 +220,11 @@
 
         let taskCounter = 0;
         const statusOptions = ['Investigating', 'Suggestion', 'Action Required', 'Pending', 'Complete', 'In Progress', 'Upcoming', 'Planned'];
+
+        // --- Data Gathering Functions (Global Scope) ---
+        const getNewmontData = () => ({ id: "newmont", tasks: Array.from(document.querySelectorAll('#newmont-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
+        const getRgmData = () => ({ id: "rgm", tasks: Array.from(document.querySelectorAll('#rgm-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
+        const getCmmsData = () => ({ id: "cmms", items: Array.from(document.querySelectorAll('#cmms-items-container .task-card')).map(card => { const type = card.dataset.type; const item = { type: type, title: card.querySelector('.cmms-title').value, description: card.querySelector('.cmms-description').value }; if (type === 'link') item.url = card.querySelector('.cmms-url').value; if (type === 'list') { item.listItems = card.querySelector('.cmms-list-items').value.split(',').map(s => s.trim()).filter(Boolean); item.status = card.querySelector('.cmms-status').value; } if (type === 'info') item.status = card.querySelector('.cmms-status').value; return item; }) });
 
         function handleProjectVisibility() {
             const selectedProject = document.getElementById('project-selector').value;
@@ -274,12 +296,31 @@
             downloadAnchorNode.remove();
         }
 
+        function showSuccessMessage(message) {
+            const successMsg = document.getElementById('success-message');
+            successMsg.textContent = message;
+            setTimeout(() => { successMsg.textContent = ''; }, 4000);
+        }
+
+        // --- Individual Export Functions ---
+        function exportNewmont() {
+            downloadJSON('newmont.json', getNewmontData());
+            showSuccessMessage('newmont.json downloaded successfully!');
+        }
+
+        function exportRgm() {
+            downloadJSON('rgm.json', getRgmData());
+            showSuccessMessage('rgm.json downloaded successfully!');
+        }
+
+        function exportCmms() {
+            downloadJSON('cmms.json', getCmmsData());
+            showSuccessMessage('cmms.json downloaded successfully!');
+        }
+        
+        // --- Main Export Function ---
         function exportFiles() {
             const selectedProject = document.getElementById('project-selector').value;
-
-            const getNewmontData = () => ({ id: "newmont", tasks: Array.from(document.querySelectorAll('#newmont-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
-            const getRgmData = () => ({ id: "rgm", tasks: Array.from(document.querySelectorAll('#rgm-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
-            const getCmmsData = () => ({ id: "cmms", items: Array.from(document.querySelectorAll('#cmms-items-container .task-card')).map(card => { const type = card.dataset.type; const item = { type: type, title: card.querySelector('.cmms-title').value, description: card.querySelector('.cmms-description').value }; if (type === 'link') item.url = card.querySelector('.cmms-url').value; if (type === 'list') { item.listItems = card.querySelector('.cmms-list-items').value.split(',').map(s => s.trim()).filter(Boolean); item.status = card.querySelector('.cmms-status').value; } if (type === 'info') item.status = card.querySelector('.cmms-status').value; return item; }) });
             
             if (selectedProject === 'all') {
                 downloadJSON('report-config.json', { reportDateRange: document.getElementById('report-date-range').value });
@@ -292,9 +333,7 @@
                 if (selectedProject === 'cmms') downloadJSON('cmms.json', getCmmsData());
             }
 
-            const successMsg = document.getElementById('success-message');
-            successMsg.textContent = 'JSON file(s) downloaded successfully!';
-            setTimeout(() => { successMsg.textContent = ''; }, 4000);
+            showSuccessMessage('JSON file(s) downloaded successfully!');
         }
     </script>
 </body>
