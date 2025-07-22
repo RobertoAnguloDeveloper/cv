@@ -3,17 +3,22 @@
     "tasks": [
         {
             "title": "Investigation of Tank Level Discrepancies",
-            "description": "A significant discrepancy was detected between the fuel volume recorded by the inlet meter and what is reflected in the tank levels. Although deliveries are validated as complete, the tank measurement system consistently reports much lower volumes, such as a delivery of 34,000 liters showing only 27,000. It is concluded that the tank level measurement system is faulty, and its repair or replacement is requested.\n",
+            "description": "A significant discrepancy was detected between the fuel volume recorded by the inlet meter and what is reflected in the tank levels. Although deliveries are validated as complete, the tank measurement system consistently reports much lower volumes, such as a delivery of 34,000 liters showing only 27,000. It is concluded that the tank level measurement system is faulty, and its repair or replacement is requested. Operations were requested to provide the frequency of the respective system checks, to identify the calibration periods of the measurement hardware, and to find the root cause of the anomaly in the tank levels.",
             "status": "Pending"
         },
         {
             "title": "Fuel Reconciliation Anomaly, July 13, 2025",
-            "description": "A negative variation of -1.84% (-3047.95 L) was detected in the diesel reconciliation on July 13. The analysis of storage trends shows an anomalous and sudden drop in the main tank level on July 14 around 08:00. This unrecorded inventory loss is the direct cause of the discrepancy. It is recommended to investigate the event to determine the root cause of the fuel loss.",
+            "description": "A negative variation of -1.84% (-3,047.95 L) was detected in the diesel reconciliation on July 13. The analysis of storage trends shows an anomalous and sudden drop in the main tank level on July 14. Deliveries, manual sheets, transactions, and dispenses were validated by the data department, and no anomaly was found. Veridapt was notified via email. We are currently awaiting feedback on the case.",
             "status": "Pending"
         },
         {
             "title": "Unauthorized dispenses",
             "description": "Comment recorded regarding ID assignment for unauthorized transactions in Lane 3. Specifically, the transactions:\n\n- Dispensing Transaction #171017;  19/07/2025 11:47\n- Dispensing Transaction #170972;  19/07/2025 08:39\n- Dispensing Transaction #170909; 18/07/2025 22:35\n\n",
+            "status": "Complete"
+        },
+        {
+            "title": "Workshop 6 connection problems ",
+            "description": "Workshop 6 records a day with connection issues, having a total of 4320 minutes without service with an offline status. The corresponding notification was sent through the WhatsApp group at 6:24 a.m. on 07-21-2025 Colombian time.\n",
             "status": "Complete"
         },
         {
