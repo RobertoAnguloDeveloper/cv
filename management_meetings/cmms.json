@@ -27,8 +27,8 @@
         },
         {
             "type": "info",
-            "title": "PLG FUSECON Tablet Count",
-            "description": "How many tablets are available for CMMS use?",
+            "title": "CMMS usage",
+            "description": "Since the site managers' credentials were delivered on 15/07/2025, only Javier Teheran has been using the platform.",
             "status": "Action Required"
         },
         {
