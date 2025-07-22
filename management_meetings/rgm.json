@@ -32,11 +32,6 @@
             "status": "Action Required"
         },
         {
-            "title": "DB248 without FMS",
-            "description": "RGM did not have the bowser ready for the scheduled GAFS support. The next available support slot is on 16/07/2025 at 13:00 Hrs SAST (08:00 Hrs SRT).",
-            "status": "Action Required"
-        },
-        {
             "title": "Fake Bypass alarm fixing",
             "description": "A new automation update for the pump controller by the GVR Team was recently deployed. The Truck Prime UX installed in DB251 and DB252 is triggering a bypass alarm every time refueling starts. When one pump turns off, the system mistakenly identifies it as a bypass. A fix has been requested from GVR to ensure real alarms are accurately detected.",
             "status": "Action Required"
