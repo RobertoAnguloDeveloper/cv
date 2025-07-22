@@ -12,6 +12,11 @@
             "status": "Complete"
         },
         {
+            "title": "SINO1 DB263 online and uploading data in FON Prime",
+            "description": "Sync process done on 18/07/2025",
+            "status": "Complete"
+        },
+        {
             "title": "DB250, DB248 Bowsers online and uploading data",
             "description": "Now bowsers 250 and 248 are now connected and are uploading data correctly.",
             "status": "Complete"
