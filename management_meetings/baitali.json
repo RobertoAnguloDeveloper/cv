@@ -2,49 +2,29 @@
     "id": "baitali",
     "tasks": [
         {
-            "title": "BAITALI",
-            "description": "Mr. Jaime Wong Chung requested TLS data on July 21st, 2025. Now that the TLS is functioning properly, the process has become easier. However, while it was down, we had to manually copy data from the delivery sheets. This led to some mistakes, so we had to double-check everything and recalculate the correct TLS values. We need to be more careful with these types of documents and situations to avoid similar issues in the future.",
-            "status": "Complete"
-        },
-        {
-            "title": "FON Prime Training Sessions",
-            "description": "Over three days, Alexandre Silva from GVR trained Saawan, Dario, Javier, Vincent, and Roberto on all FuelOnet Prime functionalities to help PLG provide better information to the client about this new platform.",
-            "status": "Complete"
-        },
-        {
-            "title": "SINO1 DB263 online and uploading data in FON Prime",
-            "description": "Sync process done on 18/07/2025",
-            "status": "Complete"
-        },
-        {
-            "title": "DB250, DB248 Bowsers online and uploading data",
-            "description": "Now bowsers 250 and 248 are now connected and are uploading data correctly.",
-            "status": "Complete"
-        },
-        {
-            "title": "FON Prime GVR Creation of Limit Rules Regarding Tank Capacity for All Migrated Fleet to FON by GVR Team",
-            "description": "During the training sessions with Silva, a security concern was raised. Silva informed us that the tank capacity field does not restrict equipment from refueling beyond its capacity. To prevent this, limit rules should be created based on different tank capacities. It was agreed with Silva that his team will handle the migrated fleet, while new entries will be managed by us.",
-            "status": "Action Required"
-        },
-        {
-            "title": "DB251 Delivery issues",
-            "description": "Bowser 251 is having problems delivering to certain equipment. Tests with DataFlex360 FMS should be performed to verify its String ID",
-            "status": "Action Required"
-        },
-        {
-            "title": "C2FT-004 Genset Issues with DB251",
-            "description": "A test using bowsers other than the FON units (DB251 and DB252) was requested and is still pending.",
-            "status": "Action Required"
-        },
-        {
-            "title": "Fake Bypass alarm fixing",
-            "description": "A new automation update for the pump controller by the GVR Team was recently deployed. The Truck Prime UX installed in DB251 and DB252 is triggering a bypass alarm every time refueling starts. When one pump turns off, the system mistakenly identifies it as a bypass. A fix has been requested from GVR to ensure real alarms are accurately detected.",
-            "status": "Action Required"
-        },
-        {
-            "title": "Vincent's training progress",
-            "description": "This week we are covering the progress on Consumption Reports. Next week, he will be sending his first Consumption reports.",
+            "title": "T-83 Fuel truck ORCU upgrade",
+            "description": "The Fuel truck computer (ORCU board ) is no longer working. The system can not refuel equipment on site. The bypass option is being used. Data is being captured manually for distribution. The Orcu board required an upgrade to the Norcu board. The upgrade has been requested, and the client is waiting for it.",
             "status": "In Progress"
+        },
+        {
+            "title": "UCC Master card usage",
+            "description": "The Master card is used for some additional equipment, but is not registered in the overview of the  FuelOnet platform. On the SiteOmat, the vehicle information can be extracted. A ticket has been raised for the GVR team to follow up with this.\n",
+            "status": "In Progress"
+        },
+        {
+            "title": "Apoera internet connection issue",
+            "description": "The station went offline. After a cold reset of the system, the internet connection was restored.\nData is uploading normally again.",
+            "status": "Complete"
+        },
+        {
+            "title": "FuelOnet Sync (Baitali station & Fuel truck",
+            "description": "Requested the additional information to start the sync process. Meetings have been requested to start after the FuelOnet issue has been resolved.",
+            "status": "In Progress"
+        },
+        {
+            "title": "Henar Islander pump deactivation",
+            "description": "The Converter board was checked, parameters were changed. After troubleshooting, the Converter cable was replaced with a new one on location. ",
+            "status": "Complete"
         }
     ]
 }
