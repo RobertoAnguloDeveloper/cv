@@ -3,6 +3,13 @@
   "companyLogo": "./logos/PLG Logo.png",
   "projects": [
     {
+      "id": "baitali",
+      "name": "Baitali",
+      "dataFile": "baitali.json",
+      "logo": "./logos/BAITALI logo.png",
+      "color": "#03E852"
+    },
+    {
       "id": "newmont",
       "name": "Newmont",
       "dataFile": "newmont.json",

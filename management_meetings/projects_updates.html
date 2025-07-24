@@ -101,21 +101,26 @@
                     <i class="fas fa-sun absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="color: var(--text-secondary);"></i>
                 </button>
             </div>
-             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                  <div>
-                    <label for="report-date-range" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Report Date Range</label>
-                    <input type="text" id="report-date-range" class="form-input w-full rounded-md shadow-sm">
+                     <label for="report-date-range" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Report Date Range</label>
+                     <input type="text" id="report-date-range" class="form-input w-full rounded-md shadow-sm">
                  </div>
                  <div>
-                    <label for="project-selector" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Select Project to Edit/Export</label>
-                    <select id="project-selector" class="form-select w-full rounded-md shadow-sm">
-                        <option value="all">All Projects</option>
-                        <option value="newmont">Newmont</option>
-                        <option value="rgm">RGM</option>
-                        <option value="cmms">CMMS</option>
-                    </select>
+                     <label for="project-selector" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Select Project</label>
+                     <select id="project-selector" class="form-select w-full rounded-md shadow-sm">
+                         <option value="all">All Projects</option>
+                         <option value="newmont">Newmont</option>
+                         <option value="rgm">RGM</option>
+                         <option value="cmms">CMMS</option>
+                     </select>
                  </div>
-            </div>
+                 <div>
+                    <button id="add-project-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center justify-center transition-colors text-sm">
+                        <i class="fas fa-plus mr-2"></i> Add Project
+                    </button>
+                 </div>
+             </div>
         </header>
 
         <main id="form-container" class="space-y-10">
@@ -124,7 +129,7 @@
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold" style="color: var(--newmont-color);">Newmont Updates</h2>
                     <div class="flex items-center space-x-2">
-                        <button onclick="exportNewmont()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                        <button onclick="exportProject('newmont')" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
                             <i class="fas fa-download mr-2"></i> Download
                         </button>
                         <button onclick="addTask('newmont')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
@@ -140,13 +145,13 @@
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold" style="color: var(--rgm-color);">RGM Updates</h2>
                      <div class="flex items-center space-x-2">
-                        <button onclick="exportRgm()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
-                            <i class="fas fa-download mr-2"></i> Download
-                        </button>
-                        <button onclick="addTask('rgm')" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
-                            <i class="fas fa-plus mr-2"></i> Add Task
-                        </button>
-                    </div>
+                         <button onclick="exportProject('rgm')" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                             <i class="fas fa-download mr-2"></i> Download
+                         </button>
+                         <button onclick="addTask('rgm')" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                             <i class="fas fa-plus mr-2"></i> Add Task
+                         </button>
+                     </div>
                 </div>
                 <div id="rgm-tasks-container" class="space-y-4"></div>
             </section>
@@ -178,19 +183,44 @@
         </footer>
     </div>
 
+    <!-- Add Project Modal -->
+    <div id="add-project-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="p-6 rounded-lg shadow-xl w-full max-w-md" style="background-color: var(--card-bg);">
+            <h3 class="text-xl font-bold mb-4" style="color: var(--text-primary);">Add New Project</h3>
+            <div class="space-y-4">
+                <div>
+                    <label for="new-project-name" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Project Name</label>
+                    <input type="text" id="new-project-name" class="form-input w-full rounded-md shadow-sm" placeholder="e.g., Exploration Initiative">
+                    <p id="modal-error-msg" class="text-red-500 text-sm mt-1 h-4"></p>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-add-project" class="px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700" style="color: var(--text-secondary); border: 1px solid var(--border-color);">Cancel</button>
+                <button id="confirm-add-project" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-sm">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Theme Handling ---
             const themeToggle = document.getElementById('theme-toggle');
             const htmlElement = document.documentElement;
+            const sunIcon = themeToggle.querySelector('.fa-sun');
+            const moonIcon = themeToggle.querySelector('.fa-moon');
 
-            // --- Theme Handling ---
             const applyTheme = (theme) => {
                 htmlElement.classList.toggle('dark', theme === 'dark');
                 htmlElement.classList.toggle('light', theme !== 'dark');
+                sunIcon.style.display = theme === 'dark' ? 'block' : 'none';
+                moonIcon.style.display = theme === 'light' ? 'block' : 'none';
             };
+
             const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             applyTheme(savedTheme);
+
             themeToggle.addEventListener('click', () => {
                 const newTheme = htmlElement.classList.contains('dark') ? 'light' : 'dark';
                 applyTheme(newTheme);
@@ -204,53 +234,110 @@
                 format: 'MMM DD, YYYY',
                 startDate: new Date(),
                 endDate: new Date(new Date().setDate(new Date().getDate() + 6)),
-                setup: (picker) => {
-                    picker.on('selected', (date1, date2) => {
-                        // Handle date selection if needed
-                    });
-                },
             });
 
             // --- Event Listeners ---
             document.getElementById('project-selector').addEventListener('change', handleProjectVisibility);
-            loadInitialData();
-            handleProjectVisibility();
             document.getElementById('export-button').addEventListener('click', exportFiles);
+            handleProjectVisibility();
+
+            // --- Modal Handling ---
+            const addProjectBtn = document.getElementById('add-project-btn');
+            const modal = document.getElementById('add-project-modal');
+            const cancelBtn = document.getElementById('cancel-add-project');
+            const confirmBtn = document.getElementById('confirm-add-project');
+            
+            addProjectBtn.addEventListener('click', () => modal.style.display = 'flex');
+            cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+            confirmBtn.addEventListener('click', handleAddNewProject);
         });
 
+        // --- Global State ---
         let taskCounter = 0;
         const statusOptions = ['Investigating', 'Suggestion', 'Action Required', 'Pending', 'Complete', 'In Progress', 'Upcoming', 'Planned'];
+        const taskBasedProjects = ['newmont', 'rgm'];
+        const projectColors = ['#4A90E2', '#F5A623', '#BD10E0', '#7ED321', '#D0021B', '#417505', '#9013FE', '#50E3C2'];
+        let colorIndex = 0;
 
-        // --- Data Gathering Functions (Global Scope) ---
-        const getNewmontData = () => ({ id: "newmont", tasks: Array.from(document.querySelectorAll('#newmont-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
-        const getRgmData = () => ({ id: "rgm", tasks: Array.from(document.querySelectorAll('#rgm-tasks-container .task-card')).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
-        const getCmmsData = () => ({ id: "cmms", items: Array.from(document.querySelectorAll('#cmms-items-container .task-card')).map(card => { const type = card.dataset.type; const item = { type: type, title: card.querySelector('.cmms-title').value, description: card.querySelector('.cmms-description').value }; if (type === 'link') item.url = card.querySelector('.cmms-url').value; if (type === 'list') { item.listItems = card.querySelector('.cmms-list-items').value.split(',').map(s => s.trim()).filter(Boolean); item.status = card.querySelector('.cmms-status').value; } if (type === 'info') item.status = card.querySelector('.cmms-status').value; return item; }) });
+        // --- Project Management Functions ---
+        function handleAddNewProject() {
+            const newProjectNameInput = document.getElementById('new-project-name');
+            const modalErrorMsg = document.getElementById('modal-error-msg');
+            const name = newProjectNameInput.value.trim();
+            
+            if (!name) {
+                modalErrorMsg.textContent = 'Project name cannot be empty.';
+                return;
+            }
 
+            const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            if (taskBasedProjects.includes(id) || id === 'cmms' || document.getElementById(`${id}-section`)) {
+                modalErrorMsg.textContent = 'A project with this name already exists.';
+                return;
+            }
+
+            const color = projectColors[colorIndex % projectColors.length];
+            colorIndex++;
+
+            taskBasedProjects.push(id);
+            createAndAppendProjectSection(id, name, color);
+            addProjectToSelector(id, name);
+
+            newProjectNameInput.value = '';
+            modalErrorMsg.textContent = '';
+            document.getElementById('add-project-modal').style.display = 'none';
+        }
+
+        function createAndAppendProjectSection(id, name, color) {
+            const section = document.createElement('section');
+            section.id = `${id}-section`;
+            section.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold" style="color: ${color};">${name} Updates</h2>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="exportProject('${id}')" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm">
+                            <i class="fas fa-download mr-2"></i> Download
+                        </button>
+                        <button onclick="addTask('${id}')" class="font-bold py-2 px-4 rounded-lg inline-flex items-center transition-colors text-sm text-white" style="background-color: ${color};">
+                            <i class="fas fa-plus mr-2"></i> Add Task
+                        </button>
+                    </div>
+                </div>
+                <div id="${id}-tasks-container" class="space-y-4"></div>
+            `;
+            const cmmsSection = document.getElementById('cmms-section');
+            document.getElementById('form-container').insertBefore(section, cmmsSection);
+        }
+
+        function addProjectToSelector(id, name) {
+            const selector = document.getElementById('project-selector');
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = name;
+            selector.appendChild(option);
+        }
+
+        // --- UI and Task Functions ---
         function handleProjectVisibility() {
             const selectedProject = document.getElementById('project-selector').value;
-            const sections = {
-                newmont: document.getElementById('newmont-section'),
-                rgm: document.getElementById('rgm-section'),
-                cmms: document.getElementById('cmms-section')
-            };
+            const allSections = document.querySelectorAll('#form-container > section');
+
             if (selectedProject === 'all') {
-                Object.values(sections).forEach(sec => sec.style.display = 'block');
+                allSections.forEach(sec => sec.style.display = 'block');
             } else {
-                Object.entries(sections).forEach(([key, sec]) => {
-                    sec.style.display = key === selectedProject ? 'block' : 'none';
+                allSections.forEach(sec => {
+                    const sectionId = sec.id.replace('-section', '');
+                    sec.style.display = sectionId === selectedProject ? 'block' : 'none';
                 });
             }
         }
 
-        function loadInitialData() {
-            // No initial data is loaded. The form will start empty.
-        }
-
-        function addTask(section, taskData = { title: '', description: '', status: 'Pending' }) {
+        function addTask(sectionId, taskData = { title: '', description: '', status: 'Pending' }) {
             taskCounter++;
-            const container = document.getElementById(`${section}-tasks-container`);
+            const container = document.getElementById(`${sectionId}-tasks-container`);
             const taskCard = document.createElement('div');
-            taskCard.className = 'task-card p-4 rounded-lg shadow-sm border-l-4';
+            taskCard.className = 'task-card p-4 rounded-lg shadow-sm';
             taskCard.id = `task-${taskCounter}`;
             const statusDropdown = statusOptions.map(opt => `<option value="${opt}" ${taskData.status === opt ? 'selected' : ''}>${opt}</option>`).join('');
             taskCard.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Title</label><input type="text" class="form-input w-full rounded-md shadow-sm task-title" value="${taskData.title}"></div><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Status</label><select class="form-select w-full rounded-md shadow-sm task-status">${statusDropdown}</select></div><div class="md:col-span-2"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Description</label><textarea class="form-textarea w-full rounded-md shadow-sm task-description" rows="3">${taskData.description}</textarea></div></div><div class="text-right mt-3"><button onclick="removeElement('task-${taskCounter}')" class="text-red-500 hover:text-red-700 font-semibold text-sm"><i class="fas fa-trash-alt mr-1"></i>Remove</button></div>`;
@@ -261,7 +348,7 @@
             taskCounter++;
             const container = document.getElementById('cmms-items-container');
             const itemCard = document.createElement('div');
-            itemCard.className = 'task-card p-4 rounded-lg shadow-sm border-l-4';
+            itemCard.className = 'task-card p-4 rounded-lg shadow-sm';
             itemCard.id = `task-${taskCounter}`;
             itemCard.dataset.type = itemData.type;
             const updateVisibility = (card, type) => {
@@ -286,6 +373,10 @@
             document.getElementById(id).remove();
         }
 
+        // --- Data Gathering and Export Functions ---
+        const getTaskData = (projectId) => ({ id: projectId, tasks: Array.from(document.querySelectorAll(`#${projectId}-tasks-container .task-card`)).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
+        const getCmmsData = () => ({ id: "cmms", items: Array.from(document.querySelectorAll('#cmms-items-container .task-card')).map(card => { const type = card.dataset.type; const item = { type: type, title: card.querySelector('.cmms-title').value, description: card.querySelector('.cmms-description').value }; if (type === 'link') item.url = card.querySelector('.cmms-url').value; if (type === 'list') { item.listItems = card.querySelector('.cmms-list-items').value.split(',').map(s => s.trim()).filter(Boolean); item.status = card.querySelector('.cmms-status').value; } if (type === 'info') item.status = card.querySelector('.cmms-status').value; return item; }) });
+
         function downloadJSON(filename, data) {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 4));
             const downloadAnchorNode = document.createElement('a');
@@ -302,15 +393,9 @@
             setTimeout(() => { successMsg.textContent = ''; }, 4000);
         }
 
-        // --- Individual Export Functions ---
-        function exportNewmont() {
-            downloadJSON('newmont.json', getNewmontData());
-            showSuccessMessage('newmont.json downloaded successfully!');
-        }
-
-        function exportRgm() {
-            downloadJSON('rgm.json', getRgmData());
-            showSuccessMessage('rgm.json downloaded successfully!');
+        function exportProject(projectId) {
+            downloadJSON(`${projectId}.json`, getTaskData(projectId));
+            showSuccessMessage(`${projectId}.json downloaded successfully!`);
         }
 
         function exportCmms() {
@@ -318,22 +403,23 @@
             showSuccessMessage('cmms.json downloaded successfully!');
         }
         
-        // --- Main Export Function ---
         function exportFiles() {
             const selectedProject = document.getElementById('project-selector').value;
             
             if (selectedProject === 'all') {
                 downloadJSON('report-config.json', { reportDateRange: document.getElementById('report-date-range').value });
-                setTimeout(() => downloadJSON('newmont.json', getNewmontData()), 200);
-                setTimeout(() => downloadJSON('rgm.json', getRgmData()), 400);
-                setTimeout(() => downloadJSON('cmms.json', getCmmsData()), 600);
+                let delay = 200;
+                taskBasedProjects.forEach(id => {
+                    setTimeout(() => downloadJSON(`${id}.json`, getTaskData(id)), delay);
+                    delay += 200;
+                });
+                setTimeout(() => downloadJSON('cmms.json', getCmmsData()), delay);
+                showSuccessMessage('All JSON files downloaded successfully!');
+            } else if (selectedProject === 'cmms') {
+                exportCmms();
             } else {
-                if (selectedProject === 'newmont') downloadJSON('newmont.json', getNewmontData());
-                if (selectedProject === 'rgm') downloadJSON('rgm.json', getRgmData());
-                if (selectedProject === 'cmms') downloadJSON('cmms.json', getCmmsData());
+                exportProject(selectedProject);
             }
-
-            showSuccessMessage('JSON file(s) downloaded successfully!');
         }
     </script>
 </body>
