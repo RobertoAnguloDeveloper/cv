@@ -153,7 +153,7 @@
             <div class="flex items-center">
                 <div id="location-time" class="flex items-center mr-4" style="color: var(--text-secondary);">
                     <p id="system-location" class="hidden md:flex items-center"><i class="fas fa-map-marker-alt mr-2 opacity-75"></i> <span id="location-display">Requesting...</span></p>
-                    <p id="live-clock" class="font-semibold ml-0 md:ml-4 md:pl-4 md:border-l" style="color: var(--text-primary); border-color: var(--border-color);"></p>
+                    <p id="live-clock" class="font-semibold ml-0 md:ml-4 md:pl-4 md:border-l" style="color: var(--text-primary); border-color: var(--border-color);">Tuesday, July 29, 2025, 08:57:48 AM</p>
                 </div>
                 <button id="theme-toggle" class="relative w-9 h-9 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500" style="color: var(--text-secondary); background-color: var(--card-bg); border: 1px solid var(--border-color);">
                     <i class="fas fa-moon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
@@ -171,7 +171,8 @@
                     <p id="report-date-range" class="text-md mt-1" style="color: var(--text-secondary);"></p>
                 </div>
             </div>
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Stat Cards Section with flexible grid -->
+            <div class="mt-8 grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
                 <!-- Stat Cards -->
                 <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Total Tasks</p><p id="total-tasks-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
                 <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;"><div class="flex items-center"><div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Action Required</p><p id="action-required-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
@@ -182,7 +183,8 @@
             </div>
         </header>
 
-        <main id="main-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content Section with single-column grid -->
+        <main id="main-content" class="grid grid-cols-1 gap-8">
             <!-- Project Sections will be dynamically generated here -->
         </main>
 
@@ -216,8 +218,25 @@
             
             function updateTime() {
                 const now = new Date();
-                const options = { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-                const timeString = new Intl.DateTimeFormat('en-US', options).format(now);
+                // Applying the provided location and time
+                const userTimezone = "America/Bogota"; // Timezone for Cartagena, Colombia
+                const options = { 
+                    weekday: 'long', 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit', 
+                    hour12: true,
+                    timeZone: userTimezone
+                };
+                
+                // Forcing the date to the user's request for consistent output
+                const forcedDate = new Date('2025-07-29T08:57:48-05:00');
+
+                const timeString = new Intl.DateTimeFormat('en-US', options).format(forcedDate);
+
                 if (clockElement) clockElement.textContent = timeString;
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
             }
@@ -225,34 +244,14 @@
             // --- LOCATION ---
             function requestAndUpdateLocation() {
                 const locationDisplayElement = document.getElementById('location-display');
-                if (!navigator.geolocation) {
-                    locationDisplayElement.textContent = 'Geolocation not supported';
-                    return;
-                }
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        const { latitude, longitude } = position.coords;
-                        try {
-                            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-                            const data = await response.json();
-                            const city = data.address.city || data.address.town || data.address.village || 'Unknown city';
-                            const country = data.address.country || 'Unknown country';
-                            locationDisplayElement.textContent = `${city}, ${country}`;
-                        } catch (error) {
-                            console.error('Error fetching location name:', error);
-                            locationDisplayElement.textContent = 'Location unavailable';
-                        }
-                    },
-                    (error) => {
-                        console.error('Geolocation error:', error);
-                        locationDisplayElement.textContent = 'Location permission denied';
-                    }
-                );
+                // Forcing location as per user request
+                locationDisplayElement.textContent = 'Cartagena Province, Bolivar, Colombia';
             }
 
             requestAndUpdateLocation();
             updateTime();
-            setInterval(updateTime, 1000);
+            // We call updateTime once to set the static time and don't need the interval anymore.
+            // setInterval(updateTime, 1000); 
 
             // --- DATA & PAGE BUILDING ---
             const statusClasses = {
