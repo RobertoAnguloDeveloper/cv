@@ -2,31 +2,37 @@
   "id": "cmms",
   "items": [
     {
+      "type": "info",
       "title": "FRONTEND - New Question Types Added to CMMS",
       "description": "New question types were added for user convenience: Number, Decimal, and Time.",
       "status": "Complete"
     },
     {
+      "type": "info",
       "title": "FRONTEND - Report Generator Enhancements",
       "description": "New features were added to the report generation system: filter by question and column selection (Answer, Question, and Question Type).",
       "status": "Complete"
     },
     {
+      "type": "info",
       "title": "FRONTEND - Analytics Chart Generator Update",
       "description": "Functionality was added to the analytics chart generator module to use questions that have been removed from a form and view their past responses.",
       "status": "Complete"
     },
     {
+      "type": "info",
       "title": "BACKEND – XLSX Date and Time, Number, Decimal, and Email Excel Format IMPROVED",
       "description": "Date and Time, Number, Decimal, and Email formats are now exported using Microsoft Excel native formats. This enhancement facilitates analysis and reduces the ETL processing time for users.",
       "status": "Complete"
     },
     {
+      "type": "info",
       "title": "BACKEND – XLSX Reports Customized Columns FIXED",
       "description": "The column selection feature for the Excel export was not working properly. Now, the user can choose which questions to exclude from the exported Excel file using the 'Questions as Columns' option.",
       "status": "Complete"
     },
     {
+      "type": "info",
       "title": "DEVOPS – New Question Types Added (Number, Decimal, and Time)",
       "description": "As suggested by Javier Teheran, these new question types will be useful for various forms. The team discussed the request and successfully implemented the feature.",
       "status": "Complete"
