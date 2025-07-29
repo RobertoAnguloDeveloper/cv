@@ -2,11 +2,6 @@
     "id": "baitali",
     "tasks": [
         {
-            "title": "Sino 2 Fuel truck ",
-            "description": "The pre-configuration of the Sino 2 fuel truck has been completed. MPI tests were performed by the GVR team, and the new drawing provided by GVR worked as expected—no false bypass alarms were detected. The Prime UX will be installed in the truck and tested again, pending further notice\n",
-            "status": "Complete"
-        },
-        {
             "title": "Kabalebo FMS failure ",
             "description": "On Sunday, July 27th, an inspection was requested for the FMS system at the Kabalebo site. Due to a lightning strike, both the Nocru board and the TLS board have malfunctioned. The TLS board has been transported to Paramaribo for further troubleshooting. A report has been submitted to the client, and an updated quote has been requested. We are currently awaiting the quote, and we are preparing to repair the TLS board and acquire a new Nocru board to resolve the issue.",
             "status": "In Progress"

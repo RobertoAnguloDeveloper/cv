@@ -2,6 +2,11 @@
     "id": "rgm",
     "tasks": [
         {
+            "title": "SAAWAN - Sino 2 Fuel truck ",
+            "description": "The pre-configuration of the Sino 2 fuel truck has been completed. MPI tests were performed by the GVR team, and the new drawing provided by GVR worked as expected—no false bypass alarms were detected. The Prime UX will be installed in the truck and tested again, pending further notice\n",
+            "status": "Complete"
+        },
+        {
             "title": "Translation Issues in FON Prime Platform",
             "description": "An email from the GVR team mentioned that fixes related to Spanish and Portuguese translations in various GUI sections had been applied. However, after a review by PLG, several sections still require corrections. PLG is awaiting a response on this matter.",
             "status": "Action Required"
