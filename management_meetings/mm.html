@@ -86,8 +86,6 @@
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* --- FIX: Changed selector from .card:hover .card-item::before to .card-item:hover::before --- */
-        /* This ensures only the hovered list item gets the animated ::before pseudo-element. */
         .card-item:hover::before {
             height: 100%;
             top: 0;
@@ -121,6 +119,11 @@
         html.dark .status-badge.bg-orange-100 { background-color: rgba(249, 115, 22, 0.2); color: #fdba74; }
         html.dark .status-badge.bg-purple-100 { background-color: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
         html.dark .status-badge.bg-gray-100 { background-color: rgba(107, 114, 128, 0.2); color: #d1d5db; }
+        html.dark .status-badge.bg-teal-100 { background-color: rgba(20, 184, 166, 0.2); color: #5eead4; }
+        html.dark .status-badge.bg-indigo-100 { background-color: rgba(99, 102, 241, 0.2); color: #a5b4fc; }
+        html.dark .status-badge.bg-slate-100 { background-color: rgba(100, 116, 139, 0.2); color: #cbd5e1; }
+        html.dark .status-badge.bg-rose-100 { background-color: rgba(244, 63, 94, 0.2); color: #fda4af; }
+        html.dark .status-badge.bg-lime-100 { background-color: rgba(132, 204, 22, 0.2); color: #bef264; }
 
         /* Dark Mode Stat Icon Overrides */
         html.dark .stat-icon-bg.bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
@@ -260,7 +263,12 @@
                 'Complete': 'bg-green-100 text-green-800', 
                 'In Progress': 'bg-purple-100 text-purple-800',
                 'Upcoming': 'bg-blue-100 text-blue-800', 
-                'Planned': 'bg-gray-100 text-gray-800'
+                'Planned': 'bg-gray-100 text-gray-800',
+                'FRONTEND': 'bg-teal-100 text-teal-800',
+                'BACKEND': 'bg-indigo-100 text-indigo-800',
+                'DEVOPS': 'bg-slate-100 text-slate-800',
+                'DBA': 'bg-rose-100 text-rose-800',
+                'QA': 'bg-lime-100 text-lime-800'
             };
 
             async function loadAndBuildPage() {
@@ -336,14 +344,38 @@
             }
 
             function createCmmsItemHTML(item) {
+                // Base content: title and description
                 let contentHTML = `<h3 class="font-semibold text-md" style="color: var(--text-primary);">${item.title}</h3><p class="text-sm mt-1" style="color: var(--text-secondary);">${item.description}</p>`;
+                
+                // Container for badges
+                let badgesHTML = '<div class="mt-3 flex flex-wrap gap-2">';
+
+                // Create status badge if status exists
+                if (item.status) {
+                    const statusBadgeClass = statusClasses[item.status] || 'bg-gray-100 text-gray-800';
+                    badgesHTML += `<span class="status-badge ${statusBadgeClass} inline-flex items-center">${item.status}</span>`;
+                }
+
+                // Create role badge if role exists
+                if (item.role) {
+                    const roleBadgeClass = statusClasses[item.role] || 'bg-gray-100 text-gray-800';
+                    badgesHTML += `<span class="status-badge ${roleBadgeClass} inline-flex items-center"><i class="fas fa-user-tag mr-1.5 opacity-75"></i>${item.role}</span>`;
+                }
+                
+                badgesHTML += '</div>';
+
+                // Append content based on item type
                 if (item.type === 'link') {
                     contentHTML += `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-full hover:bg-cyan-600 transition-colors mt-3 group">Visit Project Site <i class="fas fa-arrow-right ml-2 text-xs transform group-hover:translate-x-1 transition-transform"></i></a>`;
+                    // Links can also have status/role
+                    contentHTML += badgesHTML;
                 } else if (item.type === 'list') {
-                    contentHTML += `<ol class="list-decimal list-inside mt-2 text-sm pl-2" style="color: var(--text-secondary);">${(item.listItems || []).map(li => `<li>${li}</li>`).join('')}</ol><span class="status-badge ${statusClasses[item.status]} mt-3 inline-block">${item.status}</span>`;
-                } else if (item.type === 'info' && item.status) {
-                    contentHTML += `<span class="status-badge ${statusClasses[item.status]} mt-3 inline-block">${item.status}</span>`;
+                    contentHTML += `<ol class="list-decimal list-inside mt-2 text-sm pl-2" style="color: var(--text-secondary);">${(item.listItems || []).map(li => `<li>${li}</li>`).join('')}</ol>`;
+                    contentHTML += badgesHTML; // Add badges for list items
+                } else if (item.type === 'info') {
+                    contentHTML += badgesHTML; // Add badges for info items
                 }
+                
                 return `<li class="flex card-item"><div class="flex-grow">${contentHTML}</div></li>`;
             }
 
