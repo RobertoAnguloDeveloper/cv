@@ -2,6 +2,16 @@
     "id": "baitali",
     "tasks": [
         {
+            "title": "Sino 2 Fuel truck ",
+            "description": "The pre-configuration of the Sino 2 fuel truck has been completed. MPI tests were performed by the GVR team, and the new drawing provided by GVR worked as expected—no false bypass alarms were detected. The Prime UX will be installed in the truck and tested again, pending further notice\n",
+            "status": "Complete"
+        },
+        {
+            "title": "Kabalebo FMS failure ",
+            "description": "On Sunday, July 27th, an inspection was requested for the FMS system at the Kabalebo site. Due to a lightning strike, both the Nocru board and the TLS board have malfunctioned. The TLS board has been transported to Paramaribo for further troubleshooting. A report has been submitted to the client, and an updated quote has been requested. We are currently awaiting the quote, and we are preparing to repair the TLS board and acquire a new Nocru board to resolve the issue.",
+            "status": "In Progress"
+        },
+        {
             "title": "T-83 Fuel truck ORCU upgrade",
             "description": "The Fuel truck computer (ORCU board ) is no longer working. The system can not refuel equipment on site. The bypass option is being used. Data is being captured manually for distribution. The Orcu board required an upgrade to the Norcu board. The upgrade has been requested, and the client is waiting for it.",
             "status": "In Progress"
@@ -12,19 +22,15 @@
             "status": "In Progress"
         },
         {
-            "title": "Apoera internet connection issue",
-            "description": "The station went offline. After a cold reset of the system, the internet connection was restored.\nData is uploading normally again.",
-            "status": "Complete"
-        },
-        {
             "title": "FuelOnet Sync (Baitali station & Fuel truck",
             "description": "Requested the additional information to start the sync process. Meetings have been requested to start after the FuelOnet issue has been resolved.",
             "status": "In Progress"
         },
         {
-            "title": "Henar Islander pump deactivation",
-            "description": "The Converter board was checked, parameters were changed. After troubleshooting, the Converter cable was replaced with a new one on location. ",
-            "status": "Complete"
+            "title": "Baitali Fuel consolidation reporting",
+            "description": "A recent meeting was held with the Fuel Manager. Meeting notes and concerns have been submitted to management for review. We are currently awaiting approval to proceed.",
+            "status": "Suggestion"
         }
+        
     ]
 }

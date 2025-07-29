@@ -2,49 +2,40 @@
     "id": "rgm",
     "tasks": [
         {
-            "title": "TLS Delivery Manual Data Entry",
-            "description": "Mr. Jaime Wong Chung requested TLS data on July 21st, 2025. Now that the TLS is functioning properly, the process has become easier. However, while it was down, we had to manually copy data from the delivery sheets. This led to some mistakes, so we had to double-check everything and recalculate the correct TLS values. We need to be more careful with these types of documents and situations to avoid similar issues in the future.",
-            "status": "Complete"
-        },
-        {
-            "title": "FON Prime Training Sessions",
-            "description": "Over three days, Alexandre Silva from GVR trained Saawan, Dario, Javier, Vincent, and Roberto on all FuelOnet Prime functionalities to help PLG provide better information to the client about this new platform.",
-            "status": "Complete"
-        },
-        {
-            "title": "SINO1 DB263 online and uploading data in FON Prime",
-            "description": "Sync process done on 18/07/2025",
-            "status": "Complete"
-        },
-        {
-            "title": "DB250, DB248 Bowsers online and uploading data",
-            "description": "Now bowsers 250 and 248 are now connected and are uploading data correctly.",
-            "status": "Complete"
-        },
-        {
-            "title": "FON Prime GVR Creation of Limit Rules Regarding Tank Capacity for All Migrated Fleet to FON by GVR Team",
-            "description": "During the training sessions with Silva, a security concern was raised. Silva informed us that the tank capacity field does not restrict equipment from refueling beyond its capacity. To prevent this, limit rules should be created based on different tank capacities. It was agreed with Silva that his team will handle the migrated fleet, while new entries will be managed by us.",
+            "title": "Translation Issues in FON Prime Platform",
+            "description": "An email from the GVR team mentioned that fixes related to Spanish and Portuguese translations in various GUI sections had been applied. However, after a review by PLG, several sections still require corrections. PLG is awaiting a response on this matter.",
             "status": "Action Required"
         },
         {
-            "title": "DB251 Delivery issues",
-            "description": "Bowser 251 is having problems delivering to certain equipment. Tests with DataFlex360 FMS should be performed to verify its String ID",
-            "status": "Action Required"
+            "title": "DB248 Enhance broken",
+            "description": "Days after replacing the DB248 Enhance with the older Enhance from DB246, the on-site crew reported a bricked HDD. A new Truck Prim UX controller (SINO 3) should be used.",
+            "status": "Complete"
         },
         {
-            "title": "C2FT-004 Genset Issues with DB251",
-            "description": "A test using bowsers other than the FON units (DB251 and DB252) was requested and is still pending.",
-            "status": "Action Required"
+            "title": "Fuel ONET Rules Added from PLG Side",
+            "description": "Fuel ONET rules were added to the 55 requested pieces of equipment (as agreed with GVR after the migration), as well as to recently added ones.",
+            "status": "Complete"
         },
         {
-            "title": "Fake Bypass alarm fixing",
-            "description": "A new automation update for the pump controller by the GVR Team was recently deployed. The Truck Prime UX installed in DB251 and DB252 is triggering a bypass alarm every time refueling starts. When one pump turns off, the system mistakenly identifies it as a bypass. A fix has been requested from GVR to ensure real alarms are accurately detected.",
-            "status": "Action Required"
+            "title": "C2FT-004 Chip replaced",
+            "description": "After several checks by the PLG team, a malfunctioning chip was identified. Following the replacement, the equipment was successfully refueled with DB252.",
+            "status": "Complete"
         },
         {
             "title": "Vincent's training progress",
-            "description": "This week we are covering the progress on Consumption Reports. Next week, he will be sending his first Consumption reports.",
+            "description": "This week, we covered the Reconciliation reports. The TFC and Burn Rates reports are still pending. Vincent is expected to send his first Reconciliation and Consumption reports this week.",
             "status": "In Progress"
-        }
+        },
+        {
+            "title": "FON Prime GVR - Creation of Limit Rules Regarding Tank Capacity for All Migrated Fleet to FON by GVR Team",
+            "description": "During training sessions with Silva, a security concern was raised. Silva noted that the tank capacity field does not restrict refueling beyond equipment capacity. To address this, limit rules should be created based on tank capacities. It was agreed that Silva's team will handle the migrated fleet, while we will manage the new entries.",
+            "status": "Pending"
+        },
+        
+        {
+            "title": "Fake Bypass alarm fixing",
+            "description": "Saawan and the team at Fusecon successfully tested the new automation suggested by GVR. SINO 2 is now using this automation, and the changes are being shared with PLG electrician experts at RGM to implement the same for CAT1, CAT2, and SINO1.",
+            "status": "Pending"
+        }        
     ]
 }

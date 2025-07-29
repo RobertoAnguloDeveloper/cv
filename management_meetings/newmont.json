@@ -12,9 +12,9 @@
             "status": "Pending"
         },
         {
-            "title": "Unauthorized dispenses",
-            "description": "Comment recorded regarding ID assignment for unauthorized transactions in Lane 3. Specifically, the transactions:\n\n- Dispensing Transaction #171017;  19/07/2025 11:47\n- Dispensing Transaction #170972;  19/07/2025 08:39\n- Dispensing Transaction #170909; 18/07/2025 22:35\n\n",
-            "status": "Complete"
+            "title": "Workshop 6 connection problems ",
+            "description": "Workshop 6 reports 4 days with connection issues, service in offline status. The corresponding notification was sent through the WhatsApp group. Additionally, after checking the AdaptMacs connections today, 07-29-2025, it was reported that LFO Delivery and LV Bay (Lane 1) have been without connection for more than 40 minutes.\n",
+            "status": "Pending"
         },
         {
             "title": "Veridapt response regarding Engine hours for Burn rate calculations",

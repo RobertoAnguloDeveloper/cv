@@ -1,41 +1,71 @@
 {
-      "id": "cmms",
-      "items": [
-        {
-          "type": "link",
-          "title": "Application Launched",
-          "description": "The application is now live on a public domain for initial testing and feedback.",
-          "url": "https://www.plgcmms.site/"
-        },
-        {
-            "type": "info",
-            "title": "PLG CMMS Credentials",
-            "description": "All site managers credentials were sent on 15/07/2025",
-            "status": "Complete"
-        },
-        {
-            "type": "info",
-            "title": "Requirements and fixings collection",
-            "description": "The CMMS Development Team will continue receiving your feedback until 15/08/2025.",
-            "status": "Planned"
-        },
-        {
-            "type": "info",
-            "title": "Fixings and Improving phase",
-            "description": "Based on the feedback received during testing, the development team will set a deadline for upgrades and fixes, and will communicate it to all stakeholders.",
-            "status": "Upcoming"
-        },
-        {
-            "type": "info",
-            "title": "CMMS usage",
-            "description": "Since the site managers' credentials were delivered on 15/07/2025, only Javier Teheran has been using the platform.",
-            "status": "Action Required"
-        },
-        {
-            "type": "info",
-            "title": "APK (Android App) Delivery on Demand",
-            "description": "Depending on the number of available tablets for CMMS, the corresponding APK will be sent for app installation.",
-            "status": "Planned"
-        }
-      ]
+  "id": "cmms",
+  "items": [
+    {
+      "title": "FRONTEND - New Question Types Added to CMMS",
+      "description": "New question types were added for user convenience: Number, Decimal, and Time.",
+      "status": "Complete"
+    },
+    {
+      "title": "FRONTEND - Report Generator Enhancements",
+      "description": "New features were added to the report generation system: filter by question and column selection (Answer, Question, and Question Type).",
+      "status": "Complete"
+    },
+    {
+      "title": "FRONTEND - Analytics Chart Generator Update",
+      "description": "Functionality was added to the analytics chart generator module to use questions that have been removed from a form and view their past responses.",
+      "status": "Complete"
+    },
+    {
+      "title": "BACKEND – XLSX Date and Time, Number, Decimal, and Email Excel Format IMPROVED",
+      "description": "Date and Time, Number, Decimal, and Email formats are now exported using Microsoft Excel native formats. This enhancement facilitates analysis and reduces the ETL processing time for users.",
+      "status": "Complete"
+    },
+    {
+      "title": "BACKEND – XLSX Reports Customized Columns FIXED",
+      "description": "The column selection feature for the Excel export was not working properly. Now, the user can choose which questions to exclude from the exported Excel file using the 'Questions as Columns' option.",
+      "status": "Complete"
+    },
+    {
+      "title": "DEVOPS – New Question Types Added (Number, Decimal, and Time)",
+      "description": "As suggested by Javier Teheran, these new question types will be useful for various forms. The team discussed the request and successfully implemented the feature.",
+      "status": "Complete"
+    },
+    {
+      "type": "link",
+      "title": "Application Launched",
+      "description": "The application is now live on a public domain for initial testing and feedback.",
+      "url": "https://www.plgcmms.site/"
+    },
+    {
+      "type": "info",
+      "title": "PLG CMMS Credentials",
+      "description": "All site managers credentials were sent on 15/07/2025",
+      "status": "Complete"
+    },
+    {
+      "type": "info",
+      "title": "Requirements and fixings collection",
+      "description": "The CMMS Development Team will continue receiving your feedback until 15/08/2025.",
+      "status": "Planned"
+    },
+    {
+      "type": "info",
+      "title": "Fixings and Improving phase",
+      "description": "Based on the feedback received during testing, the development team will set a deadline for upgrades and fixes, and will communicate it to all stakeholders.",
+      "status": "Upcoming"
+    },
+    {
+      "type": "info",
+      "title": "CMMS usage",
+      "description": "Since the site managers' credentials were delivered on 15/07/2025, only Javier Teheran has been using the platform.",
+      "status": "Action Required"
+    },
+    {
+      "type": "info",
+      "title": "APK (Android App) Delivery on Demand",
+      "description": "Depending on the number of available tablets for CMMS, the corresponding APK will be sent for app installation.",
+      "status": "Planned"
     }
+  ]
+}
