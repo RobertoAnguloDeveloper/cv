@@ -370,7 +370,7 @@
 
             function createTaskHTML(task) {
                 const badgeClass = statusClasses[task.status] || 'bg-gray-100 text-gray-800';
-                return `<li class="flex card-item"><div class="flex-grow"><h3 class="font-semibold text-md" style="color: var(--text-primary);">${task.title}</h3><p class="text-sm mt-1" style="color: var(--text-secondary);">${task.description}</p><span class="status-badge ${badgeClass} mt-3 inline-block">${task.status}</span></div></li>`;
+                return `<li class="flex card-item"><div class="flex-grow relative z-10"><h3 class="font-semibold text-md" style="color: var(--text-primary);">${task.title}</h3><p class="text-sm mt-1" style="color: var(--text-secondary);">${task.description}</p><span class="status-badge ${badgeClass} mt-3 inline-block">${task.status}</span></div></li>`;
             }
 
             function createCmmsItemHTML(item) {
@@ -406,7 +406,7 @@
                     contentHTML += badgesHTML; // Add badges for info items
                 }
                 
-                return `<li class="flex card-item"><div class="flex-grow">${contentHTML}</div></li>`;
+                return `<li class="flex card-item"><div class="flex-grow relative z-10">${contentHTML}</div></li>`;
             }
 
             function calculateAndDisplayStats(allData) {
