@@ -2,6 +2,21 @@
     "id": "rgm",
     "tasks": [
         {
+            "title": "FON Prime platform issues - Tank Reconciliation Number Format Issue",
+            "description": "An issue was identified with the number formatting in the tank reconciliation columns, which may affect clarity and data interpretation. The technical team is currently reviewing the formatting to apply a consistent and Excel-compatible format.",
+            "status": "Pending"
+        },
+        {
+            "title": "FON Prime platform issues - Tank Capacity Exceeded Alarms",
+            "description": "Multiple alarms related to tank capacity being exceeded have been reported. These incidents are under analysis to determine root causes and verify whether thresholds and sensor configurations need adjustments.",
+            "status": "Pending"
+        },
+        {
+            "title": "FON Prime platform issues - EMR4 Meter Readings Report Pending",
+            "description": "A new MPI automation to capture EMR4 meter readings (Inlet and Outlet) is under implementation by the technical team. However, a reporting feature to display this data on the platform is still pending development.",
+            "status": "Pending"
+        },
+        {
             "title": "SAAWAN - Sino 2 Fuel truck ",
             "description": "The pre-configuration of the Sino 2 fuel truck has been completed. MPI tests were performed by the GVR team, and the new drawing provided by GVR worked as expected—no false bypass alarms were detected. The Prime UX will be installed in the truck and tested again, pending further notice\n",
             "status": "Complete"
@@ -36,11 +51,10 @@
             "description": "During training sessions with Silva, a security concern was raised. Silva noted that the tank capacity field does not restrict refueling beyond equipment capacity. To address this, limit rules should be created based on tank capacities. It was agreed that Silva's team will handle the migrated fleet, while we will manage the new entries.",
             "status": "Pending"
         },
-        
         {
             "title": "Fake Bypass alarm fixing",
             "description": "Saawan and the team at Fusecon successfully tested the new automation suggested by GVR. SINO 2 is now using this automation, and the changes are being shared with PLG electrician experts at RGM to implement the same for CAT1, CAT2, and SINO1.",
             "status": "Pending"
-        }        
+        }
     ]
 }

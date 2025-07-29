@@ -86,7 +86,9 @@
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .card:hover .card-item::before {
+        /* --- FIX: Changed selector from .card:hover .card-item::before to .card-item:hover::before --- */
+        /* This ensures only the hovered list item gets the animated ::before pseudo-element. */
+        .card-item:hover::before {
             height: 100%;
             top: 0;
         }
