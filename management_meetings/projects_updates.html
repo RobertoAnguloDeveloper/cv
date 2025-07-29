@@ -274,8 +274,7 @@
         // --- Global State ---
         let taskCounter = 0;
         const generalStatusOptions = ['Investigating', 'Suggestion', 'Action Required', 'Pending', 'Complete', 'In Progress', 'Upcoming', 'Planned'];
-        const cmmsSpecificOptions = ['FRONTEND', 'BACKEND', 'DEVOPS', 'DBA', 'QA'];
-        const cmmsStatusOptions = [...generalStatusOptions, ...cmmsSpecificOptions];
+        const roleOptions = ['FRONTEND', 'BACKEND', 'DEVOPS', 'DBA', 'QA'];
         const taskBasedProjects = ['newmont', 'rgm', 'baitali'];
         const projectColors = ['#4A90E2', '#F5A623', '#BD10E0', '#7ED321', '#D0021B', '#417505', '#9013FE', '#50E3C2'];
         let colorIndex = 3; // Start after the hardcoded project colors
@@ -364,7 +363,7 @@
             container.appendChild(taskCard);
         }
 
-        function addCmmsItem(itemData = { type: 'info', title: '', description: '', status: 'Planned', url: '', listItems: '' }) {
+        function addCmmsItem(itemData = { type: 'info', title: '', description: '', status: 'Planned', role: 'FRONTEND', url: '', listItems: '' }) {
             taskCounter++;
             const container = document.getElementById('cmms-items-container');
             const itemCard = document.createElement('div');
@@ -373,36 +372,30 @@
             itemCard.dataset.type = itemData.type;
 
             const updateVisibility = (card, type) => {
+                const isInfoOrList = type === 'list' || type === 'info';
                 card.querySelector('.cmms-url-field').style.display = type === 'link' ? 'block' : 'none';
                 card.querySelector('.cmms-list-field').style.display = type === 'list' ? 'block' : 'none';
-                card.querySelector('.cmms-status-field').style.display = (type === 'list' || type === 'info') ? 'block' : 'none';
+                card.querySelector('.cmms-status-field').style.display = isInfoOrList ? 'block' : 'none';
+                card.querySelector('.cmms-role-field').style.display = isInfoOrList ? 'block' : 'none';
             };
             
-            const updateCmmsStatusOptions = (card, type) => {
-                const statusSelect = card.querySelector('.cmms-status');
-                if (!statusSelect) return;
-
-                const currentStatus = statusSelect.value;
-                // Use extended statuses for 'list' and 'info' types, general for others.
-                const optionsArray = (type === 'list' || type === 'info') ? cmmsStatusOptions : generalStatusOptions;
-                
-                let newStatus = currentStatus;
-                // If current status is not in the new list, default to 'Planned'
-                if (!optionsArray.includes(currentStatus)) {
-                    newStatus = 'Planned';
-                }
-
-                const optionsHtml = optionsArray.map(opt => `<option value="${opt}" ${newStatus === opt ? 'selected' : ''}>${opt}</option>`).join('');
-                statusSelect.innerHTML = optionsHtml;
-            };
-
             const typeDropdown = ['info', 'link', 'list'].map(opt => `<option value="${opt}" ${itemData.type === opt ? 'selected' : ''}>${opt.charAt(0).toUpperCase() + opt.slice(1)}</option>`).join('');
-            
-            // Initially populate status based on the default item type
-            const initialStatusOptions = (itemData.type === 'list' || itemData.type === 'info') ? cmmsStatusOptions : generalStatusOptions;
-            const statusDropdown = initialStatusOptions.map(opt => `<option value="${opt}" ${itemData.status === opt ? 'selected' : ''}>${opt}</option>`).join('');
+            const statusDropdown = generalStatusOptions.map(opt => `<option value="${opt}" ${itemData.status === opt ? 'selected' : ''}>${opt}</option>`).join('');
+            const roleDropdown = roleOptions.map(opt => `<option value="${opt}" ${itemData.role === opt ? 'selected' : ''}>${opt}</option>`).join('');
 
-            itemCard.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Item Type</label><select class="form-select w-full rounded-md shadow-sm cmms-type">${typeDropdown}</select></div><div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Title</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-title" value="${itemData.title}"></div><div class="md:col-span-2"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Description</label><textarea class="form-textarea w-full rounded-md shadow-sm cmms-description" rows="2">${itemData.description}</textarea></div><div class="cmms-url-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">URL</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-url" value="${itemData.url || ''}"></div><div class="cmms-list-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">List Items (comma-separated)</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-list-items" value="${itemData.listItems || ''}"></div><div class="cmms-status-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Status</label><select class="form-select w-full rounded-md shadow-sm cmms-status">${statusDropdown}</select></div></div><div class="text-right mt-3"><button onclick="removeElement('task-${taskCounter}')" class="text-red-500 hover:text-red-700 font-semibold text-sm"><i class="fas fa-trash-alt mr-1"></i>Remove</button></div>`;
+            itemCard.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Item Type</label><select class="form-select w-full rounded-md shadow-sm cmms-type">${typeDropdown}</select></div>
+                    <div><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Title</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-title" value="${itemData.title}"></div>
+                    <div class="md:col-span-2"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Description</label><textarea class="form-textarea w-full rounded-md shadow-sm cmms-description" rows="2">${itemData.description}</textarea></div>
+                    <div class="cmms-status-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Status</label><select class="form-select w-full rounded-md shadow-sm cmms-status">${statusDropdown}</select></div>
+                    <div class="cmms-role-field" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Role</label><select class="form-select w-full rounded-md shadow-sm cmms-role">${roleDropdown}</select></div>
+                    <div class="cmms-url-field md:col-span-2" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">URL</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-url" value="${itemData.url || ''}"></div>
+                    <div class="cmms-list-field md:col-span-2" style="display: none;"><label class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">List Items (comma-separated)</label><input type="text" class="form-input w-full rounded-md shadow-sm cmms-list-items" value="${itemData.listItems || ''}"></div>
+                </div>
+                <div class="text-right mt-3">
+                    <button onclick="removeElement('task-${taskCounter}')" class="text-red-500 hover:text-red-700 font-semibold text-sm"><i class="fas fa-trash-alt mr-1"></i>Remove</button>
+                </div>`;
             
             container.appendChild(itemCard);
 
@@ -411,10 +404,8 @@
                 const newType = e.target.value;
                 itemCard.dataset.type = newType;
                 updateVisibility(itemCard, newType);
-                updateCmmsStatusOptions(itemCard, newType);
             });
             
-            // Set initial visibility
             updateVisibility(itemCard, itemData.type);
         }
 
@@ -424,7 +415,33 @@
 
         // --- Data Gathering and Export Functions ---
         const getTaskData = (projectId) => ({ id: projectId, tasks: Array.from(document.querySelectorAll(`#${projectId}-tasks-container .task-card`)).map(card => ({ title: card.querySelector('.task-title').value, description: card.querySelector('.task-description').value, status: card.querySelector('.task-status').value })) });
-        const getCmmsData = () => ({ id: "cmms", items: Array.from(document.querySelectorAll('#cmms-items-container .task-card')).map(card => { const type = card.dataset.type; const item = { type: type, title: card.querySelector('.cmms-title').value, description: card.querySelector('.cmms-description').value }; if (type === 'link') item.url = card.querySelector('.cmms-url').value; if (type === 'list' || type === 'info') { item.status = card.querySelector('.cmms-status').value; } if (type === 'list') { item.listItems = card.querySelector('.cmms-list-items').value.split(',').map(s => s.trim()).filter(Boolean); } return item; }) });
+        
+        const getCmmsData = () => ({ 
+            id: "cmms", 
+            items: Array.from(document.querySelectorAll('#cmms-items-container .task-card')).map(card => {
+                const type = card.dataset.type;
+                const item = { 
+                    type: type, 
+                    title: card.querySelector('.cmms-title').value, 
+                    description: card.querySelector('.cmms-description').value 
+                };
+                
+                if (type === 'link') {
+                    item.url = card.querySelector('.cmms-url').value;
+                }
+                
+                if (type === 'list' || type === 'info') {
+                    item.status = card.querySelector('.cmms-status').value;
+                    item.role = card.querySelector('.cmms-role').value;
+                }
+                
+                if (type === 'list') {
+                    item.listItems = card.querySelector('.cmms-list-items').value.split(',').map(s => s.trim()).filter(Boolean);
+                }
+                
+                return item;
+            }) 
+        });
 
         function downloadJSON(filename, data) {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 4));
