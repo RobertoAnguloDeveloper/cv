@@ -2,12 +2,17 @@
     "id": "newmont",
     "tasks": [
         {
-            "title": "Tank Level Discrepancies feedback clarification from operations side",
+            "title": "Issue with HT0822 Unloading and Volume Discrepancy, Pending receipt of the signed proofs",
+            "description": "Regarding the incident on July 9th with the delivery in Fuel Truck HT0822 – Unloading and Volume Discrepancy, we are waiting for the reception of the signature evidence documentation, where it is validated that the fuel truck levels were checked after making the delivery.",
+            "status": "Pending"
+        },
+        {
+            "title": "Investigation of Tank Level Discrepancies - Pending feedback from operations",
             "description": "A significant discrepancy was detected between the fuel volume recorded by the inlet meter and what is reflected in the tank levels. Although deliveries are validated as complete, the tank measurement system consistently reports much lower volumes, such as a delivery of 34,000 liters showing only 27,000. It is concluded that the tank level measurement system is faulty, and its repair or replacement is requested. Operations were requested to provide the frequency of the respective system checks, to identify the calibration periods of the measurement hardware, and to find the root cause of the anomaly in the tank levels.",
             "status": "Pending"
         },
         {
-            "title": "Veridapt response regarding Fuel Reconciliation Anomaly, July 13, 2025",
+            "title": "Fuel Reconciliation Anomaly, July 13, 2025 - Pending feedback from Veridapt",
             "description": "A negative variation of -1.84% (-3,047.95 L) was detected in the diesel reconciliation on July 13. The analysis of storage trends shows an anomalous and sudden drop in the main tank level on July 14. Deliveries, manual sheets, transactions, and dispenses were validated by the data department, and no anomaly was found. Veridapt was notified via email. We are currently awaiting feedback on the case.",
             "status": "Pending"
         },
@@ -17,14 +22,19 @@
             "status": "Pending"
         },
         {
-            "title": "Veridapt response regarding Engine hours for Burn rate calculations",
+            "title": "Burn rate Data Problem - Pending feedback from Veridapt",
             "description": "Monitoring of inconsistencies in some equipment is being carried out in the burn rate report from July 1 to July 18, during which the following equipment recorded zero burn rate values, despite consuming fuel according to the records.\n\nNote: This issue was first reported to Veridapt on June 5, 2024; however, it is still occurring to this date. Although the Dispenses record the operating hours and fuel consumed, when the burn rate report is generated, on some days the burn rate is recorded as zero.\n\n\n\nDRT0602\nDRT0604\nDZT0751\nDZT0752\nDZT0753\nDZT0754\nDZT0755\nDZT0756\nDZT0759\nDZT0760\nDZT0761\nEXC0719\nEXC0721\nEXC0722\nEXC0724\nEXC0725\nFT001\nFT004\nFT005\nGRM0773\nGRM0775\nGRM0776\nHTK0802\nHTK0803\nHTK0807\nHTK0809\nHTK0811\nHTK0816\nHTK0817\nHTK0820\nHTK0821\nHTK0822\nHTK0824\nHTK0826\nHTK0830\nLDW0880\nSHO0702\nSHO0703\nTFL0847\nTFL0848\nWTK0845\n\n\n\n",
             "status": "Pending"
         },
          {
-            "title": "Veridapt incorrect number format to be fixed for Burn rate Data SMU reading increase field",
+            "title": "Burn rate Data Problem in SMU reading increase- Pending feedback from Veridapt",
             "description": "Monitoring of inconsistencies in some equipment is being carried out in the burn rate report due to reading issues at milestone points.",
             "status": "Pending"
+        },
+           {
+            "title": "Follow-up on CMMS Software Testing",
+            "description": "A meeting is held with the site manager and supervisor on 31-07-2025 to discuss matters related to the CMMS software test. A notification is received indicating that a test form was completed and the supervisor will be in charge of field testing with the technicians and fuel attendant. Feedback will be received throughout the week.",
+            "status": "In Progress"
         }
     ]
 }

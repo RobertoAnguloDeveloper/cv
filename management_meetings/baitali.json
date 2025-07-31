@@ -2,35 +2,19 @@
     "id": "baitali",
     "tasks": [
         {
-            "title": "FON Prime platform issues - No ID Entered via OrPAY Screen",
-            "description": "A review of the transaction reports revealed that some transactions using the Master card were completed without any ID being entered through the OrPAY screen. The issue has been flagged for investigation and corrective action.",
-            "status": "Pending"
+            "title": "Kabalebo TLS configuration",
+            "description": "- Installed a spare USIOM board for the TLS system.\n- After startup, a tank chart was required for calibration.\n- 611 values will be added as multipoint entries within the TLS for accurate tank level mapping.\n",
+            "status": "Complete"
         },
         {
-            "title": "Kabalebo FMS failure ",
-            "description": "On Sunday, July 27th, an inspection was requested for the FMS system at the Kabalebo site. Due to a lightning strike, both the Nocru board and the TLS board have malfunctioned. The TLS board has been transported to Paramaribo for further troubleshooting. A report has been submitted to the client, and an updated quote has been requested. We are currently awaiting the quote, and we are preparing to repair the TLS board and acquire a new Nocru board to resolve the issue.",
-            "status": "In Progress"
+            "title": "Kabaelbo NOCRU board pre programming",
+            "description": "- A new Norcu board has been preprogrammed using data from the Prime fleet dispenser for seamless compatibility.\n- Once Baitali establishes the internet connection, the Norcu board will be integrated.\n- This will restore communication via LAN2, ensuring full network functionality.\n",
+            "status": "Complete"
         },
         {
-            "title": "T-83 Fuel truck ORCU upgrade",
-            "description": "The Fuel truck computer (ORCU board ) is no longer working. The system can not refuel equipment on site. The bypass option is being used. Data is being captured manually for distribution. The Orcu board required an upgrade to the Norcu board. The upgrade has been requested, and the client is waiting for it.",
-            "status": "In Progress"
-        },
-        {
-            "title": "UCC Master card usage",
-            "description": "The Master card is used for some additional equipment, but is not registered in the overview of the  FuelOnet platform. On the SiteOmat, the vehicle information can be extracted. A ticket has been raised for the GVR team to follow up with this.\n",
-            "status": "In Progress"
-        },
-        {
-            "title": "FuelOnet Sync (Baitali station & Fuel truck",
-            "description": "Requested the additional information to start the sync process. Meetings have been requested to start after the FuelOnet issue has been resolved.",
-            "status": "In Progress"
-        },
-        {
-            "title": "Baitali Fuel consolidation reporting",
-            "description": "A recent meeting was held with the Fuel Manager. Meeting notes and concerns have been submitted to management for review. We are currently awaiting approval to proceed.",
-            "status": "Suggestion"
+            "title": "Sino 2 Truck FMS -EMR4 testing",
+            "description": "- Pre-configuration of the Sino Truck system has been completed.\n- Successfully tested with the EMR pulser; system status confirmed as OK.\n- System handed over for further synchronization and final setup steps\n",
+            "status": "Complete"
         }
-        
     ]
 }
