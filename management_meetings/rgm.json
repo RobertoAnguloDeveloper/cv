@@ -18,8 +18,8 @@
         },
         {
             "title": "Implementation of New Tank Limit Rules FON",
-            "description": "New tank limit rules are being implemented for assets in the Fuel Onet Prime platform.",
-            "status": "In Progress"
+            "description": "GVR must implement new tank limit rules for assets on the Fuel Onet Prime platform.",
+            "status": "Pending"
         }
     ]
 }

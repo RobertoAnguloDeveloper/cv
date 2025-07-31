@@ -26,14 +26,14 @@
             "description": "Monitoring of inconsistencies in some equipment is being carried out in the burn rate report from July 1 to July 18, during which the following equipment recorded zero burn rate values, despite consuming fuel according to the records.\n\nNote: This issue was first reported to Veridapt on June 5, 2024; however, it is still occurring to this date. Although the Dispenses record the operating hours and fuel consumed, when the burn rate report is generated, on some days the burn rate is recorded as zero.\n\n\n\nDRT0602\nDRT0604\nDZT0751\nDZT0752\nDZT0753\nDZT0754\nDZT0755\nDZT0756\nDZT0759\nDZT0760\nDZT0761\nEXC0719\nEXC0721\nEXC0722\nEXC0724\nEXC0725\nFT001\nFT004\nFT005\nGRM0773\nGRM0775\nGRM0776\nHTK0802\nHTK0803\nHTK0807\nHTK0809\nHTK0811\nHTK0816\nHTK0817\nHTK0820\nHTK0821\nHTK0822\nHTK0824\nHTK0826\nHTK0830\nLDW0880\nSHO0702\nSHO0703\nTFL0847\nTFL0848\nWTK0845\n\n\n\n",
             "status": "Pending"
         },
-         {
+        {
             "title": "Burn rate Data Problem in SMU reading increase- Pending feedback from Veridapt",
             "description": "Monitoring of inconsistencies in some equipment is being carried out in the burn rate report due to reading issues at milestone points.",
             "status": "Pending"
         },
-           {
+        {
             "title": "Follow-up on CMMS Software Testing",
-            "description": "A meeting is held with the site manager and supervisor on 31-07-2025 to discuss matters related to the CMMS software test. A notification is received indicating that a test form was completed and the supervisor will be in charge of field testing with the technicians and fuel attendant. Feedback will be received throughout the week.",
+            "description": "A meeting is held with the site manager and supervisor on 31-07-2025 to discuss matters related to the CMMS software test. Site Managers should complete the test. After a complete role test, we can create them other roles like Supervisor and Tech (For testing also)",
             "status": "In Progress"
         }
     ]

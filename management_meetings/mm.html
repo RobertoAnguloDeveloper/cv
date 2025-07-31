@@ -19,6 +19,7 @@
             --text-secondary-light: #4a5568;
             --card-bg-light: #ffffff;
             --border-light: #e2e8f0;
+            --highlight-bg-light: rgba(0, 174, 239, 0.08);
             
             --bg-color-dark: #0d1117;
             --text-primary-dark: #c9d1d9;
@@ -26,6 +27,7 @@
             --card-bg-dark: #161b22;
             --border-dark: #30363d;
             --top-bar-bg-dark: #161b22;
+            --highlight-bg-dark: rgba(0, 174, 239, 0.12);
         }
 
         html.light {
@@ -35,6 +37,7 @@
             --card-bg: var(--card-bg-light);
             --border-color: var(--border-light);
             --top-bar-bg: #ffffff;
+            --highlight-bg: var(--highlight-bg-light);
         }
 
         html.dark {
@@ -44,6 +47,7 @@
             --card-bg: var(--card-bg-dark);
             --border-color: var(--border-dark);
             --top-bar-bg: var(--top-bar-bg-dark);
+            --highlight-bg: var(--highlight-bg-dark);
         }
 
         body {
@@ -70,17 +74,20 @@
         .card-item {
             position: relative;
             padding: 1rem;
+            border-radius: 0.5rem; /* Add border-radius for the background highlight */
             transition: background-color 0.3s;
+            cursor: pointer;
         }
 
         .card-item::before, .card-item::after {
             box-sizing: border-box;
             content: '';
             position: absolute;
+            border-radius: 0.5rem; /* Match the parent's border-radius */
             transition: all 0.4s ease-in-out;
+            pointer-events: none; /* Ensure pseudo-elements don't interfere with clicks */
         }
 
-        /* Horizontal lines (top and bottom) growing from center */
         .card-item::before {
             top: 0;
             left: 50%;
@@ -91,7 +98,6 @@
             transform: translateX(-50%);
         }
 
-        /* Vertical lines (left and right) growing from center */
         .card-item::after {
             left: 0;
             top: 50%;
@@ -102,11 +108,23 @@
             transform: translateY(-50%);
         }
 
-        .card-item:hover::before {
+        /* Hover effect for non-highlighted items */
+        .card-item:not(.highlighted):hover::before {
             width: 100%;
         }
 
-        .card-item:hover::after {
+        .card-item:not(.highlighted):hover::after {
+            height: 100%;
+        }
+
+        /* Persistent style for highlighted items */
+        .card-item.highlighted {
+            background-color: var(--highlight-bg);
+        }
+        .card-item.highlighted::before {
+            width: 100%;
+        }
+        .card-item.highlighted::after {
             height: 100%;
         }
 
@@ -131,7 +149,7 @@
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
 
-        /* Dark Mode Status Badge Overrides */
+        /* Dark Mode Overrides */
         html.dark .status-badge.bg-blue-100 { background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; }
         html.dark .status-badge.bg-green-100 { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
         html.dark .status-badge.bg-red-100 { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
@@ -144,7 +162,6 @@
         html.dark .status-badge.bg-rose-100 { background-color: rgba(244, 63, 94, 0.2); color: #fda4af; }
         html.dark .status-badge.bg-lime-100 { background-color: rgba(132, 204, 22, 0.2); color: #bef264; }
 
-        /* Dark Mode Stat Icon Overrides */
         html.dark .stat-icon-bg.bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
         html.dark .stat-icon-color.text-blue-600 { color: #93c5fd !important; }
         html.dark .stat-icon-bg.bg-orange-100 { background-color: rgba(249, 115, 22, 0.15) !important; }
@@ -156,18 +173,82 @@
         html.dark .stat-icon-bg.bg-green-100 { background-color: rgba(34, 197, 94, 0.15) !important; }
         html.dark .stat-icon-color.text-green-600 { color: #86efac !important; }
 
-
         #theme-toggle .fa-moon, #theme-toggle .fa-sun { transition: transform 0.3s ease-out; }
         html.dark #theme-toggle .fa-moon { transform: scale(0); }
         html.light #theme-toggle .fa-sun { transform: scale(0); }
+
+        /* --- SLIDESHOW STYLES --- */
+        #slideshow-container {
+            overflow: hidden;
+            position: relative;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        #slides-wrapper {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .slide {
+            flex: 0 0 100%;
+            box-sizing: border-box;
+            padding: 1.5rem 2rem;
+        }
+        .slide-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background-color: rgba(0,0,0,0.3);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .slide-nav-btn:hover {
+            background-color: rgba(0,0,0,0.6);
+            transform: translateY(-50%) scale(1.1);
+        }
+        #prev-slide { left: 1rem; }
+        #next-slide { right: 1rem; }
+        #slide-dots {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+        .slide-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .slide-dot.active {
+            background-color: var(--plg-primary-color);
+            transform: scale(1.2);
+        }
+
+        /* View Toggling */
+        body.view-list #slideshow-container { display: none; }
+        body.view-slides #main-content { display: none; }
+        body.view-slides #slideshow-container { display: block; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased view-list">
 
-    <div class="py-2 px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-10" style="background-color: var(--top-bar-bg); border-color: var(--border-color);">
+    <div class="py-2 px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-20" style="background-color: var(--top-bar-bg); border-color: var(--border-color);">
         <div class="container mx-auto flex justify-between items-center text-sm">
             <div class="flex items-center">
-                <img id="company-logo" src="./logos/PLG Logo.png" alt="PLG Logo" class="h-8 w-auto" onerror="this.style.display='none'">
+                <img id="company-logo" src="https://placehold.co/100x40/000000/FFFFFF?text=PLG" alt="PLG Logo" class="h-8 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/100x40/000000/FFFFFF?text=PLG';">
             </div>
             <div class="flex items-center">
                 <div id="location-time" class="flex items-center mr-4" style="color: var(--text-secondary);">
@@ -189,10 +270,17 @@
                     <h1 class="text-3xl sm:text-5xl font-extrabold" style="color: var(--text-primary);">PLG Data Center Weekly Summary</h1>
                     <p id="report-date-range" class="text-md mt-1" style="color: var(--text-secondary);"></p>
                 </div>
+                 <!-- View Toggle Button -->
+                <div class="mt-4 sm:mt-0">
+                    <button id="view-toggle" class="flex items-center gap-2 text-sm font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary);">
+                        <i class="fas fa-grip-vertical"></i>
+                        <span>List View</span>
+                    </button>
+                </div>
             </div>
-            <!-- Stat Cards Section with flexible grid -->
+            <!-- Stat Cards Section -->
             <div class="mt-8 grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
-                <!-- Stat Cards -->
+                <!-- Stat Cards will be dynamically generated here -->
                 <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Total Tasks</p><p id="total-tasks-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
                 <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;"><div class="flex items-center"><div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Action Required</p><p id="action-required-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
                 <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;"><div class="flex items-center"><div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Pending Items</p><p id="pending-items-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
@@ -202,7 +290,17 @@
             </div>
         </header>
 
-        <!-- Main Content Section with single-column grid -->
+        <!-- Slideshow Container -->
+        <div id="slideshow-container" class="mb-8">
+            <div id="slides-wrapper">
+                <!-- Slides will be dynamically generated here -->
+            </div>
+            <button id="prev-slide" class="slide-nav-btn"><i class="fas fa-chevron-left"></i></button>
+            <button id="next-slide" class="slide-nav-btn"><i class="fas fa-chevron-right"></i></button>
+            <div id="slide-dots"></div>
+        </div>
+
+        <!-- Main Content Section (List View) -->
         <main id="main-content" class="grid grid-cols-1 gap-8">
             <!-- Project Sections will be dynamically generated here -->
         </main>
@@ -215,6 +313,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger);
+
+            // --- GLOBAL STATE ---
+            let currentSlideIndex = 0;
+            let projectDataCache = [];
+            let projectConfigCache = [];
 
             // --- THEME TOGGLE ---
             const themeToggle = document.getElementById('theme-toggle');
@@ -234,18 +337,11 @@
             // --- CLOCK & DATE ---
             const clockElement = document.getElementById('live-clock');
             const lastUpdatedElement = document.getElementById('last-updated');
-            
             function updateTime() {
                 const now = new Date();
                 const options = { 
-                    weekday: 'long', 
-                    month: 'long', 
-                    day: 'numeric', 
-                    year: 'numeric',
-                    hour: '2-digit', 
-                    minute: '2-digit', 
-                    second: '2-digit', 
-                    hour12: true
+                    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
                 };
                 const timeString = new Intl.DateTimeFormat('en-US', options).format(now);
                 if (clockElement) clockElement.textContent = timeString;
@@ -265,8 +361,8 @@
                         try {
                             const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
                             const data = await response.json();
-                            const city = data.address.city || data.address.town || data.address.village || 'Unknown city';
-                            const country = data.address.country || 'Unknown country';
+                            const city = data.address.city || data.address.town || data.address.village || 'Cartagena Province';
+                            const country = data.address.country || 'Bolivar, Colombia';
                             locationDisplayElement.textContent = `${city}, ${country}`;
                         } catch (error) {
                             console.error('Error fetching location name:', error);
@@ -286,18 +382,12 @@
 
             // --- DATA & PAGE BUILDING ---
             const statusClasses = {
-                'Investigating': 'bg-blue-100 text-blue-800', 
-                'Suggestion': 'bg-green-100 text-green-800',
-                'Action Required': 'bg-red-100 text-red-800', 
-                'Pending': 'bg-orange-100 text-orange-800',
-                'Complete': 'bg-green-100 text-green-800', 
-                'In Progress': 'bg-purple-100 text-purple-800',
-                'Upcoming': 'bg-blue-100 text-blue-800', 
-                'Planned': 'bg-gray-100 text-gray-800',
-                'FRONTEND': 'bg-teal-100 text-teal-800',
-                'BACKEND': 'bg-indigo-100 text-indigo-800',
-                'DEVOPS': 'bg-slate-100 text-slate-800',
-                'DBA': 'bg-rose-100 text-rose-800',
+                'Investigating': 'bg-blue-100 text-blue-800', 'Suggestion': 'bg-green-100 text-green-800',
+                'Action Required': 'bg-red-100 text-red-800', 'Pending': 'bg-orange-100 text-orange-800',
+                'Complete': 'bg-green-100 text-green-800', 'In Progress': 'bg-purple-100 text-purple-800',
+                'Upcoming': 'bg-blue-100 text-blue-800', 'Planned': 'bg-gray-100 text-gray-800',
+                'FRONTEND': 'bg-teal-100 text-teal-800', 'BACKEND': 'bg-indigo-100 text-indigo-800',
+                'DEVOPS': 'bg-slate-100 text-slate-800', 'DBA': 'bg-rose-100 text-rose-800',
                 'QA': 'bg-lime-100 text-lime-800'
             };
 
@@ -307,27 +397,33 @@
                     if (!response.ok) throw new Error('Configuration file not found.');
                     const config = await response.json();
                     
+                    projectConfigCache = config.projects;
                     document.getElementById('report-date-range').textContent = config.reportDateRange;
                     document.getElementById('company-logo').src = config.companyLogo;
 
-                    buildProjectSections(config.projects);
-                    
                     const dataPromises = config.projects.map(p => fetch(p.dataFile).then(res => res.ok ? res.json() : Promise.reject(`File not found: ${p.dataFile}`)));
                     const results = await Promise.allSettled(dataPromises);
 
-                    let allProjectData = [];
                     results.forEach((result, index) => {
                         if (result.status === 'fulfilled') {
-                            const data = result.value;
-                            allProjectData.push(data);
-                            populateSection(data);
+                            projectDataCache.push(result.value);
                         } else {
                             console.error(`Failed to load data for ${config.projects[index].name}:`, result.reason);
-                            document.getElementById(config.projects[index].id).style.display = 'none';
+                            projectDataCache.push({ id: config.projects[index].id, tasks: [], items: [], error: true });
                         }
                     });
                     
-                    calculateAndDisplayStats(allProjectData);
+                    buildProjectSections(projectConfigCache);
+                    buildSlideshow(projectDataCache, projectConfigCache);
+
+                    projectDataCache.forEach(data => {
+                        if (!data.error) populateSection(data);
+                    });
+                    
+                    calculateAndDisplayStats(projectDataCache);
+                    setupViewToggle();
+                    setupSlideshowControls();
+                    setupItemHighlighting();
                     runAnimations();
 
                 } catch (error) {
@@ -338,11 +434,14 @@
 
             function buildProjectSections(projects) {
                 const mainContent = document.getElementById('main-content');
-                mainContent.innerHTML = ''; // Clear existing content
+                mainContent.innerHTML = ''; 
                 projects.forEach(project => {
+                    const projectData = projectDataCache.find(d => d.id === project.id);
+                    if (projectData && projectData.error) return;
+
                     const logoHtml = project.logo 
                         ? `<img src="${project.logo}" alt="${project.name} Logo" class="h-8 mr-3" onerror="this.style.display='none'">`
-                        : `<i class="${project.icon} h-6 mr-3" style="color: ${project.color};"></i>`;
+                        : `<i class="${project.icon} fa-lg h-6 mr-3" style="color: ${project.color};"></i>`;
                     
                     const sectionHtml = `
                         <section id="${project.id}" class="card rounded-xl p-6" style="--project-color: ${project.color};">
@@ -355,6 +454,41 @@
                     mainContent.insertAdjacentHTML('beforeend', sectionHtml);
                 });
             }
+            
+            function buildSlideshow(allData, projectsConfig) {
+                const slidesWrapper = document.getElementById('slides-wrapper');
+                const slideDots = document.getElementById('slide-dots');
+                slidesWrapper.innerHTML = '';
+                slideDots.innerHTML = '';
+
+                allData.forEach((data, index) => {
+                    if (data.error) return;
+                    const project = projectsConfig.find(p => p.id === data.id);
+                    if (!project) return;
+
+                    const logoHtml = project.logo 
+                        ? `<img src="${project.logo}" alt="${project.name} Logo" class="h-10 mr-4" onerror="this.style.display='none'">`
+                        : `<i class="${project.icon} fa-2x h-8 mr-4" style="color: ${project.color};"></i>`;
+
+                    const itemsHtml = (data.items || []).map(createCmmsItemHTML).join('') + (data.tasks || []).map(createTaskHTML).join('');
+
+                    const slideHtml = `
+                        <div class="slide" style="--project-color: ${project.color};">
+                            <h2 class="flex items-center text-2xl font-bold pb-4 mb-4 border-b-2" style="border-color: ${project.color}; color: var(--text-primary);">
+                                ${logoHtml} ${project.name}
+                            </h2>
+                            <ul class="space-y-6 max-h-[60vh] overflow-y-auto pr-4">${itemsHtml}</ul>
+                        </div>
+                    `;
+                    slidesWrapper.insertAdjacentHTML('beforeend', slideHtml);
+                    
+                    const dot = document.createElement('span');
+                    dot.className = 'slide-dot';
+                    dot.dataset.index = index;
+                    slideDots.appendChild(dot);
+                });
+            }
+
 
             function populateSection(data) {
                 const containerId = `${data.id}-tasks`;
@@ -374,76 +508,46 @@
             }
 
             function createCmmsItemHTML(item) {
-                // Base content: title and description
                 let contentHTML = `<h3 class="font-semibold text-md" style="color: var(--text-primary);">${item.title}</h3><p class="text-sm mt-1" style="color: var(--text-secondary);">${item.description}</p>`;
-                
-                // Container for badges
                 let badgesHTML = '<div class="mt-3 flex flex-wrap gap-2">';
-
-                // Create status badge if status exists
                 if (item.status) {
                     const statusBadgeClass = statusClasses[item.status] || 'bg-gray-100 text-gray-800';
                     badgesHTML += `<span class="status-badge ${statusBadgeClass} inline-flex items-center">${item.status}</span>`;
                 }
-
-                // Create role badge if role exists
                 if (item.role) {
                     const roleBadgeClass = statusClasses[item.role] || 'bg-gray-100 text-gray-800';
                     badgesHTML += `<span class="status-badge ${roleBadgeClass} inline-flex items-center"><i class="fas fa-user-tag mr-1.5 opacity-75"></i>${item.role}</span>`;
                 }
-                
                 badgesHTML += '</div>';
 
-                // Append content based on item type
                 if (item.type === 'link') {
                     contentHTML += `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-cyan-500 text-white text-xs font-bold py-2 px-4 rounded-full hover:bg-cyan-600 transition-colors mt-3 group">Visit Project Site <i class="fas fa-arrow-right ml-2 text-xs transform group-hover:translate-x-1 transition-transform"></i></a>`;
-                    // Links can also have status/role
                     contentHTML += badgesHTML;
                 } else if (item.type === 'list') {
                     contentHTML += `<ol class="list-decimal list-inside mt-2 text-sm pl-2" style="color: var(--text-secondary);">${(item.listItems || []).map(li => `<li>${li}</li>`).join('')}</ol>`;
-                    contentHTML += badgesHTML; // Add badges for list items
-                } else if (item.type === 'info') {
-                    contentHTML += badgesHTML; // Add badges for info items
+                    contentHTML += badgesHTML;
+                } else {
+                    contentHTML += badgesHTML;
                 }
-                
                 return `<li class="flex card-item"><div class="flex-grow relative z-10">${contentHTML}</div></li>`;
             }
 
             function calculateAndDisplayStats(allData) {
-                let totalTasks = 0, 
-                    pendingItems = 0, 
-                    actionRequired = 0,
-                    inProgress = 0,
-                    upcoming = 0,
-                    completed = 0;
-
+                let totalTasks = 0, pendingItems = 0, actionRequired = 0, inProgress = 0, upcoming = 0, completed = 0;
                 allData.forEach(data => {
                     const allItems = (data.tasks || []).concat(data.items || []);
                     totalTasks += allItems.length;
-
                     allItems.forEach(item => {
-                        if (!item.status) return; // Skip items without a status property
-
+                        if (!item.status) return;
                         switch (item.status) {
-                            case 'Pending':
-                                pendingItems++;
-                                break;
-                            case 'Action Required':
-                                actionRequired++;
-                                break;
-                            case 'In Progress':
-                                inProgress++;
-                                break;
-                            case 'Upcoming':
-                                upcoming++;
-                                break;
-                            case 'Complete':
-                                completed++;
-                                break;
+                            case 'Pending': pendingItems++; break;
+                            case 'Action Required': actionRequired++; break;
+                            case 'In Progress': inProgress++; break;
+                            case 'Upcoming': upcoming++; break;
+                            case 'Complete': completed++; break;
                         }
                     });
                 });
-
                 document.getElementById('total-tasks-stat').setAttribute('data-value', totalTasks);
                 document.getElementById('pending-items-stat').setAttribute('data-value', pendingItems);
                 document.getElementById('action-required-stat').setAttribute('data-value', actionRequired);
@@ -452,13 +556,121 @@
                 document.getElementById('completed-stat').setAttribute('data-value', completed);
             }
             
+            // --- UI INTERACTIONS ---
+            function setupViewToggle() {
+                const toggleButton = document.getElementById('view-toggle');
+                const icon = toggleButton.querySelector('i');
+                const text = toggleButton.querySelector('span');
+
+                toggleButton.addEventListener('click', () => {
+                    document.body.classList.toggle('view-list');
+                    document.body.classList.toggle('view-slides');
+                    
+                    if (document.body.classList.contains('view-slides')) {
+                        icon.className = 'fas fa-list';
+                        text.textContent = 'Slide View';
+                        updateSlideshow();
+                    } else {
+                        icon.className = 'fas fa-grip-vertical';
+                        text.textContent = 'List View';
+                    }
+                });
+            }
+
+            function setupSlideshowControls() {
+                document.getElementById('prev-slide').addEventListener('click', () => changeSlide(-1));
+                document.getElementById('next-slide').addEventListener('click', () => changeSlide(1));
+                document.getElementById('slide-dots').addEventListener('click', (e) => {
+                    if (e.target.matches('.slide-dot')) {
+                        const index = parseInt(e.target.dataset.index, 10);
+                        const actualIndex = projectDataCache.reduce((acc, p, i) => {
+                            if (!p.error) acc.push(i);
+                            return acc;
+                        }, []).indexOf(index);
+                        currentSlideIndex = actualIndex;
+                        updateSlideshow();
+                    }
+                });
+                updateSlideshow();
+            }
+
+            function setupItemHighlighting() {
+                const mainContent = document.getElementById('main-content');
+                const slideshowContainer = document.getElementById('slideshow-container');
+
+                const clickHandler = (e) => {
+                    const cardItem = e.target.closest('.card-item');
+                    if (cardItem) {
+                        cardItem.classList.toggle('highlighted');
+                    }
+                };
+
+                mainContent.addEventListener('click', clickHandler);
+                slideshowContainer.addEventListener('click', clickHandler);
+            }
+
+            function changeSlide(direction) {
+                const slides = document.querySelectorAll('.slide');
+                if (slides.length === 0) return;
+                currentSlideIndex = (currentSlideIndex + direction + slides.length) % slides.length;
+                updateSlideshow();
+            }
+
+            function updateSlideshow() {
+                const slidesWrapper = document.getElementById('slides-wrapper');
+                const dots = document.querySelectorAll('.slide-dot');
+                if (!slidesWrapper || dots.length === 0) return;
+
+                slidesWrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlideIndex);
+                });
+            }
+
+            // --- ANIMATIONS ---
             function runAnimations() {
                 gsap.from("header > div > div > *", { duration: 0.8, y: -30, opacity: 0, ease: "power3.out", stagger: 0.15 });
-                gsap.to(".stat-card", { duration: 0.6, y: 0, opacity: 1, ease: "power2.out", stagger: 0.1, scrollTrigger: { trigger: ".stat-card", start: 'top 95%', toggleActions: 'play none none none' } });
-                document.querySelectorAll('.stat-number').forEach(el => {
-                    gsap.to(el, { duration: 2.5, innerText: parseInt(el.getAttribute('data-value'), 10), roundProps: "innerText", ease: "expo.out", scrollTrigger: { trigger: el, start: 'top 95%' } });
+                
+                gsap.to(".stat-card", { 
+                    duration: 0.6, y: 0, opacity: 1, ease: "power2.out", stagger: 0.1, 
+                    scrollTrigger: { trigger: ".stat-card", start: 'top 95%', toggleActions: 'play none none none' } 
                 });
-                gsap.to(".card", { duration: 0.8, y: 0, opacity: 1, ease: "power3.out", stagger: 0.2, scrollTrigger: { trigger: "#main-content", start: 'top 80%', toggleActions: 'play none none none' } });
+
+                document.querySelectorAll('.stat-number').forEach(el => {
+                    gsap.to(el, { 
+                        duration: 2.5, innerText: parseInt(el.getAttribute('data-value'), 10), roundProps: "innerText", ease: "expo.out", 
+                        scrollTrigger: { trigger: el, start: 'top 95%' } 
+                    });
+                });
+
+                document.querySelectorAll('.card').forEach(card => {
+                    const cardItems = card.querySelectorAll('.card-item');
+                    
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            toggleActions: 'play none none none',
+                        }
+                    });
+
+                    tl.to(card, { 
+                        duration: 0.8, 
+                        y: 0, 
+                        opacity: 1, 
+                        ease: "power3.out" 
+                    });
+
+                    if(cardItems.length > 0) {
+                        tl.from(cardItems, {
+                            duration: 0.5,
+                            opacity: 0,
+                            y: 20,
+                            ease: "power2.out",
+                            stagger: 0.15
+                        }, "-=0.5");
+                    }
+                });
             }
             
             loadAndBuildPage();
