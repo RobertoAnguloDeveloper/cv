@@ -201,7 +201,6 @@
             padding: 1.5rem 2rem;
         }
         .slide-nav-btn {
-            /* This is the new style for external buttons */
             background-color: var(--card-bg);
             color: var(--text-secondary);
             border: 1px solid var(--border-color);
@@ -211,7 +210,7 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            flex-shrink: 0; /* Prevent buttons from shrinking */
+            flex-shrink: 0;
         }
         .slide-nav-btn:hover {
             transform: scale(1.1);
@@ -251,6 +250,39 @@
             overflow-y: auto;
             padding-right: 0.75rem; /* For scrollbar spacing */
         }
+
+        /* --- CUSTOM SCROLLBAR STYLES --- */
+        /* For Webkit-based browsers (Chrome, Safari, Edge) */
+        .slide ul::-webkit-scrollbar,
+        #main-content > .card > ul::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slide ul::-webkit-scrollbar-track,
+        #main-content > .card > ul::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .slide ul::-webkit-scrollbar-thumb,
+        #main-content > .card > ul::-webkit-scrollbar-thumb {
+            background-color: var(--project-color);
+            border-radius: 10px;
+            border: 3px solid var(--card-bg); /* Creates padding effect */
+            opacity: 0.8;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .slide ul::-webkit-scrollbar-thumb:hover,
+        #main-content > .card > ul::-webkit-scrollbar-thumb:hover {
+            opacity: 1;
+        }
+
+        /* For Firefox */
+        .slide ul,
+        #main-content > .card > ul {
+            scrollbar-width: thin;
+            scrollbar-color: var(--project-color) transparent;
+        }
     </style>
 </head>
 <body class="antialiased view-list">
@@ -274,7 +306,7 @@
     </div>
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
-        <header class="mb-12">
+        <header class="mb-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b" style="border-color: var(--border-color);">
                 <div>
                     <h1 class="text-3xl sm:text-5xl font-extrabold" style="color: var(--text-primary);">PLG Data Center Weekly Summary</h1>
@@ -289,14 +321,14 @@
                 </div>
             </div>
             <!-- Stat Cards Section -->
-            <div class="mt-8 grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
+            <div class="mt-1 grid gap-8 grid-cols-[repeat(auto-fit,minmax(50px,1fr))]">
                 <!-- Stat Cards will be dynamically generated here -->
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Total Tasks</p><p id="total-tasks-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;"><div class="flex items-center"><div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Action Required</p><p id="action-required-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;"><div class="flex items-center"><div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Pending Items</p><p id="pending-items-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #a855f7;"><div class="flex items-center"><div class="stat-icon-bg bg-purple-100 p-3 rounded-full mr-4"><i class="fas fa-wrench fa-lg stat-icon-color text-purple-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">In Progress</p><p id="in-progress-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #3b82f6;"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-calendar-check fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Upcoming</p><p id="upcoming-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
-                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #22c55e;"><div class="flex items-center"><div class="stat-icon-bg bg-green-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-check fa-lg stat-icon-color text-green-600"></i></div><div><p class="text-sm" style="color: var(--text-secondary);">Completed</p><p id="completed-stat" class="text-3xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid var(--plg-primary-color);"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-list fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-xs" style="color: var(--text-secondary);">Total Tasks</p><p id="total-tasks-stat" class="text-xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #ef4444;"><div class="flex items-center"><div class="stat-icon-bg bg-red-100 p-3 rounded-full mr-4"><i class="fas fa-triangle-exclamation fa-lg stat-icon-color text-red-600"></i></div><div><p class="text-xs" style="color: var(--text-secondary);">Action Required</p><p id="action-required-stat" class="text-xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #f97316;"><div class="flex items-center"><div class="stat-icon-bg bg-orange-100 p-3 rounded-full mr-4"><i class="fas fa-hourglass-half fa-lg stat-icon-color text-orange-600"></i></div><div><p class="text-xs" style="color: var(--text-secondary);">Pending Items</p><p id="pending-items-stat" class="text-xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #a855f7;"><div class="flex items-center"><div class="stat-icon-bg bg-purple-100 p-3 rounded-full mr-4"><i class="fas fa-wrench fa-lg stat-icon-color text-purple-600"></i></div><div><p class="text-xs" style="color: var(--text-secondary);">In Progress</p><p id="in-progress-stat" class="text-xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #3b82f6;"><div class="flex items-center"><div class="stat-icon-bg bg-blue-100 p-3 rounded-full mr-4"><i class="fas fa-calendar-check fa-lg stat-icon-color text-blue-600"></i></div><div><p class="text-xs" style="color: var(--text-secondary);">Upcoming</p><p id="upcoming-stat" class="text-xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
+                <div class="stat-card rounded-xl p-5" style="border-left: 4px solid #22c55e;"><div class="flex items-center"><div class="stat-icon-bg bg-green-100 p-3 rounded-full mr-4"><i class="fas fa-clipboard-check fa-lg stat-icon-color text-green-600"></i></div><div><p class="text-xs" style="color: var(--text-secondary);">Completed</p><p id="completed-stat" class="text-xl font-bold stat-number" data-value="0" style="color: var(--text-primary);">0</p></div></div></div>
             </div>
         </header>
 
@@ -492,7 +524,7 @@
                             <h2 class="flex items-center text-2xl font-bold pb-4 mb-4 border-b-2" style="border-color: ${project.color}; color: var(--text-primary);">
                                 ${logoHtml} ${project.name}
                             </h2>
-                            <ul class="space-y-6 max-h-[80vh] overflow-y-auto pr-4">${itemsHtml}</ul>
+                            <ul class="space-y-6 max-h-[70vh] overflow-y-auto pr-4">${itemsHtml}</ul>
                         </div>
                     `;
                     slidesWrapper.insertAdjacentHTML('beforeend', slideHtml);
