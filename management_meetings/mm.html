@@ -178,7 +178,12 @@
         html.light #theme-toggle .fa-sun { transform: scale(0); }
 
         /* --- SLIDESHOW STYLES --- */
+        #slideshow-wrapper {
+            align-items: center;
+            gap: 1rem;
+        }
         #slideshow-container {
+            flex-grow: 1;
             overflow: hidden;
             position: relative;
             background-color: var(--card-bg);
@@ -196,26 +201,23 @@
             padding: 1.5rem 2rem;
         }
         .slide-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            background-color: rgba(0,0,0,0.3);
-            color: white;
-            border: none;
+            /* This is the new style for external buttons */
+            background-color: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
             border-radius: 50%;
             width: 2.5rem;
             height: 2.5rem;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
+            flex-shrink: 0; /* Prevent buttons from shrinking */
         }
         .slide-nav-btn:hover {
-            background-color: rgba(0,0,0,0.6);
-            transform: translateY(-50%) scale(1.1);
+            transform: scale(1.1);
+            background-color: var(--highlight-bg);
+            color: var(--plg-primary-color);
         }
-        #prev-slide { left: 1rem; }
-        #next-slide { right: 1rem; }
         #slide-dots {
             position: absolute;
             bottom: 1rem;
@@ -223,6 +225,7 @@
             transform: translateX(-50%);
             display: flex;
             gap: 0.5rem;
+            z-index: 5;
         }
         .slide-dot {
             width: 0.75rem;
@@ -238,9 +241,16 @@
         }
 
         /* View Toggling */
-        body.view-list #slideshow-container { display: none; }
+        body.view-list #slideshow-wrapper { display: none; }
+        body.view-slides #slideshow-wrapper { display: flex; }
         body.view-slides #main-content { display: none; }
-        body.view-slides #slideshow-container { display: block; }
+
+        /* List View Height Fix */
+        #main-content > .card > ul {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 0.75rem; /* For scrollbar spacing */
+        }
     </style>
 </head>
 <body class="antialiased view-list">
@@ -290,14 +300,16 @@
             </div>
         </header>
 
-        <!-- Slideshow Container -->
-        <div id="slideshow-container" class="mb-8">
-            <div id="slides-wrapper">
-                <!-- Slides will be dynamically generated here -->
-            </div>
+        <!-- Slideshow Wrapper -->
+        <div id="slideshow-wrapper" class="mb-8">
             <button id="prev-slide" class="slide-nav-btn"><i class="fas fa-chevron-left"></i></button>
+            <div id="slideshow-container">
+                <div id="slides-wrapper">
+                    <!-- Slides will be dynamically generated here -->
+                </div>
+                <div id="slide-dots"></div>
+            </div>
             <button id="next-slide" class="slide-nav-btn"><i class="fas fa-chevron-right"></i></button>
-            <div id="slide-dots"></div>
         </div>
 
         <!-- Main Content Section (List View) -->
@@ -341,8 +353,10 @@
                 const now = new Date();
                 const options = { 
                     weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
+                    timeZoneName: 'short' // This displays the user's local timezone (e.g., PST, EST)
                 };
+                // Intl.DateTimeFormat automatically uses the browser's timezone unless one is specified.
                 const timeString = new Intl.DateTimeFormat('en-US', options).format(now);
                 if (clockElement) clockElement.textContent = timeString;
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
@@ -448,7 +462,7 @@
                             <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--project-color); color: var(--text-primary);">
                                 ${logoHtml} ${project.name}
                             </h2>
-                            <ul id="${project.id}-tasks" class="space-y-6"></ul>
+                            <ul id="${project.id}-tasks" class="space-y-1"></ul>
                         </section>
                     `;
                     mainContent.insertAdjacentHTML('beforeend', sectionHtml);
@@ -461,7 +475,8 @@
                 slidesWrapper.innerHTML = '';
                 slideDots.innerHTML = '';
 
-                allData.forEach((data, index) => {
+                let validProjectCount = 0;
+                allData.forEach((data) => {
                     if (data.error) return;
                     const project = projectsConfig.find(p => p.id === data.id);
                     if (!project) return;
@@ -477,15 +492,16 @@
                             <h2 class="flex items-center text-2xl font-bold pb-4 mb-4 border-b-2" style="border-color: ${project.color}; color: var(--text-primary);">
                                 ${logoHtml} ${project.name}
                             </h2>
-                            <ul class="space-y-6 max-h-[60vh] overflow-y-auto pr-4">${itemsHtml}</ul>
+                            <ul class="space-y-6 max-h-[80vh] overflow-y-auto pr-4">${itemsHtml}</ul>
                         </div>
                     `;
                     slidesWrapper.insertAdjacentHTML('beforeend', slideHtml);
                     
                     const dot = document.createElement('span');
                     dot.className = 'slide-dot';
-                    dot.dataset.index = index;
+                    dot.dataset.index = validProjectCount;
                     slideDots.appendChild(dot);
+                    validProjectCount++;
                 });
             }
 
@@ -583,11 +599,7 @@
                 document.getElementById('slide-dots').addEventListener('click', (e) => {
                     if (e.target.matches('.slide-dot')) {
                         const index = parseInt(e.target.dataset.index, 10);
-                        const actualIndex = projectDataCache.reduce((acc, p, i) => {
-                            if (!p.error) acc.push(i);
-                            return acc;
-                        }, []).indexOf(index);
-                        currentSlideIndex = actualIndex;
+                        currentSlideIndex = index;
                         updateSlideshow();
                     }
                 });
@@ -596,7 +608,7 @@
 
             function setupItemHighlighting() {
                 const mainContent = document.getElementById('main-content');
-                const slideshowContainer = document.getElementById('slideshow-container');
+                const slideshowWrapper = document.getElementById('slideshow-wrapper');
 
                 const clickHandler = (e) => {
                     const cardItem = e.target.closest('.card-item');
@@ -606,7 +618,7 @@
                 };
 
                 mainContent.addEventListener('click', clickHandler);
-                slideshowContainer.addEventListener('click', clickHandler);
+                slideshowWrapper.addEventListener('click', clickHandler);
             }
 
             function changeSlide(direction) {
