@@ -2,59 +2,24 @@
     "id": "rgm",
     "tasks": [
         {
-            "title": "FON Prime platform issues - Tank Reconciliation Number Format Issue",
-            "description": "An issue was identified with the number formatting in the tank reconciliation columns, which may affect clarity and data interpretation. The technical team is currently reviewing the formatting to apply a consistent and Excel-compatible format.",
-            "status": "Pending"
-        },
-        {
-            "title": "FON Prime platform issues - Tank Capacity Exceeded Alarms",
-            "description": "Multiple alarms related to tank capacity being exceeded have been reported. These incidents are under analysis to determine root causes and verify whether thresholds and sensor configurations need adjustments.",
-            "status": "Pending"
-        },
-        {
-            "title": "FON Prime platform issues - EMR4 Meter Readings Report Pending",
-            "description": "A new MPI automation to capture EMR4 meter readings (Inlet and Outlet) is under implementation by the technical team. However, a reporting feature to display this data on the platform is still pending development.",
-            "status": "Pending"
-        },
-        {
-            "title": "SAAWAN - Sino 2 Fuel truck ",
-            "description": "The pre-configuration of the Sino 2 fuel truck has been completed. MPI tests were performed by the GVR team, and the new drawing provided by GVR worked as expected—no false bypass alarms were detected. The Prime UX will be installed in the truck and tested again, pending further notice\n",
+            "title": "Title: Reconciliation from July 20th to July 29th",
+            "description": "The weekly reconciliation from July 20th to July 29th was successfully completed.",
             "status": "Complete"
         },
         {
-            "title": "Translation Issues in FON Prime Platform",
-            "description": "An email from the GVR team mentioned that fixes related to Spanish and Portuguese translations in various GUI sections had been applied. However, after a review by PLG, several sections still require corrections. PLG is awaiting a response on this matter.",
-            "status": "Action Required"
-        },
-        {
-            "title": "DB248 Enhance broken",
-            "description": "Days after replacing the DB248 Enhance with the older Enhance from DB246, the on-site crew reported a bricked HDD. A new Truck Prim UX controller (SINO 3) should be used.",
+            "title": "Diesel Issues Report from July 20th to July 29th",
+            "description": "The Diesel Issues Report from July 20th to July 29th was successfully created and sent.",
             "status": "Complete"
         },
         {
-            "title": "Fuel ONET Rules Added from PLG Side",
-            "description": "Fuel ONET rules were added to the 55 requested pieces of equipment (as agreed with GVR after the migration), as well as to recently added ones.",
+            "title": "RGM and Saramacca Equipment Consumption Report from July 20th to July 29th",
+            "description": "The Equipment Consumption reports were successfully created and sent.",
             "status": "Complete"
         },
         {
-            "title": "C2FT-004 Chip replaced",
-            "description": "After several checks by the PLG team, a malfunctioning chip was identified. Following the replacement, the equipment was successfully refueled with DB252.",
-            "status": "Complete"
-        },
-        {
-            "title": "Vincent's training progress",
-            "description": "This week, we covered the Reconciliation reports. The TFC and Burn Rates reports are still pending. Vincent is expected to send his first Reconciliation and Consumption reports this week.",
+            "title": "Implementation of New Tank Limit Rules FON",
+            "description": "New tank limit rules are being implemented for assets in the Fuel Onet Prime platform.",
             "status": "In Progress"
-        },
-        {
-            "title": "FON Prime GVR - Creation of Limit Rules Regarding Tank Capacity for All Migrated Fleet to FON by GVR Team",
-            "description": "During training sessions with Silva, a security concern was raised. Silva noted that the tank capacity field does not restrict refueling beyond equipment capacity. To address this, limit rules should be created based on tank capacities. It was agreed that Silva's team will handle the migrated fleet, while we will manage the new entries.",
-            "status": "Pending"
-        },
-        {
-            "title": "Fake Bypass alarm fixing",
-            "description": "Saawan and the team at Fusecon successfully tested the new automation suggested by GVR. SINO 2 is now using this automation, and the changes are being shared with PLG electrician experts at RGM to implement the same for CAT1, CAT2, and SINO1.",
-            "status": "Pending"
         }
     ]
 }
