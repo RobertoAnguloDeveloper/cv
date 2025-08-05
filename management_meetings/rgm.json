@@ -17,6 +17,16 @@
             "status": "Complete"
         },
         {
+            "title": "LDV Master for July Transcribed",
+            "description": "The LDV master for the month of July has been transcribed.",
+            "status": "Complete"
+        },
+        {
+            "title": "Total Fuel Consumption for July Completed",
+            "description": "The report for total fuel consumption for the month of July is complete.",
+            "status": "Complete"
+        },
+        {
             "title": "Implementation of New Tank Limit Rules FON",
             "description": "GVR must implement new tank limit rules for assets on the Fuel Onet Prime platform.",
             "status": "Pending"
