@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --plg-primary-color: #00AEEF;
@@ -167,7 +168,6 @@
             box-shadow: inset 0 0 0 2px var(--plg-primary-color);
         }
 
-
         /* Dark Mode Overrides */
         html.dark .status-badge.bg-blue-100 { background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; }
         html.dark .status-badge.bg-green-100 { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
@@ -262,6 +262,7 @@
         body.view-list #slideshow-wrapper { display: none; }
         body.view-slides #slideshow-wrapper { display: flex; }
         body.view-slides #main-content { display: none; }
+        body.view-slides #analytics-section { display: none; }
 
         /* List View Height Fix */
         #main-content > .card > ul {
@@ -271,37 +272,118 @@
         }
 
         /* --- CUSTOM SCROLLBAR STYLES --- */
-        /* For Webkit-based browsers (Chrome, Safari, Edge) */
         .slide ul::-webkit-scrollbar,
-        #main-content > .card > ul::-webkit-scrollbar {
+        #main-content > .card > ul::-webkit-scrollbar,
+        .checkbox-container::-webkit-scrollbar {
             width: 10px;
         }
 
         .slide ul::-webkit-scrollbar-track,
-        #main-content > .card > ul::-webkit-scrollbar-track {
+        #main-content > .card > ul::-webkit-scrollbar-track,
+        .checkbox-container::-webkit-scrollbar-track {
             background: transparent;
         }
 
         .slide ul::-webkit-scrollbar-thumb,
-        #main-content > .card > ul::-webkit-scrollbar-thumb {
-            background-color: var(--project-color);
+        #main-content > .card > ul::-webkit-scrollbar-thumb,
+        .checkbox-container::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
             border-radius: 10px;
-            border: 3px solid var(--card-bg); /* Creates padding effect */
-            opacity: 0.8;
-            transition: opacity 0.2s ease-in-out;
+            border: 3px solid var(--card-bg);
         }
-
-        .slide ul::-webkit-scrollbar-thumb:hover,
-        #main-content > .card > ul::-webkit-scrollbar-thumb:hover {
-            opacity: 1;
+        .checkbox-container::-webkit-scrollbar-thumb {
+             background-color: var(--plg-primary-color);
         }
 
         /* For Firefox */
         .slide ul,
-        #main-content > .card > ul {
+        #main-content > .card > ul,
+        .checkbox-container {
             scrollbar-width: thin;
-            scrollbar-color: var(--project-color) transparent;
+            scrollbar-color: var(--border-color) transparent;
         }
+        .checkbox-container {
+            scrollbar-color: var(--plg-primary-color) transparent;
+        }
+        
+        /* Analytics Section */
+        #analytics-section .chart-container {
+            position: relative;
+            min-height: 350px;
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        html.dark #analytics-section .chart-container {
+             background-color: var(--card-bg-dark);
+        }
+
+        /* Filter Controls */
+        #analytics-filters {
+            background-color: var(--bg-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+        }
+
+        .filter-group select, .filter-group input {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            width: 100%;
+        }
+
+        html.dark .filter-group input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+
+        /* Advanced Filter Checkboxes */
+        .filter-group-checkboxes label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+            display: block;
+        }
+        .checkbox-container {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            padding: 0.25rem 0;
+            color: var(--text-primary);
+        }
+        .checkbox-item input {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--plg-primary-color);
+        }
+
     </style>
 </head>
 <body class="antialiased view-list">
@@ -370,6 +452,66 @@
             <!-- Project Sections will be dynamically generated here -->
         </main>
 
+        <!-- Analytics Section -->
+        <section id="analytics-section" class="card rounded-xl p-6 mt-8" style="--project-color: #16a34a;">
+            <h2 class="flex items-center text-xl font-bold pb-4 mb-4 border-b-2" style="border-color: var(--project-color); color: var(--text-primary);">
+                <i class="fas fa-chart-line fa-lg h-6 mr-3" style="color: #16a34a;"></i> CMMS Usage Analytics
+            </h2>
+            
+            <div id="analytics-filters" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                 <div class="filter-group">
+                    <label for="start-date-filter">Start Date</label>
+                    <input type="date" id="start-date-filter">
+                </div>
+                <div class="filter-group">
+                    <label for="end-date-filter">End Date</label>
+                    <input type="date" id="end-date-filter">
+                </div>
+                <div class="filter-group">
+                    <label for="group-by-filter">Group By (for Combined Chart)</label>
+                    <select id="group-by-filter"></select>
+                </div>
+                <div class="filter-group">
+                    <label for="stack-by-filter">Stack By (for Combined Chart)</label>
+                    <select id="stack-by-filter"></select>
+                </div>
+                <div class="lg:col-span-3 grid grid-cols-1">
+                    <button id="reset-filters-btn" class="h-10 px-4 text-sm font-semibold rounded-lg transition-colors" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary);">
+                        Reset All Filters
+                    </button>
+                </div>
+                <div class="filter-group-checkboxes lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label>Users</label>
+                        <div id="user-filter-checkboxes" class="checkbox-container"></div>
+                    </div>
+                    <div>
+                        <label>Roles</label>
+                        <div id="role-filter-checkboxes" class="checkbox-container"></div>
+                    </div>
+                    <div>
+                        <label>Methods</label>
+                        <div id="method-filter-checkboxes" class="checkbox-container"></div>
+                    </div>
+                    <div>
+                        <label>Status Codes</label>
+                        <div id="status-filter-checkboxes" class="checkbox-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analytics-content" class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-6">
+                <div class="chart-container"> <canvas id="activityOverTimeChart"></canvas> </div>
+                <div class="chart-container"> <canvas id="requestsByMethodChart"></canvas> </div>
+                <div class="chart-container"> <canvas id="topUsersChart"></canvas> </div>
+                <div class="chart-container"> <canvas id="requestsByStatusChart"></canvas> </div>
+                <div id="analytics-insights" class="lg:col-span-2 p-4 rounded-lg" style="background-color: var(--bg-color);"></div>
+                <div id="advanced-chart-container" class="chart-container lg:col-span-2">
+                    <canvas id="advancedChart"></canvas>
+                </div>
+            </div>
+        </section>
+
         <footer class="text-center mt-16 pt-8 border-t" style="border-color: var(--border-color);">
             <p class="text-sm" style="color: var(--text-secondary);">&copy; 2025 PLG Data Center | Confidential</p>
             <p class="text-xs mt-2" style="color: var(--text-secondary);">Generated on: <span id="last-updated"></span></p>
@@ -383,6 +525,8 @@
             let currentSlideIndex = 0;
             let projectDataCache = [];
             let projectConfigCache = [];
+            let chartInstances = {};
+            let usageLogsCache = [];
 
             // --- THEME TOGGLE ---
             const themeToggle = document.getElementById('theme-toggle');
@@ -390,6 +534,9 @@
             const applyTheme = (theme) => {
                 htmlElement.classList.toggle('dark', theme === 'dark');
                 htmlElement.classList.toggle('light', theme !== 'dark');
+                if (usageLogsCache.length > 0) {
+                    updateAllAnalytics();
+                }
             };
             const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             applyTheme(savedTheme);
@@ -407,9 +554,8 @@
                 const options = { 
                     weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
                     hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
-                    timeZoneName: 'short' // This displays the user's local timezone (e.g., PST, EST)
+                    timeZoneName: 'short'
                 };
-                // Intl.DateTimeFormat automatically uses the browser's timezone unless one is specified.
                 const timeString = new Intl.DateTimeFormat('en-US', options).format(now);
                 if (clockElement) clockElement.textContent = timeString;
                 if (lastUpdatedElement) lastUpdatedElement.textContent = timeString;
@@ -488,10 +634,11 @@
                     });
                     
                     calculateAndDisplayStats(projectDataCache);
+                    loadAndDisplayAnalytics();
                     setupViewToggle();
                     setupSlideshowControls();
                     setupItemHighlighting();
-                    setupStatCardNavigation(); // New function call
+                    setupStatCardNavigation();
                     runAnimations();
 
                 } catch (error) {
@@ -626,6 +773,254 @@
                 document.getElementById('completed-stat').setAttribute('data-value', completed);
             }
             
+            // --- ANALYTICS FUNCTIONS ---
+            async function loadAndDisplayAnalytics() {
+                try {
+                    const response = await fetch('cmms_usage.json');
+                    if (!response.ok) throw new Error('cmms_usage.json not found.');
+                    usageLogsCache = await response.json();
+                    setupAnalyticsControls(usageLogsCache);
+                    updateAllAnalytics();
+                } catch (error) {
+                    console.error("Failed to load analytics:", error);
+                    document.getElementById('analytics-content').innerHTML = `<p class="text-red-500 text-center col-span-full">${error.message}</p>`;
+                }
+            }
+
+            function setupAnalyticsControls(logs) {
+                const dimensions = { user: 'User', role: 'Role', method: 'Method', status: 'Status Code', path: 'Endpoint' };
+                const groupByFilter = document.getElementById('group-by-filter');
+                const stackByFilter = document.getElementById('stack-by-filter');
+                const filtersContainer = document.getElementById('analytics-filters');
+                const resetBtn = document.getElementById('reset-filters-btn');
+
+                const populateDimSelect = (select) => {
+                    select.innerHTML = '';
+                    for (const [key, value] of Object.entries(dimensions)) {
+                        select.innerHTML += `<option value="${key}">${value}</option>`;
+                    }
+                };
+                populateDimSelect(groupByFilter);
+                populateDimSelect(stackByFilter);
+                stackByFilter.innerHTML += '<option value="none">None</option>';
+                groupByFilter.value = 'user';
+                stackByFilter.value = 'method';
+
+                const createCheckboxes = (containerId, dataKey) => {
+                    const container = document.getElementById(containerId);
+                    const items = [...new Set(logs.map(log => log[dataKey]).filter(Boolean))].sort();
+                    container.innerHTML = items.map(item => `
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="check-${dataKey}-${item}" value="${item}" checked>
+                            <label for="check-${dataKey}-${item}">${item}</label>
+                        </div>
+                    `).join('');
+                };
+
+                createCheckboxes('user-filter-checkboxes', 'user');
+                createCheckboxes('role-filter-checkboxes', 'role');
+                createCheckboxes('method-filter-checkboxes', 'method');
+                createCheckboxes('status-filter-checkboxes', 'status');
+
+                filtersContainer.addEventListener('change', updateAllAnalytics);
+                resetBtn.addEventListener('click', () => {
+                    filtersContainer.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true);
+                    filtersContainer.querySelectorAll('input[type=date]').forEach(input => input.value = '');
+                    updateAllAnalytics();
+                });
+            }
+
+            function getFilteredLogs() {
+                const getCheckedValues = (containerId) => [...document.querySelectorAll(`#${containerId} input:checked`)].map(cb => cb.value);
+                
+                const selectedUsers = getCheckedValues('user-filter-checkboxes');
+                const selectedRoles = getCheckedValues('role-filter-checkboxes');
+                const selectedMethods = getCheckedValues('method-filter-checkboxes');
+                const selectedStatuses = getCheckedValues('status-filter-checkboxes');
+                const startDate = document.getElementById('start-date-filter').value;
+                const endDate = document.getElementById('end-date-filter').value;
+                const start = startDate ? new Date(startDate + 'T00:00:00') : null;
+                const end = endDate ? new Date(endDate + 'T23:59:59') : null;
+
+                return usageLogsCache.filter(log => {
+                    const logDate = new Date(log.timestamp);
+                    return selectedUsers.includes(log.user) &&
+                           selectedRoles.includes(log.role) &&
+                           selectedMethods.includes(log.method) &&
+                           selectedStatuses.includes(log.status) &&
+                           (!start || logDate >= start) &&
+                           (!end || logDate <= end);
+                });
+            }
+
+            function updateAllAnalytics() {
+                if (usageLogsCache.length === 0) return;
+                const filteredLogs = getFilteredLogs();
+                const analytics = processUsageData(filteredLogs);
+                
+                Object.values(chartInstances).forEach(chart => chart.destroy());
+                chartInstances = {};
+
+                createActivityOverTimeChart(analytics.activityByHour);
+                createRequestsByMethodChart(analytics.requestsByMethod);
+                createRequestsByStatusChart(analytics.requestsByStatus);
+                createTopUsersChart(analytics.activityByUser);
+                updateAdvancedChart(filteredLogs);
+                displayInsights(analytics);
+            }
+            
+            function processUsageData(logs) {
+                const analytics = {
+                    totalRequests: logs.length,
+                    requestsByMethod: {},
+                    requestsByStatus: {},
+                    activityByHour: Array(24).fill(0),
+                    activityByUser: {},
+                    topEndpoints: {},
+                };
+
+                logs.forEach(log => {
+                    analytics.requestsByMethod[log.method] = (analytics.requestsByMethod[log.method] || 0) + 1;
+                    analytics.requestsByStatus[log.status] = (analytics.requestsByStatus[log.status] || 0) + 1;
+                    analytics.activityByUser[log.user] = (analytics.activityByUser[log.user] || 0) + 1;
+                    analytics.topEndpoints[log.path] = (analytics.topEndpoints[log.path] || 0) + 1;
+                    try {
+                        const hour = new Date(log.timestamp).getHours();
+                        if (!isNaN(hour)) {
+                           analytics.activityByHour[hour]++;
+                        }
+                    } catch(e) { console.warn("Invalid timestamp format:", log.timestamp)}
+                });
+                return analytics;
+            }
+
+            function createChart(chartId, type, data, options) {
+                if (chartInstances[chartId]) chartInstances[chartId].destroy();
+                const ctx = document.getElementById(chartId).getContext('2d');
+                chartInstances[chartId] = new Chart(ctx, { type, data, options });
+            }
+
+            function getChartColors() {
+                const isDark = htmlElement.classList.contains('dark');
+                return {
+                    textColor: isDark ? 'rgba(201, 209, 217, 0.9)' : 'rgba(74, 85, 104, 0.9)',
+                    gridColor: isDark ? 'rgba(48, 54, 61, 0.5)' : 'rgba(226, 232, 240, 0.5)',
+                    palette: ['#00AEEF', '#22c55e', '#f97316', '#a855f7', '#ef4444', '#64748b', '#0d9488', '#4f46e5', '#e11d48', '#d946ef'],
+                };
+            }
+
+            function createActivityOverTimeChart(activityData) {
+                const colors = getChartColors();
+                createChart('activityOverTimeChart', 'line', {
+                    labels: Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`),
+                    datasets: [{
+                        label: 'API Requests per Hour', data: activityData, borderColor: colors.palette[0],
+                        backgroundColor: 'rgba(0, 174, 239, 0.1)', fill: true, tension: 0.4,
+                    }]
+                }, {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Activity by Hour of Day', color: colors.textColor, font: { size: 16 } } },
+                    scales: { x: { ticks: { color: colors.textColor }, grid: { color: colors.gridColor } }, y: { beginAtZero: true, ticks: { color: colors.textColor }, grid: { color: colors.gridColor } } }
+                });
+            }
+
+            function createRequestsByMethodChart(methodData) {
+                const colors = getChartColors();
+                createChart('requestsByMethodChart', 'doughnut', {
+                    labels: Object.keys(methodData),
+                    datasets: [{ data: Object.values(methodData), backgroundColor: colors.palette, borderColor: htmlElement.classList.contains('dark') ? '#161b22' : '#ffffff', borderWidth: 4 }]
+                }, {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: colors.textColor } }, title: { display: true, text: 'Requests by HTTP Method', color: colors.textColor, font: { size: 16 } } }
+                });
+            }
+            
+            function createRequestsByStatusChart(statusData) {
+                 const colors = getChartColors();
+                 createChart('requestsByStatusChart', 'pie', {
+                    labels: Object.keys(statusData),
+                    datasets: [{ data: Object.values(statusData), backgroundColor: colors.palette, borderColor: htmlElement.classList.contains('dark') ? '#161b22' : '#ffffff', borderWidth: 4, }]
+                }, {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: colors.textColor } }, title: { display: true, text: 'Requests by Status Code', color: colors.textColor, font: { size: 16 } } }
+                });
+            }
+
+            function createTopUsersChart(userData) {
+                const colors = getChartColors();
+                const sortedUsers = Object.entries(userData).sort(([,a],[,b]) => b-a).slice(0, 10);
+                createChart('topUsersChart', 'bar', {
+                    labels: sortedUsers.map(u => u[0]),
+                    datasets: [{ label: 'Number of Requests', data: sortedUsers.map(u => u[1]), backgroundColor: colors.palette[3], }]
+                }, {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Top 10 Active Users', color: colors.textColor, font: { size: 16 } } },
+                    scales: { x: { beginAtZero: true, ticks: { color: colors.textColor }, grid: { color: colors.gridColor } }, y: { ticks: { color: colors.textColor }, grid: { color: 'transparent' } } }
+                });
+            }
+            
+            function displayInsights(analytics) {
+                const insightsContainer = document.getElementById('analytics-insights');
+                if (analytics.totalRequests === 0) {
+                    insightsContainer.innerHTML = `<h3 class="text-lg font-bold my-4 text-center" style="color: var(--text-primary);">No data available for the selected filters.</h3>`;
+                    return;
+                }
+                const topUser = Object.entries(analytics.activityByUser).sort(([,a],[,b]) => b-a)[0];
+                const topEndpoint = Object.entries(analytics.topEndpoints).sort(([,a],[,b]) => b-a)[0];
+                insightsContainer.innerHTML = `
+                    <h3 class="text-lg font-bold mb-4" style="color: var(--text-primary);">Key Insights</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="p-4 rounded-lg" style="background-color: var(--card-bg); border: 1px solid var(--border-color);"><p class="text-2xl font-bold" style="color: var(--plg-primary-color);">${analytics.totalRequests}</p><p class="text-xs" style="color: var(--text-secondary);">Total Requests</p></div>
+                        <div class="p-4 rounded-lg" style="background-color: var(--card-bg); border: 1px solid var(--border-color);"><p class="text-2xl font-bold" style="color: var(--plg-primary-color);">${topUser ? topUser[0] : 'N/A'}</p><p class="text-xs" style="color: var(--text-secondary);">Most Active User ${topUser ? `(${topUser[1]} reqs)` : ''}</p></div>
+                        <div class="p-4 rounded-lg" style="background-color: var(--card-bg); border: 1px solid var(--border-color);"><p class="text-xl font-bold truncate" style="color: var(--plg-primary-color);" title="${topEndpoint ? topEndpoint[0] : ''}">${topEndpoint ? topEndpoint[0] : 'N/A'}</p><p class="text-xs" style="color: var(--text-secondary);">Busiest Endpoint</p></div>
+                        <div class="p-4 rounded-lg" style="background-color: var(--card-bg); border: 1px solid var(--border-color);"><p class="text-2xl font-bold" style="color: var(--plg-primary-color);">${Object.keys(analytics.activityByUser).length}</p><p class="text-xs" style="color: var(--text-secondary);">Unique Users</p></div>
+                    </div>`;
+            }
+
+            function updateAdvancedChart(filteredLogs) {
+                const dimensions = { user: 'User', role: 'Role', method: 'Method', status: 'Status Code', path: 'Endpoint' };
+                const groupBy = document.getElementById('group-by-filter').value;
+                const stackBy = document.getElementById('stack-by-filter').value;
+
+                let aggregatedData = {};
+                let groupLabels = new Set();
+                let stackLabels = new Set();
+
+                filteredLogs.forEach(log => {
+                    const groupKey = log[groupBy] || 'N/A';
+                    const stackKey = (stackBy !== 'none' && log[stackBy]) ? log[stackBy] : 'Total';
+                    groupLabels.add(groupKey);
+                    stackLabels.add(stackKey);
+                    if (!aggregatedData[groupKey]) aggregatedData[groupKey] = {};
+                    aggregatedData[groupKey][stackKey] = (aggregatedData[groupKey][stackKey] || 0) + 1;
+                });
+
+                const sortedGroupLabels = [...groupLabels].sort();
+                const sortedStackLabels = [...stackLabels].sort();
+                const colors = getChartColors();
+
+                const datasets = sortedStackLabels.map((stackLabel, index) => ({
+                    label: stackLabel,
+                    data: sortedGroupLabels.map(groupLabel => aggregatedData[groupLabel]?.[stackLabel] || 0),
+                    backgroundColor: colors.palette[index % colors.palette.length],
+                }));
+
+                createChart('advancedChart', 'bar', {
+                    labels: sortedGroupLabels,
+                    datasets: datasets,
+                }, {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: `Combined View: Requests by ${dimensions[groupBy]}${stackBy !== 'none' ? ` and ${dimensions[stackBy]}` : ''}`, color: getChartColors().textColor, font: { size: 16 } },
+                        legend: { display: stackBy !== 'none', labels: { color: getChartColors().textColor } }
+                    },
+                    scales: {
+                        x: { stacked: true, ticks: { color: getChartColors().textColor }, grid: { color: getChartColors().gridColor } },
+                        y: { stacked: true, beginAtZero: true, ticks: { color: getChartColors().textColor }, grid: { color: getChartColors().gridColor } }
+                    }
+                });
+            }
+
             // --- UI INTERACTIONS ---
             function setupViewToggle() {
                 const toggleButton = document.getElementById('view-toggle');
@@ -692,14 +1087,12 @@
                             const mainContent = document.getElementById('main-content');
                             const allItems = mainContent.querySelectorAll('.card-item');
 
-                            // If clicking the same card again, clear highlights and do nothing else.
                             if (status === lastStatus) {
                                 allItems.forEach(item => item.classList.remove('status-highlight'));
                                 lastStatus = null;
                                 return;
                             }
 
-                            // Clear previous highlights
                             allItems.forEach(item => item.classList.remove('status-highlight'));
 
                             if (status === 'Total Tasks') {
@@ -752,7 +1145,6 @@
             function runAnimations() {
                 gsap.from("header > div > div > *", { duration: 0.8, y: -30, opacity: 0, ease: "power3.out", stagger: 0.15 });
                 
-                // Stat cards animation is now triggered by the header itself
                 const statCardTrigger = {
                     trigger: ".stat-card",
                     start: 'top 95%',
