@@ -2,33 +2,23 @@
     "id": "rgm",
     "tasks": [
         {
-            "title": "Reconciliation from July 20th to July 29th",
-            "description": "The weekly reconciliation from July 20th to July 29th was successfully completed.",
+            "title": "LDV Master Report for July",
+            "description": "The LDV master report for July was created and sent. A 30-liter transaction that was not showing on the manual sheets was found and added.",
             "status": "Complete"
         },
         {
-            "title": "Diesel Issues Report from July 20th to July 29th",
-            "description": "The Diesel Issues Report from July 20th to July 29th was successfully created and sent.",
+            "title": "Weekly Reconciliation from July 29th to August 05th",
+            "description": "The weekly reconciliation from July 29th to August 05th was successfully completed.",
             "status": "Complete"
         },
         {
-            "title": "RGM and Saramacca Equipment Consumption Report from July 20th to July 29th",
-            "description": "The Equipment Consumption reports were successfully created and sent.",
-            "status": "Complete"
+            "title": "Fuel Diesel and Tank Levels Report from July 20th to August 05th",
+            "description": "The Fuel Diesel Report and Tank Levels Report from July 20th to August 05th were successfully sent.",
+            "status": "Pending"
         },
         {
-            "title": "LDV Master for July Transcribed",
-            "description": "The LDV master for the month of July has been transcribed.",
-            "status": "Complete"
-        },
-        {
-            "title": "Total Fuel Consumption for July Completed",
-            "description": "The report for total fuel consumption for the month of July is complete.",
-            "status": "Complete"
-        },
-        {
-            "title": "Implementation of New Tank Limit Rules FON",
-            "description": "GVR must implement new tank limit rules for assets on the Fuel Onet Prime platform.",
+            "title": "RGM and Saramacca Consumption Reports from July 29th to August 05th",
+            "description": "The RGM and Saramacca consumption reports from July 29th to August 05th were successfully sent.",
             "status": "Pending"
         }
     ]

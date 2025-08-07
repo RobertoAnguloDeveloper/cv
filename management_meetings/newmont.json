@@ -35,6 +35,21 @@
             "title": "Follow-up on CMMS Software Testing",
             "description": "A meeting is held with the site manager and supervisor on 31-07-2025 to discuss matters related to the CMMS software test. Site Managers should complete the test. After a complete role test, we can create them other roles like Supervisor and Tech (For testing also)",
             "status": "In Progress"
+        },
+        {
+            "title": "Meetings on AdaptiQ Burn Rate Issues",
+            "description": "A meeting was held on 06/08/2025 to discuss issues related to AdaptiQ, especially the burn rate problems. Another meeting will be held today, 07/08/2025, at 4 pm Colombian time to address technical aspects to solve the problem.",
+            "status": "In Progress"
+        },
+        {
+            "title": "Standardization and Automation of Inbound-Outbound Processes",
+            "description": "Work is being done to standardize and automate the inbound-outbound process to reduce errors and time in this activity. As a first proposal, an automation in Python was developed for Newmont, but for it to be something general that allows site managers to create it directly from an app, we will work together with the RGM data analyst.",
+            "status": "In Progress"
+        },
+        {
+            "title": "Power BI Dashboard Proposal Using AdaptiQ Endpoints",
+            "description": "AdaptiQ has public endpoints that can facilitate the process and allow real-time requests and/or queries of the data. A design proposal for a Power BI dashboard will be created for reports or data of interest to the end customer.",
+            "status": "In Progress"
         }
     ]
 }
