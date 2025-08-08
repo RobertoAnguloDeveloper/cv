@@ -2,19 +2,39 @@
     "id": "baitali",
     "tasks": [
         {
-            "title": "Kabalebo TLS configuration",
-            "description": "- Installed a spare USIOM board for the TLS system.\n- After startup, a tank chart was required for calibration.\n- 611 values will be added as multipoint entries within the TLS for accurate tank level mapping.\n",
+            "title": "T-83 Data sync issue",
+            "description": "POE went suddenly offline. After installation, PLG discovered the power cable was removed from the Dashboard. Technicians fixed it directly on-site, and the upload was successful\n",
             "status": "Complete"
         },
         {
-            "title": "Kabaelbo NOCRU board pre programming",
-            "description": "- A new Norcu board has been preprogrammed using data from the Prime fleet dispenser for seamless compatibility.\n- Once Baitali establishes the internet connection, the Norcu board will be integrated.\n- This will restore communication via LAN2, ensuring full network functionality.\n",
+            "title": "VIU inspections Baitali projects",
+            "description": "Check Viu's on projects and different locations where the master ring was being used. Issues have been resolved. (inspected: L-34, T-81, TRT-46)",
             "status": "Complete"
         },
         {
-            "title": "Sino 2 Truck FMS -EMR4 testing",
-            "description": "- Pre-configuration of the Sino Truck system has been completed.\n- Successfully tested with the EMR pulser; system status confirmed as OK.\n- System handed over for further synchronization and final setup steps\n",
+            "title": "Baitali Tank reconciliation & consumption report July -25",
+            "description": "A new requirement for monthly reporting has been requested. Reports have been reviewed and submitted to the client. (including new station UCC)",
             "status": "Complete"
+        },
+        {
+            "title": "FuelOnet training session for UCC",
+            "description": "Client requested basic training and assistance with the Raw data.\nPlanned for Friday, Aug 8th 2025.",
+            "status": "In Progress"
+        },
+        {
+            "title": "Badjalala Site recommendations",
+            "description": "Recommendations have been submitted to the management for a presentation. Awaiting client feedback to perform this presentation.\n",
+            "status": "Complete"
+        },
+        {
+            "title": "SR invoicing July-25",
+            "description": "Total worked man-hours and services will be submitted on Aug 8th, 2025.",
+            "status": "In Progress"
+        },
+        {
+            "title": "FuelOnet -Odo meter reading update",
+            "description": "A new ticket was raised again for the Odometer reading to the Fleet support team. Awaiting their final update to be transparent with the client (awaiting the requested manual )",
+            "status": "Pending"
         }
     ]
 }
